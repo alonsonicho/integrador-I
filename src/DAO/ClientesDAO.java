@@ -17,15 +17,16 @@ public class ClientesDAO extends Conexion {
     ResultSet rs;
 
     public boolean registrarCliente(Cliente cliente) {
-        String sql = "INSERT INTO cliente (dni, nombre, telefono, direccion, estado) VALUES (?,?,?,?,?)";
+        String sql = "INSERT INTO cliente (tipoDocumento, dni, nombre, telefono, direccion, estado) VALUES (?,?,?,?,?,?)";
         try {
             Connection con = getConnection();
             ps = con.prepareStatement(sql);
-            ps.setInt(1, cliente.getDni());
-            ps.setString(2, cliente.getNombre());
-            ps.setInt(3, cliente.getTelefono());
-            ps.setString(4, cliente.getDireccion());
-            ps.setString(5, "ACTIVO");
+            ps.setString(1, cliente.getTipoDocumento());
+            ps.setInt(2, cliente.getDni());
+            ps.setString(3, cliente.getNombre());
+            ps.setInt(4, cliente.getTelefono());
+            ps.setString(5, cliente.getDireccion());
+            ps.setString(6, "ACTIVO");
             ps.execute();
             return true;
         } catch (SQLIntegrityConstraintViolationException e) {
@@ -39,16 +40,17 @@ public class ClientesDAO extends Conexion {
     }
 
     public boolean actualizarCliente(Cliente cli) {
-        String sql = "UPDATE cliente SET dni = ?, nombre = ?,"
+        String sql = "UPDATE cliente SET tipoDocumento = ?, dni = ? ,nombre = ?,"
                 + " telefono = ?, direccion = ? WHERE idCliente = ?";
         try {
             Connection con = getConnection();
             ps = con.prepareStatement(sql);
-            ps.setInt(1, cli.getDni());
-            ps.setString(2, cli.getNombre());
-            ps.setInt(3, cli.getTelefono());
-            ps.setString(4, cli.getDireccion());
-            ps.setInt(5, cli.getIdCliente());
+            ps.setString(1, cli.getTipoDocumento());
+            ps.setInt(2, cli.getDni());
+            ps.setString(3, cli.getNombre());
+            ps.setInt(4, cli.getTelefono());
+            ps.setString(5, cli.getDireccion());
+            ps.setInt(6, cli.getIdCliente());
             ps.execute();
             return true;
         } catch (SQLIntegrityConstraintViolationException e) {
@@ -64,6 +66,7 @@ public class ClientesDAO extends Conexion {
         }
     }
 
+    //Listar clientes en estado "ACTIVO"
     public ArrayList<Cliente> listarClientes() {
         ArrayList<Cliente> listaCliente = new ArrayList();
         String sql = "SELECT * FROM cliente where estado = 'ACTIVO'";
@@ -73,6 +76,32 @@ public class ClientesDAO extends Conexion {
             rs = ps.executeQuery();
             while (rs.next()) {
                 Cliente cli = new Cliente();
+                cli.setTipoDocumento(rs.getString("tipoDocumento"));
+                cli.setIdCliente(rs.getInt("idCliente"));
+                cli.setDni(rs.getInt("dni"));
+                cli.setNombre(rs.getString("nombre"));
+                cli.setTelefono(rs.getInt("telefono"));
+                cli.setDireccion(rs.getString("direccion"));
+                cli.setEstado(rs.getString("estado"));
+                listaCliente.add(cli);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return listaCliente;
+    }
+    
+    //Listar clientes en estado "INACTIVO"
+    public ArrayList<Cliente> listarClientesInactivo() {
+        ArrayList<Cliente> listaCliente = new ArrayList();
+        String sql = "SELECT * FROM cliente where estado = 'INACTIVO'";
+        try {
+            Connection con = getConnection();
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Cliente cli = new Cliente();
+                cli.setTipoDocumento(rs.getString("tipoDocumento"));
                 cli.setIdCliente(rs.getInt("idCliente"));
                 cli.setDni(rs.getInt("dni"));
                 cli.setNombre(rs.getString("nombre"));
@@ -101,6 +130,7 @@ public class ClientesDAO extends Conexion {
                     throw new Exception("El cliente está inactivo. Actívelo antes de continuar.");
                 }
 
+                cli.setTipoDocumento(rs.getString("tipoDocumento"));
                 cli.setIdCliente(rs.getInt("idCliente"));
                 cli.setDni(rs.getInt("dni"));
                 cli.setNombre(rs.getString("nombre"));
@@ -131,6 +161,22 @@ public class ClientesDAO extends Conexion {
 
     public boolean eliminarCliente(int id) {
         String nuevoEstado = "INACTIVO";
+        String sql = "UPDATE cliente SET estado = ? WHERE idCliente = ?";
+        try {
+            Connection con = getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setString(1, nuevoEstado);
+            ps.setInt(2, id);
+            ps.execute();
+            return true;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+    }
+    
+    public boolean activarCliente(int id) {
+        String nuevoEstado = "ACTIVO";
         String sql = "UPDATE cliente SET estado = ? WHERE idCliente = ?";
         try {
             Connection con = getConnection();

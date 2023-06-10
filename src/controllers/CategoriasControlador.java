@@ -41,20 +41,18 @@ public class CategoriasControlador implements ActionListener, MouseListener {
         // Registrar Categoria
         if (e.getSource() == vistaCategorias.btnRegitrarCat) {
             String nombreCategoria = vistaCategorias.txtNombreCat.getText();
-
+            //Verificar si el campo no se encuentra vacio
             if (nombreCategoria.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Completar los campos");
                 vistaCategorias.txtNombreCat.requestFocus();
             } else {
                 categoria.setNombreCategoria(nombreCategoria);
-
+                //Llamado al metodo para el registro de la categoria
                 if (categoriasDAO.registrarCategoria(categoria)) {
                     limpiar();
                     limpiarTable();
                     listarCategorias();
                     JOptionPane.showMessageDialog(null, "Categoria registrada");
-                } else {
-                    JOptionPane.showMessageDialog(null, "Error al registrar categoria");
                 }
             }
         }
@@ -64,7 +62,7 @@ public class CategoriasControlador implements ActionListener, MouseListener {
         if (e.getSource() == vistaCategorias.btnModificarCat) {
             String idCat = vistaCategorias.txtIdCat.getText();
             String nombreCat = vistaCategorias.txtNombreCat.getText();
-
+            //Verificar si no se ha seleccionado una fila de la tabla
             if (idCat.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Selecciona una categoria");
                 return;
@@ -77,7 +75,7 @@ public class CategoriasControlador implements ActionListener, MouseListener {
 
             categoria.setNombreCategoria(nombreCat);
             categoria.setIdCategoria(idCat);
-
+            //Llamado al metodo para actualizar
             if (categoriasDAO.actualizarCategoria(categoria)) {
                 limpiar();
                 limpiarTable();
@@ -188,10 +186,11 @@ public class CategoriasControlador implements ActionListener, MouseListener {
         vistaCategorias.txtIdCat.setText(null);
         vistaCategorias.txtNombreCat.setText(null);
     }
-
-    public void listarBox() {
+    
+    //------------------------------------------------------------------------------------------------------------------------------------------
+    //Listar las categorias en el comboBox
+    public void listarBox() { 
         vistaCategorias.cbxCatPro.removeAllItems();
-
         ArrayList<Categoria> lista = categoriasDAO.listarCategorias();
         for (Categoria cat : lista) {
             vistaCategorias.cbxCatPro.addItem(cat.getNombreCategoria());

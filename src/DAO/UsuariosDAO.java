@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
-import models.Factura;
 import models.Usuario;
 
 public class UsuariosDAO extends Conexion {
@@ -117,6 +116,29 @@ public class UsuariosDAO extends Conexion {
         return listaUsuario;
     }
     
+    public ArrayList<Usuario> listarUsuariosInactivo() {
+        ArrayList<Usuario> listaUsuario = new ArrayList();
+        String sql = "SELECT * FROM usuario where estado = 'INACTIVO'";
+        try {
+            Connection con = getConnection();
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Usuario user = new Usuario();
+                user.setIdUsuario(rs.getInt("idUsuario"));
+                user.setDniUsuario(rs.getInt("dni_usuario"));
+                user.setNombre(rs.getString("nombre"));
+                user.setUsuario(rs.getString("usuario"));
+                user.setPassword(rs.getString("password"));
+                user.setRol(rs.getString("rol"));
+                listaUsuario.add(user);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return listaUsuario;
+    }
+    
     
     public Usuario buscarUsuario(int dni) throws Exception {
         Usuario us = new Usuario();
@@ -158,6 +180,21 @@ public class UsuariosDAO extends Conexion {
             return true;
         } catch (SQLException e) {
             System.out.println(e);
+            return false;
+        }
+    }
+    
+    public boolean activarUsuario (int id) {
+        String nuevoEstado = "ACTIVO";
+        String sql = "UPDATE usuario SET estado = ? WHERE idUsuario = ?";
+        try {
+            Connection con = getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setString(1, nuevoEstado);
+            ps.setInt(2, id);
+            ps.execute();
+            return true;
+        } catch (SQLException e) {
             return false;
         }
     }

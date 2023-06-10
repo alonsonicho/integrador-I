@@ -19,7 +19,8 @@ public class ClientesControlador implements MouseListener, ActionListener, KeyLi
     frmVentas vistaVentas;
     Cliente cl;
     ClientesDAO clienteDAO;
-    DefaultTableModel modelo = new DefaultTableModel();
+    DefaultTableModel modeloClienteActivo = new DefaultTableModel();
+    DefaultTableModel modeloClienteInactivo = new DefaultTableModel();
 
     public ClientesControlador(Cliente cl, ClientesDAO clienteDAO, frmClientes vistaClientes) {
         this.vistaClientes = vistaClientes;
@@ -35,19 +36,41 @@ public class ClientesControlador implements MouseListener, ActionListener, KeyLi
         this.vistaClientes.JLabelCrearReg.addMouseListener(this);
         this.vistaClientes.JLabelUsuariosReg.addMouseListener(this);
         this.vistaClientes.JLabelSalirReg.addMouseListener(this);
+        this.vistaClientes.cbTipoDocumento.addActionListener(this);
+        this.vistaClientes.TableInactiveClientes.addMouseListener(this);
+        this.vistaClientes.btnActivarCliente.addActionListener(this);
+        this.vistaClientes.radioButtonTrueCliente.addActionListener(this);
+        this.vistaClientes.radioButtonFalseCliente.addActionListener(this);
         listarClientes();
+        listarClientesInactivo();
+        this.vistaClientes.radioButtonFalseCliente.setSelected(true);
+        this.vistaClientes.radioButtonTrueCliente.setSelected(false);
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
+        //Llenar datos en el textField
         if (e.getSource() == vistaClientes.TableMostrarClientes) {
             int fila = vistaClientes.TableMostrarClientes.rowAtPoint(e.getPoint());
             vistaClientes.txtidcli.setText(vistaClientes.TableMostrarClientes.getValueAt(fila, 0).toString());
-            vistaClientes.txtdni.setText(vistaClientes.TableMostrarClientes.getValueAt(fila, 1).toString());
-            vistaClientes.txtnombrecli.setText(vistaClientes.TableMostrarClientes.getValueAt(fila, 2).toString());
-            vistaClientes.txttelefonocli.setText(vistaClientes.TableMostrarClientes.getValueAt(fila, 3).toString());
-            vistaClientes.txadireccioncli.setText(vistaClientes.TableMostrarClientes.getValueAt(fila, 4).toString());
+            vistaClientes.cbTipoDocumento.setSelectedItem(vistaClientes.TableMostrarClientes.getValueAt(fila, 1));
+            vistaClientes.txtdni.setText(vistaClientes.TableMostrarClientes.getValueAt(fila, 2).toString());
+            vistaClientes.txtnombrecli.setText(vistaClientes.TableMostrarClientes.getValueAt(fila, 3).toString());
+            vistaClientes.txttelefonocli.setText(vistaClientes.TableMostrarClientes.getValueAt(fila, 4).toString());
+            vistaClientes.txadireccioncli.setText(vistaClientes.TableMostrarClientes.getValueAt(fila, 5).toString());
             vistaClientes.btnregistrarcli.setEnabled(false);
+        }
+        
+        //------------------------------------------------------------------------------------------------------------------------------------------
+        if(e.getSource() == vistaClientes.TableInactiveClientes){
+            int fila = vistaClientes.TableInactiveClientes.rowAtPoint(e.getPoint());
+            vistaClientes.txtActivarClienteId.setText(vistaClientes.TableInactiveClientes.getValueAt(fila, 0).toString());
+            vistaClientes.txtActiveTipoDocumento.setText(vistaClientes.TableInactiveClientes.getValueAt(fila, 1).toString());
+            vistaClientes.txtActiveNumeroDocumentoCliente.setText(vistaClientes.TableInactiveClientes.getValueAt(fila, 2).toString());
+            vistaClientes.txtActiveNombreCliente.setText(vistaClientes.TableInactiveClientes.getValueAt(fila, 3).toString());
+            vistaClientes.txtActiveTelefonoCliente.setText(vistaClientes.TableInactiveClientes.getValueAt(fila, 4).toString());
+            vistaClientes.txtActiveDireccion.setText(vistaClientes.TableInactiveClientes.getValueAt(fila, 5).toString());
+            vistaClientes.radioButtonFalseCliente.setSelected(true);
         }
 
         //------------------------------------------------------------------------------------------------------------------------------------------
@@ -104,6 +127,7 @@ public class ClientesControlador implements MouseListener, ActionListener, KeyLi
             String dniCliente = vistaClientes.txtdni.getText();
             String telefonoCliente = vistaClientes.txttelefonocli.getText();
             String direccionCliente = vistaClientes.txadireccioncli.getText();
+            String tipoDocumento = vistaClientes.cbTipoDocumento.getSelectedItem().toString();
             
             if (nombreCliente.isEmpty() || dniCliente.isEmpty() || telefonoCliente.isEmpty() || direccionCliente.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Todos los campos son obligatorios");
@@ -114,17 +138,31 @@ public class ClientesControlador implements MouseListener, ActionListener, KeyLi
             if (!validarCamposEnteros(dniCliente, telefonoCliente)) {
                 return;
             }
+            
+            //Verificar el tipo de documento ingresado #DNI o #RUC
+            if(tipoDocumento.equals("DNI")){
+                if (dniCliente.length() != 8) {
+                    JOptionPane.showMessageDialog(null, "El DNI debe tener 8 dígitos");
+                    return;
+                }
+            }else if(tipoDocumento.equals("RUC")){
+                if (!dniCliente.startsWith("10") || dniCliente.length() != 10) {
+                    JOptionPane.showMessageDialog(null, "El RUC debe comenzar con '10' y tener 10 dígitos");
+                    return;
+                }
+            }
  
             int dni = Integer.parseInt(dniCliente);
             int telefono = Integer.parseInt(telefonoCliente);
-
+            
+            cl.setTipoDocumento(tipoDocumento);
             cl.setDni(dni);
             cl.setNombre(nombreCliente);
             cl.setTelefono(telefono);
             cl.setDireccion(direccionCliente);
-            
+            //Registro del cliente
             if (clienteDAO.registrarCliente(cl)) {
-                limpiarTable();
+                limpiarTable(modeloClienteActivo);
                 listarClientes();
                 limpiar();
                 JOptionPane.showMessageDialog(null, "Cliente Registrado");
@@ -132,13 +170,14 @@ public class ClientesControlador implements MouseListener, ActionListener, KeyLi
         }
 
         //------------------------------------------------------------------------------------------------------------------------------------------
-        //Actualizar usuarioCliente
+        //Actualizar informacion del cliente
         if (e.getSource() == vistaClientes.btnmodificarcli) {
             String idCliente = vistaClientes.txtidcli.getText();
             String nombreCliente = vistaClientes.txtnombrecli.getText();
             String dniCliente = vistaClientes.txtdni.getText();
             String telefonoCliente = vistaClientes.txttelefonocli.getText();
             String direccionCliente = vistaClientes.txadireccioncli.getText();
+            String tipoDocumento = vistaClientes.cbTipoDocumento.getSelectedItem().toString();
             
             if (idCliente.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Selecciona una fila");
@@ -155,10 +194,23 @@ public class ClientesControlador implements MouseListener, ActionListener, KeyLi
                 return;
             }
             
+            if(tipoDocumento.equals("DNI")){
+                if (dniCliente.length() != 8) {
+                    JOptionPane.showMessageDialog(null, "El DNI debe tener 8 dígitos");
+                    return;
+                }
+            }else if(tipoDocumento.equals("RUC")){
+                if (!dniCliente.startsWith("10") || dniCliente.length() != 10) {
+                    JOptionPane.showMessageDialog(null, "El RUC debe comenzar con '10' y tener 10 dígitos");
+                    return;
+                }
+            }
+            
             int idCli = Integer.parseInt(idCliente);
             int dni = Integer.parseInt(dniCliente);
             int telefono = Integer.parseInt(telefonoCliente);
             
+            cl.setTipoDocumento(tipoDocumento);
             cl.setDni(dni);
             cl.setNombre(nombreCliente);
             cl.setTelefono(telefono);
@@ -166,7 +218,7 @@ public class ClientesControlador implements MouseListener, ActionListener, KeyLi
             cl.setIdCliente(idCli);
             
             if (clienteDAO.actualizarCliente(cl)) {
-                limpiarTable();
+                limpiarTable(modeloClienteActivo);
                 listarClientes();
                 limpiar();
                 JOptionPane.showMessageDialog(null, "Cliente modificado");
@@ -194,6 +246,7 @@ public class ClientesControlador implements MouseListener, ActionListener, KeyLi
                 cl = clienteDAO.buscarCliente(dniCliente);
                 if (cl.getDni() !=0 ) {
                     vistaClientes.txtnombrecli.setText(cl.getNombre());
+                    vistaClientes.cbTipoDocumento.setSelectedItem(cl.getTipoDocumento());
                     vistaClientes.txtdni.setText(String.valueOf(cl.getDni()));
                     vistaClientes.txttelefonocli.setText(String.valueOf(cl.getTelefono()));
                     vistaClientes.txadireccioncli.setText(cl.getDireccion());
@@ -230,13 +283,52 @@ public class ClientesControlador implements MouseListener, ActionListener, KeyLi
             if (respuesta == JOptionPane.YES_OPTION) {
                 if (clienteDAO.eliminarCliente(idCliente)) {
                     limpiar();
-                    limpiarTable();
+                    limpiarTable(modeloClienteActivo);
+                    limpiarTable(modeloClienteInactivo);
                     listarClientes();
+                    listarClientesInactivo();
                     JOptionPane.showMessageDialog(null, "Cliente eliminado", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     JOptionPane.showMessageDialog(null, "Error al eliminar el cliente");
                 }
             }
+        }
+        
+        //------------------------------------------------------------------------------------------------------------------------------------------
+        //Activar el cliente, cambio de estado a "ACTIVO"
+        if(e.getSource() == vistaClientes.btnActivarCliente){
+            if(vistaClientes.radioButtonFalseCliente.isSelected()){
+                JOptionPane.showMessageDialog(null, "Seleccione la opcion de 'ACTIVO' para continuar");
+                return;
+            }
+            
+            int idCliente = Integer.parseInt(vistaClientes.txtActivarClienteId.getText());
+            int respuesta = JOptionPane.showConfirmDialog(null, "¿Estás seguro de que deseas activar el cliente?", "Confirmación", JOptionPane.YES_NO_OPTION);
+            
+            if (respuesta == JOptionPane.YES_OPTION) {
+                if(clienteDAO.activarCliente(idCliente)){
+                    limpiarTable(modeloClienteInactivo);
+                    limpiarTable(modeloClienteActivo);
+                    listarClientes();
+                    listarClientesInactivo();
+                    vistaClientes.txtActivarClienteId.setText(null);
+                    vistaClientes.txtActiveNombreCliente.setText(null);
+                    vistaClientes.txtActiveNumeroDocumentoCliente.setText(null);
+                    vistaClientes.txtActiveTipoDocumento.setText(null);
+                    vistaClientes.txtActiveTelefonoCliente.setText(null);
+                    vistaClientes.txtActiveDireccion.setText(null);
+                    JOptionPane.showMessageDialog(null, "El cliente se activo correctamente");
+                }
+            }
+        }
+        
+        //------------------------------------------------------------------------------------------------------------------------------------------
+        //Control de evento para el radio button
+        if(e.getSource() == vistaClientes.radioButtonTrueCliente){
+            vistaClientes.radioButtonFalseCliente.setSelected(false);
+        }
+        if(e.getSource() == vistaClientes.radioButtonFalseCliente){
+            vistaClientes.radioButtonTrueCliente.setSelected(false);
         }
 
     }
@@ -259,17 +351,35 @@ public class ClientesControlador implements MouseListener, ActionListener, KeyLi
     //------------------------------------------------------------------------------------------------------------------------------------------
     public void listarClientes() {
         List<Cliente> lista = clienteDAO.listarClientes();
-        modelo = (DefaultTableModel) vistaClientes.TableMostrarClientes.getModel();
+        modeloClienteActivo = (DefaultTableModel) vistaClientes.TableMostrarClientes.getModel();
         Object[] obj = new Object[6];
         for (int i = 0; i < lista.size(); i++) {
             obj[0] = lista.get(i).getIdCliente();
-            obj[1] = lista.get(i).getDni();
-            obj[2] = lista.get(i).getNombre() != null ? lista.get(i).getNombre() : "";
-            obj[3] = lista.get(i).getTelefono() != 0 ? lista.get(i).getTelefono() : "";
-            obj[4] = lista.get(i).getDireccion() != null ? lista.get(i).getDireccion() : "";
-            modelo.addRow(obj);
+            obj[1] = lista.get(i).getTipoDocumento();
+            obj[2] = lista.get(i).getDni();
+            obj[3] = lista.get(i).getNombre() != null ? lista.get(i).getNombre() : "";
+            obj[4] = lista.get(i).getTelefono() != 0 ? lista.get(i).getTelefono() : "";
+            obj[5] = lista.get(i).getDireccion() != null ? lista.get(i).getDireccion() : "";
+            modeloClienteActivo.addRow(obj);
         }
-        vistaClientes.TableMostrarClientes.setModel(modelo);
+        vistaClientes.TableMostrarClientes.setModel(modeloClienteActivo);
+    }
+    
+    //------------------------------------------------------------------------------------------------------------------------------------------
+    public void listarClientesInactivo(){
+        List<Cliente> lista = clienteDAO.listarClientesInactivo();
+        modeloClienteInactivo = (DefaultTableModel) vistaClientes.TableInactiveClientes.getModel();
+        Object[] obj = new Object[6];
+        for (int i = 0; i < lista.size(); i++) {
+            obj[0] = lista.get(i).getIdCliente();
+            obj[1] = lista.get(i).getTipoDocumento();
+            obj[2] = lista.get(i).getDni();
+            obj[3] = lista.get(i).getNombre() != null ? lista.get(i).getNombre() : "";
+            obj[4] = lista.get(i).getTelefono() != 0 ? lista.get(i).getTelefono() : "";
+            obj[5] = lista.get(i).getDireccion() != null ? lista.get(i).getDireccion() : "";
+            modeloClienteInactivo.addRow(obj);
+        }
+        vistaClientes.TableInactiveClientes.setModel(modeloClienteInactivo);
     }
 
     //------------------------------------------------------------------------------------------------------------------------------------------
@@ -283,7 +393,7 @@ public class ClientesControlador implements MouseListener, ActionListener, KeyLi
     }
 
     //------------------------------------------------------------------------------------------------------------------------------------------
-    public void limpiarTable() {
+    public void limpiarTable(DefaultTableModel modelo) {
         for (int i = 0; i < modelo.getRowCount(); i++) {
             modelo.removeRow(i);
             i = i - 1;
@@ -294,7 +404,7 @@ public class ClientesControlador implements MouseListener, ActionListener, KeyLi
     public boolean validarCamposEnteros(String... valores) {
         for (String valor : valores) {
             try {
-                Integer.parseInt(valor);
+                Long.parseLong(valor.trim());
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(null, "El valor ingresado  '" + valor + "'  no puede contener letras o caracteres");
                 return false;

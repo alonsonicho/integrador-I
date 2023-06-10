@@ -1,7 +1,6 @@
 package controllers;
 
 import DAO.*;
-import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -10,6 +9,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import models.*;
 import views.frmClientes;
@@ -20,7 +20,7 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
     Usuario usuario;
     UsuariosDAO usuariosDAO;
     frmClientes vista;
-    DefaultTableModel modeloUsuario = new DefaultTableModel();
+    DefaultTableModel modeloUsuarioActivo = new DefaultTableModel();
     DefaultTableModel modeloUsuarioInactivo = new DefaultTableModel();
 
     public UsuariosControlador(Usuario usuario, UsuariosDAO usuariosDAO, frmClientes vista) {
@@ -34,8 +34,15 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
         this.vista.btnmodificarUser.addActionListener(this);
         this.vista.btnnuevouser.addActionListener(this);
         this.vista.btnBuscarUsuario.addActionListener(this);
+        this.vista.TableInactiveUsuarios.addMouseListener(this);
+        this.vista.btnActivarUsuario.addActionListener(this);
+        this.vista.radioButtonTrueCliente.addActionListener(this);
+        this.vista.radioButtonFalseCliente.addActionListener(this);
         listarUsuarios();
+        listarUsuariosInactivo();
         permisosUsuario();
+        this.vista.radioButtonFalseUser.setSelected(true);
+        this.vista.radioButtonTrueCliente.setSelected(false);
     }
 
     @Override
@@ -64,7 +71,7 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
             usuario.setRol(vista.cbroluser.getSelectedItem().toString());
 
             if (usuariosDAO.registrarUsuario(usuario)) {
-                limpiarTable();
+                limpiarTable(modeloUsuarioActivo);
                 listarUsuarios();
                 limpiar();
                 JOptionPane.showMessageDialog(null, "Usuario registrado con éxito");
@@ -98,7 +105,7 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
             usuario.setIdUsuario(Integer.parseInt(idUsuario));
 
             if (usuariosDAO.actualizarUsuario(usuario)) {
-                limpiarTable();
+                limpiarTable(modeloUsuarioActivo);
                 limpiar();
                 listarUsuarios();
                 JOptionPane.showMessageDialog(null, "Usuario modificado correctamente");
@@ -141,6 +148,7 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
         }
         
         //------------------------------------------------------------------------------------------------------------------------------------------
+        //Eliminar usuario
         if(e.getSource() == vista.JMenuEliminarUser){
             String idUsuarioStr = vista.txtidusuario.getText();
             
@@ -163,8 +171,10 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
             if(respuesta == JOptionPane.YES_OPTION){
                 if(usuariosDAO.eliminarUsuario(idUsuario)){
                     limpiar();
-                    limpiarTable();
+                    limpiarTable(modeloUsuarioActivo);
+                    limpiarTable(modeloUsuarioInactivo);
                     listarUsuarios();
+                    listarUsuariosInactivo();
                     JOptionPane.showMessageDialog(null, "Cliente eliminado", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                 }else{
                     JOptionPane.showMessageDialog(null, "Error al eliminar el cliente");
@@ -172,12 +182,46 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
             }
         }
 
+        //------------------------------------------------------------------------------------------------------------------------------------------}
+        //Activar usuario, cambio de estado a "ACTIVO"
+        if(e.getSource() == vista.btnActivarUsuario){
+            if(vista.radioButtonFalseUser.isSelected()){
+                JOptionPane.showMessageDialog(null, "Seleccione la opcion de 'ACTIVO' para continuar");
+                return;
+            }
+            
+            int idUsuario = Integer.parseInt(vista.txtActivarUsuarioId.getText());
+            int respuesta = JOptionPane.showConfirmDialog(null, "¿Estás seguro de que deseas activar el usuario?", "Confirmación", JOptionPane.YES_NO_OPTION);
+            
+            if(respuesta == JOptionPane.YES_OPTION){
+                if(usuariosDAO.activarUsuario(idUsuario)){
+                    limpiarUsuarioInactivo();
+                    limpiarTable(modeloUsuarioInactivo);
+                    limpiarTable(modeloUsuarioActivo);
+                    listarUsuarios();
+                    listarUsuariosInactivo();
+                    JOptionPane.showMessageDialog(null, "El usuario se activo correctamente");
+                }
+            } 
+        }
+        
+        
         //------------------------------------------------------------------------------------------------------------------------------------------
         //Nuevo usuario
         if (e.getSource() == vista.btnnuevouser) {
             limpiar();
             vista.btnregistraruser.setEnabled(true);
             vista.txtcontrasenaUser.setEnabled(true);
+        }
+        
+        //------------------------------------------------------------------------------------------------------------------------------------------
+        //Control de evento para el radio button
+        if(e.getSource() == vista.radioButtonTrueUser){
+            vista.radioButtonFalseUser.setSelected(false);
+        }
+        
+        if(e.getSource() == vista.radioButtonFalseUser){
+            vista.radioButtonTrueUser.setSelected(false);
         }
 
     }
@@ -194,6 +238,16 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
             vista.cbroluser.setSelectedItem(vista.TableMostrarUsuarios.getValueAt(fila, 4).toString());
             vista.txtcontrasenaUser.setEnabled(false);
             vista.btnregistraruser.setEnabled(false);
+        }
+        
+        if(e.getSource() == vista.TableInactiveUsuarios){
+            int fila = vista.TableInactiveUsuarios.rowAtPoint(e.getPoint());
+            vista.txtActivarUsuarioId.setText(vista.TableInactiveUsuarios.getValueAt(fila, 0).toString());
+            vista.txtActiveDniUser.setText(vista.TableInactiveUsuarios.getValueAt(fila, 1).toString());
+            vista.txtActiveNombreUser.setText(vista.TableInactiveUsuarios.getValueAt(fila, 2).toString());
+            vista.txtActiveUsuarioUser.setText(vista.TableInactiveUsuarios.getValueAt(fila, 3).toString());
+            vista.txtActiveRolUser.setText(vista.TableInactiveUsuarios.getValueAt(fila, 4).toString());
+            vista.radioButtonFalseUser.setSelected(true);
         }
     }
 
@@ -235,7 +289,7 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
     //------------------------------------------------------------------------------------------------------------------------------------------
     public void listarUsuarios() {
         ArrayList<Usuario> lista = usuariosDAO.listarUsuarios();
-        modeloUsuario = (DefaultTableModel) vista.TableMostrarUsuarios.getModel();
+        modeloUsuarioActivo = (DefaultTableModel) vista.TableMostrarUsuarios.getModel();
         Object[] obj = new Object[6];
         for (int i = 0; i < lista.size(); i++) {
             obj[0] = lista.get(i).getIdUsuario();
@@ -243,9 +297,25 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
             obj[2] = lista.get(i).getNombre();
             obj[3] = lista.get(i).getUsuario();
             obj[4] = lista.get(i).getRol();
-            modeloUsuario.addRow(obj);
+            modeloUsuarioActivo.addRow(obj);
         }
-        vista.TableMostrarUsuarios.setModel(modeloUsuario);
+        vista.TableMostrarUsuarios.setModel(modeloUsuarioActivo);
+    }
+    
+    //------------------------------------------------------------------------------------------------------------------------------------------
+    public void listarUsuariosInactivo(){
+        ArrayList<Usuario> lista = usuariosDAO.listarUsuariosInactivo();
+        modeloUsuarioInactivo = (DefaultTableModel) vista.TableInactiveUsuarios.getModel();
+        Object[] obj = new Object[6];
+        for (int i = 0; i < lista.size(); i++) {
+            obj[0] = lista.get(i).getIdUsuario();
+            obj[1] = lista.get(i).getDniUsuario();
+            obj[2] = lista.get(i).getNombre();
+            obj[3] = lista.get(i).getUsuario();
+            obj[4] = lista.get(i).getRol();
+            modeloUsuarioInactivo.addRow(obj);
+        }
+        vista.TableInactiveUsuarios.setModel(modeloUsuarioInactivo);
     }
 
     //------------------------------------------------------------------------------------------------------------------------------------------
@@ -256,11 +326,19 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
         vista.txtcontrasenaUser.setText(null);
         vista.txtbuscarUser.setText(null);
     }
+    
+    public void limpiarUsuarioInactivo(){
+        vista.txtActivarUsuarioId.setText(null);
+        vista.txtActiveDniUser.setText(null);
+        vista.txtActiveNombreUser.setText(null);
+        vista.txtActiveRolUser.setText(null);
+        vista.txtActiveUsuarioUser.setText(null);
+    }
 
     //------------------------------------------------------------------------------------------------------------------------------------------
-    public void limpiarTable() {
-        for (int i = 0; i < modeloUsuario.getRowCount(); i++) {
-            modeloUsuario.removeRow(i);
+    public void limpiarTable(DefaultTableModel modelo) {
+        for (int i = 0; i < modelo.getRowCount(); i++) {
+            modelo.removeRow(i);
             i = i - 1;
         }
     }
@@ -271,6 +349,8 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
         Usuario usuarioActual = Session.getUsuarioActual();
         if (usuarioActual.getRol().equals("Usuario")) {
             vista.jTabbedPane1.setEnabledAt(1, false);
+            vista.jTabbedPane2.setEnabledAt(1, false);
+            vista.jTabbedPane2.setEnabledAt(2, false);
             vista.JLabelUsuariosReg.setEnabled(false);          
         }
     }

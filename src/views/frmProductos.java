@@ -107,7 +107,8 @@ public class frmProductos extends javax.swing.JFrame {
         jPanel3.setBackground(new java.awt.Color(204, 0, 51));
         jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel2.setFont(new java.awt.Font("Times New Roman", 1, 36)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("PRODUCTOS");
         jPanel3.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 40, -1, -1));
 
@@ -119,41 +120,43 @@ public class frmProductos extends javax.swing.JFrame {
         jPanel4.setBackground(new java.awt.Color(204, 204, 204));
         jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel15.setBorder(javax.swing.BorderFactory.createTitledBorder("Nuevo Producto"));
+        jPanel15.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Nuevo Producto", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 13))); // NOI18N
 
-        jLabel3.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel3.setText("Descripción");
 
-        jLabel5.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel5.setText("Cantidad");
 
         cbxCatPro.setEditable(true);
 
-        jLabel10.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        jLabel10.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel10.setText("Categoria");
 
-        btnNuevoPro.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        btnNuevoPro.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnNuevoPro.setText("Nuevo");
         btnNuevoPro.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
-        btnRegistrarPro.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        btnRegistrarPro.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnRegistrarPro.setText("Registrar");
         btnRegistrarPro.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
-        btnModificarPro.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        btnModificarPro.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnModificarPro.setText("Modificar");
         btnModificarPro.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
-        lblcantidad.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        lblcantidad.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         lblcantidad.setText("Precio Venta");
 
         txtidprod.setEditable(false);
 
+        jLabel4.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel4.setText("Buscar");
 
-        jLabel6.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel6.setText("Nombre");
 
+        btnBuscarProducto.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnBuscarProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/lupa.png"))); // NOI18N
         btnBuscarProducto.setText("Buscar");
         btnBuscarProducto.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -214,7 +217,7 @@ public class frmProductos extends javax.swing.JFrame {
         jPanel15Layout.setVerticalGroup(
             jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel15Layout.createSequentialGroup()
-                .addContainerGap(48, Short.MAX_VALUE)
+                .addContainerGap(58, Short.MAX_VALUE)
                 .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtbuscarprod, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnBuscarProducto)
@@ -251,6 +254,7 @@ public class frmProductos extends javax.swing.JFrame {
 
         jPanel4.add(jPanel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 10, 310, 460));
 
+        TableProductos.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         TableProductos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -282,18 +286,18 @@ public class frmProductos extends javax.swing.JFrame {
         jPanel16.setBackground(new java.awt.Color(204, 204, 204));
         jPanel16.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel20.setBorder(javax.swing.BorderFactory.createTitledBorder("Nueva Categoria"));
+        jPanel20.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Nueva Categoria", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 13))); // NOI18N
 
-        jLabel21.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        jLabel21.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel21.setText("Nombre");
 
-        btnNuevoCat.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        btnNuevoCat.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnNuevoCat.setText("Nuevo");
 
-        btnRegitrarCat.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        btnRegitrarCat.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnRegitrarCat.setText("Registrar");
 
-        btnModificarCat.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        btnModificarCat.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnModificarCat.setText("Modificar");
 
         txtIdCat.setEditable(false);
@@ -303,20 +307,20 @@ public class frmProductos extends javax.swing.JFrame {
         jPanel20Layout.setHorizontalGroup(
             jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel20Layout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addComponent(btnNuevoCat, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(22, 22, 22)
+                .addComponent(btnNuevoCat, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnRegitrarCat)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnModificarCat)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel20Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(39, Short.MAX_VALUE)
                 .addGroup(jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(txtIdCat, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel20Layout.createSequentialGroup()
                         .addComponent(jLabel21)
-                        .addGap(18, 18, 18)
+                        .addGap(26, 26, 26)
                         .addComponent(txtNombreCat, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(36, 36, 36))
         );
@@ -325,7 +329,7 @@ public class frmProductos extends javax.swing.JFrame {
             .addGroup(jPanel20Layout.createSequentialGroup()
                 .addGap(63, 63, 63)
                 .addComponent(txtIdCat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 71, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 75, Short.MAX_VALUE)
                 .addGroup(jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtNombreCat, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel21))
@@ -376,7 +380,7 @@ public class frmProductos extends javax.swing.JFrame {
         JPanelProductos.setBackground(new java.awt.Color(51, 51, 51));
 
         JLabelProductos.setBackground(new java.awt.Color(0, 0, 0));
-        JLabelProductos.setFont(new java.awt.Font("Times New Roman", 3, 14)); // NOI18N
+        JLabelProductos.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         JLabelProductos.setForeground(new java.awt.Color(255, 255, 255));
         JLabelProductos.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         JLabelProductos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/producto.png"))); // NOI18N
@@ -399,7 +403,7 @@ public class frmProductos extends javax.swing.JFrame {
         JPanelCategoria.setBackground(new java.awt.Color(51, 51, 51));
 
         JLabelCategoria.setBackground(new java.awt.Color(0, 0, 0));
-        JLabelCategoria.setFont(new java.awt.Font("Times New Roman", 3, 14)); // NOI18N
+        JLabelCategoria.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         JLabelCategoria.setForeground(new java.awt.Color(255, 255, 255));
         JLabelCategoria.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         JLabelCategoria.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/box.png"))); // NOI18N
@@ -422,7 +426,7 @@ public class frmProductos extends javax.swing.JFrame {
         JPanelSalirProd.setBackground(new java.awt.Color(51, 51, 51));
 
         JLabelSalirProd.setBackground(new java.awt.Color(0, 0, 0));
-        JLabelSalirProd.setFont(new java.awt.Font("Times New Roman", 3, 14)); // NOI18N
+        JLabelSalirProd.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         JLabelSalirProd.setForeground(new java.awt.Color(255, 255, 255));
         JLabelSalirProd.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         JLabelSalirProd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/salir.png"))); // NOI18N
@@ -445,7 +449,7 @@ public class frmProductos extends javax.swing.JFrame {
         JPanelMedida.setBackground(new java.awt.Color(51, 51, 51));
 
         JLabelMedida.setBackground(new java.awt.Color(0, 0, 0));
-        JLabelMedida.setFont(new java.awt.Font("Times New Roman", 3, 14)); // NOI18N
+        JLabelMedida.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         JLabelMedida.setForeground(new java.awt.Color(255, 255, 255));
         JLabelMedida.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         JLabelMedida.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/detallista.png"))); // NOI18N

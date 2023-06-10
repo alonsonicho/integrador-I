@@ -44,7 +44,7 @@ public class frmLogin extends javax.swing.JFrame {
 
         jPanel2.setBackground(new java.awt.Color(204, 0, 51));
 
-        jLabel3.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setText("Iniciar Sesión");
@@ -73,13 +73,13 @@ public class frmLogin extends javax.swing.JFrame {
 
         jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 400, -1));
 
-        jLabel1.setFont(new java.awt.Font("Times New Roman", 3, 14)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel1.setText("Usuario");
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 250, -1, -1));
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 250, -1, -1));
 
-        jLabel2.setFont(new java.awt.Font("Times New Roman", 3, 14)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel2.setText("Contraseña");
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 350, -1, -1));
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 350, -1, -1));
         jPanel1.add(txtusuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 290, 180, 30));
 
         txtclave.addActionListener(new java.awt.event.ActionListener() {
@@ -90,7 +90,7 @@ public class frmLogin extends javax.swing.JFrame {
         jPanel1.add(txtclave, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 390, 180, 30));
 
         btnlogin.setBackground(new java.awt.Color(0, 0, 0));
-        btnlogin.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        btnlogin.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         btnlogin.setForeground(new java.awt.Color(255, 255, 255));
         btnlogin.setText("Login");
         btnlogin.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -98,7 +98,7 @@ public class frmLogin extends javax.swing.JFrame {
         jPanel1.add(btnlogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 470, 100, 40));
 
         btncancelar.setBackground(new java.awt.Color(255, 51, 51));
-        btncancelar.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        btncancelar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         btncancelar.setForeground(new java.awt.Color(255, 255, 255));
         btncancelar.setText("Cancelar");
         btncancelar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));

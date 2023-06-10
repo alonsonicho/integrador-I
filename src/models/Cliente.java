@@ -3,6 +3,7 @@ package models;
 public class Cliente {
 
     private int idCliente;
+    private String tipoDocumento;
     private int dni;
     private String nombre;
     private int telefono;
@@ -12,14 +13,17 @@ public class Cliente {
     public Cliente() {
     }
 
-    public Cliente(int idCliente, int dni, String nombre, int telefono, String direccion, String estado) {
+    public Cliente(int idCliente, String tipoDocumento, int dni, String nombre, int telefono, String direccion, String estado) {
         this.idCliente = idCliente;
+        this.tipoDocumento = tipoDocumento;
         this.dni = dni;
         this.nombre = nombre;
         this.telefono = telefono;
         this.direccion = direccion;
         this.estado = estado;
     }
+
+    
 
     public String getEstado() {
         return estado;
@@ -69,6 +73,11 @@ public class Cliente {
         this.direccion = direccion;
     }
 
-    
+    public String getTipoDocumento() {
+        return tipoDocumento;
+    }
 
+    public void setTipoDocumento(String tipoDocumento) {
+        this.tipoDocumento = tipoDocumento;
+    }
 }

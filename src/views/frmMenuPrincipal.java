@@ -39,7 +39,7 @@ public class frmMenuPrincipal extends javax.swing.JFrame {
         JPanelSalir.setBackground(new java.awt.Color(51, 51, 51));
 
         JLabelSalir.setBackground(new java.awt.Color(0, 0, 0));
-        JLabelSalir.setFont(new java.awt.Font("Times New Roman", 3, 24)); // NOI18N
+        JLabelSalir.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         JLabelSalir.setForeground(new java.awt.Color(255, 255, 255));
         JLabelSalir.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         JLabelSalir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/salir.png"))); // NOI18N
@@ -61,7 +61,7 @@ public class frmMenuPrincipal extends javax.swing.JFrame {
         JPanelClientes.setBackground(new java.awt.Color(51, 51, 51));
 
         JLabelClientes.setBackground(new java.awt.Color(51, 51, 51));
-        JLabelClientes.setFont(new java.awt.Font("Times New Roman", 3, 24)); // NOI18N
+        JLabelClientes.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         JLabelClientes.setForeground(new java.awt.Color(255, 255, 255));
         JLabelClientes.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         JLabelClientes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/Clientes.png"))); // NOI18N
@@ -83,7 +83,7 @@ public class frmMenuPrincipal extends javax.swing.JFrame {
         JPanelVentas.setPreferredSize(new java.awt.Dimension(400, 155));
 
         JLabelVentas.setBackground(new java.awt.Color(0, 0, 0));
-        JLabelVentas.setFont(new java.awt.Font("Times New Roman", 3, 24)); // NOI18N
+        JLabelVentas.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         JLabelVentas.setForeground(new java.awt.Color(255, 255, 255));
         JLabelVentas.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         JLabelVentas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/Nventa.png"))); // NOI18N
@@ -105,7 +105,7 @@ public class frmMenuPrincipal extends javax.swing.JFrame {
         JPanelProductos.setPreferredSize(new java.awt.Dimension(400, 155));
 
         JLabelProductos.setBackground(new java.awt.Color(0, 0, 0));
-        JLabelProductos.setFont(new java.awt.Font("Times New Roman", 3, 24)); // NOI18N
+        JLabelProductos.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         JLabelProductos.setForeground(new java.awt.Color(255, 255, 255));
         JLabelProductos.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         JLabelProductos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/producto.png"))); // NOI18N

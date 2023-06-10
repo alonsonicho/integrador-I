@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.stream.Stream;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import models.*;
@@ -58,6 +59,7 @@ public class VentasControlador implements ActionListener, MouseListener {
         this.vistaVentas.btnAnularFactura.addActionListener(this);
         this.vistaVentas.TableNuevaVenta.addMouseListener(this);
         this.vistaVentas.TableListadoVentas.addMouseListener(this);
+        this.vistaVentas.cbTipoDocumento.addActionListener(this);
         cargarVendedor();
         cargarListaFactura();
     }
@@ -119,6 +121,7 @@ public class VentasControlador implements ActionListener, MouseListener {
 
             modelo = (DefaultTableModel) vistaVentas.TableNuevaVenta.getModel();
 
+            // Verificar si el producto ya existe en la tabla
             int rowCount = modelo.getRowCount();
             for (int i = 0; i < rowCount; i++) {
                 String codigo = (String) modelo.getValueAt(i, 0);
@@ -220,6 +223,26 @@ public class VentasControlador implements ActionListener, MouseListener {
                 if (cliente == null || cliente.getIdCliente() == 0) {
                     // El cliente no está registrado, registrar el cliente
                     Cliente nuevoCliente = new Cliente();
+
+                    // Capturar el tipo de documento del cliente
+                    String numeroDocCliente = vistaVentas.txtBuscarCliente.getText();
+                    String compararDocCliente = vistaVentas.cbTipoDocumento.getSelectedItem().toString();
+                    
+                    // Creacion de un nuevo flujo para filtrar el tipo de documento
+                    String tipoDocCliente = Stream.of(numeroDocCliente)
+                            .filter(doc -> doc.startsWith("10") && doc.length() == 10)
+                            .map(doc -> "RUC")
+                            .findFirst() // Obtenemos el primer resultado o un Optional vacío
+                            .orElseGet(() -> numeroDocCliente.length() == 8 ? "DNI" : "");
+
+                    tipoDocCliente = compararDocCliente.equals(tipoDocCliente) ? compararDocCliente : "";
+
+                    if (tipoDocCliente.isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "El documento ingresado no coincide con el tipo de documento");
+                        return;
+                    }
+
+                    nuevoCliente.setTipoDocumento(tipoDocCliente);
                     nuevoCliente.setDni(dniCliente);
                     clientesDAO.registrarCliente(nuevoCliente);
                     idCliente = clientesDAO.obtenerUltimoIdCliente();  // Obtener el id del cliente registrado o existente
@@ -314,7 +337,6 @@ public class VentasControlador implements ActionListener, MouseListener {
                 return;
             }
 
-            
             String valorTotal = vistaVentas.txtTotalPagar.getText();
             String valorCorregido = valorTotal.replace(",", ".");
             double total = Double.parseDouble(valorCorregido);
@@ -491,7 +513,7 @@ public class VentasControlador implements ActionListener, MouseListener {
     public boolean validarCamposNumericos(String... valores) {
         for (String valor : valores) {
             try {
-                Integer.parseInt(valor);
+                Long.parseLong(valor);
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(null, "El valor ingresado  '" + valor + "'  no puede contener letras o caracteres");
                 return false;

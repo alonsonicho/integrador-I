@@ -6,7 +6,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import models.Categoria;
 
 public class CategoriasDAO extends Conexion {
@@ -23,6 +25,9 @@ public class CategoriasDAO extends Conexion {
             ps.setString(2, "ACTIVO");
             ps.execute();
             return true;
+        } catch(SQLIntegrityConstraintViolationException e ){
+            JOptionPane.showMessageDialog(null, "La categoria '"+ categoria.getNombreCategoria() + "' ya se encuentra en uso");
+            return false;
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             return false;
