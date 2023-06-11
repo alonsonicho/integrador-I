@@ -9,6 +9,7 @@ import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import models.Usuario;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class UsuariosDAO extends Conexion {
 
@@ -16,22 +17,25 @@ public class UsuariosDAO extends Conexion {
     ResultSet rs;
 
     public Usuario loginUsuario(String usuario, String clave) {
-        String sql = "SELECT * FROM usuario WHERE usuario = ? AND password = ?";
+        String sql = "SELECT * FROM usuario WHERE usuario = ?";
         Usuario us = new Usuario();
         try {
             Connection con = getConnection();
             ps = con.prepareStatement(sql);
             ps.setString(1, usuario);
-            ps.setString(2, clave);
             rs = ps.executeQuery();
             if (rs.next()) {
-                us.setIdUsuario(rs.getInt("idUsuario"));
-                us.setDniUsuario(rs.getInt("dni_usuario"));
-                us.setNombre(rs.getString("nombre"));
-                us.setUsuario(rs.getString("usuario"));
-                us.setPassword(rs.getString("password"));
-                us.setRol(rs.getString("rol"));
-                us.setEstado(rs.getString("estado"));
+                String passwordHash = rs.getString("password");
+                // Comprueba si la contraseña es correcta
+                if (BCrypt.checkpw(clave, passwordHash)) {
+                    us.setIdUsuario(rs.getInt("idUsuario"));
+                    us.setDniUsuario(rs.getInt("dni_usuario"));
+                    us.setNombre(rs.getString("nombre"));
+                    us.setUsuario(rs.getString("usuario"));
+                    us.setPassword(passwordHash);
+                    us.setRol(rs.getString("rol"));
+                    us.setEstado(rs.getString("estado"));
+                } 
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -115,7 +119,7 @@ public class UsuariosDAO extends Conexion {
         }
         return listaUsuario;
     }
-    
+
     public ArrayList<Usuario> listarUsuariosInactivo() {
         ArrayList<Usuario> listaUsuario = new ArrayList();
         String sql = "SELECT * FROM usuario where estado = 'INACTIVO'";
@@ -138,8 +142,7 @@ public class UsuariosDAO extends Conexion {
         }
         return listaUsuario;
     }
-    
-    
+
     public Usuario buscarUsuario(int dni) throws Exception {
         Usuario us = new Usuario();
         try {
@@ -167,6 +170,29 @@ public class UsuariosDAO extends Conexion {
         }
         return us;
     }
+    
+    public ArrayList<Usuario> listarUsuariosFiltrados(String textoBusqueda){
+        String sql = "SELECT * FROM usuario WHERE nombre LIKE ? AND estado = 'ACTIVO'";
+        ArrayList<Usuario> listaUsuarios = new ArrayList<>();
+        try {
+            Connection con = getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setString(1, "%" + textoBusqueda + "%");
+            rs = ps.executeQuery();
+            while(rs.next()){
+                Usuario usuario = new Usuario();
+                usuario.setDniUsuario(rs.getInt("dni_usuario"));
+                usuario.setNombre(rs.getString("nombre"));
+                usuario.setUsuario(rs.getString("usuario"));
+
+                listaUsuarios.add(usuario);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return listaUsuarios;
+    }
+    
 
     public boolean eliminarUsuario(int id) {
         String nuevoEstado = "INACTIVO";
@@ -183,7 +209,7 @@ public class UsuariosDAO extends Conexion {
             return false;
         }
     }
-    
+
     public boolean activarUsuario (int id) {
         String nuevoEstado = "ACTIVO";
         String sql = "UPDATE usuario SET estado = ? WHERE idUsuario = ?";
@@ -195,6 +221,21 @@ public class UsuariosDAO extends Conexion {
             ps.execute();
             return true;
         } catch (SQLException e) {
+            return false;
+        }
+    }
+    
+    public boolean actualizarPassword (String usuario, String password){
+        String sql = "UPDATE usuario SET password = ? WHERE usuario = ?";
+        try {
+            Connection con = getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setString(1, password);
+            ps.setString(2, usuario);       
+            ps.execute();
+            return true;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
             return false;
         }
     }

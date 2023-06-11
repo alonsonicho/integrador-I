@@ -14,6 +14,8 @@ import javax.swing.table.DefaultTableModel;
 import models.*;
 import views.frmClientes;
 import views.frmProductos;
+import org.mindrot.jbcrypt.BCrypt;
+import views.modal.modalAddUsuarioConfig;
 
 public class UsuariosControlador implements ActionListener, MouseListener, KeyListener {
 
@@ -38,11 +40,13 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
         this.vista.btnActivarUsuario.addActionListener(this);
         this.vista.radioButtonTrueCliente.addActionListener(this);
         this.vista.radioButtonFalseCliente.addActionListener(this);
+        this.vista.btnBuscarUsuarioUpdatePassword.addActionListener(this);
+        this.vista.btnActualizarPassword.addActionListener(this);
         listarUsuarios();
         listarUsuariosInactivo();
         permisosUsuario();
         this.vista.radioButtonFalseUser.setSelected(true);
-        this.vista.radioButtonTrueCliente.setSelected(false);
+        this.vista.radioButtonTrueUser.setSelected(false);
     }
 
     @Override
@@ -52,9 +56,9 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
             String user = vista.txtuser.getText();
             String nombre = vista.txtnombreUser.getText();
             String dni = vista.txtDniUser.getText();
-            String contrasena = String.valueOf(vista.txtcontrasenaUser.getPassword());
+            String password = String.valueOf(vista.txtcontrasenaUser.getPassword());
 
-            if (user.isEmpty() || nombre.isEmpty() || dni.isEmpty() || contrasena.isEmpty()) {
+            if (user.isEmpty() || nombre.isEmpty() || dni.isEmpty() || password.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Todos los campos son obligatorios");
                 return;
             }
@@ -64,10 +68,13 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
                 return;
             }
 
+            //Hashear password antes de enviarla a la BD
+            String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+
             usuario.setDniUsuario(Integer.parseInt(dni));
             usuario.setNombre(nombre);
             usuario.setUsuario(user);
-            usuario.setPassword(contrasena);
+            usuario.setPassword(hashedPassword);
             usuario.setRol(vista.cbroluser.getSelectedItem().toString());
 
             if (usuariosDAO.registrarUsuario(usuario)) {
@@ -109,7 +116,7 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
                 limpiar();
                 listarUsuarios();
                 JOptionPane.showMessageDialog(null, "Usuario modificado correctamente");
-            } 
+            }
         }
 
         //------------------------------------------------------------------------------------------------------------------------------------------
@@ -128,7 +135,7 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
             }
 
             int dniUsuario = Integer.parseInt(dniUsuarioStr);
-            
+
             try {
                 usuario = usuariosDAO.buscarUsuario(dniUsuario);
                 if (usuario.getNombre() != null) {
@@ -146,37 +153,37 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
                 JOptionPane.showMessageDialog(null, ex.getMessage());
             }
         }
-        
+
         //------------------------------------------------------------------------------------------------------------------------------------------
         //Eliminar usuario
-        if(e.getSource() == vista.JMenuEliminarUser){
+        if (e.getSource() == vista.JMenuEliminarUser) {
             String idUsuarioStr = vista.txtidusuario.getText();
-            
-            if(idUsuarioStr.isEmpty()){
+
+            if (idUsuarioStr.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Selecciona una fila con el usuario");
                 return;
             }
-            
+
             int idUsuario = Integer.parseInt(idUsuarioStr);
-            
+
             //Denegar elimicion de usuario activo
             Usuario usuarioActual = Session.getUsuarioActual();
-            if(idUsuario == usuarioActual.getIdUsuario()){
+            if (idUsuario == usuarioActual.getIdUsuario()) {
                 JOptionPane.showMessageDialog(null, "No se puede eliminar un usuario con sesion activa");
                 return;
             }
-            
+
             int respuesta = JOptionPane.showConfirmDialog(null, "¿Estás seguro de que deseas eliminar el cliente?", "Confirmación", JOptionPane.YES_NO_OPTION);
-            
-            if(respuesta == JOptionPane.YES_OPTION){
-                if(usuariosDAO.eliminarUsuario(idUsuario)){
+
+            if (respuesta == JOptionPane.YES_OPTION) {
+                if (usuariosDAO.eliminarUsuario(idUsuario)) {
                     limpiar();
                     limpiarTable(modeloUsuarioActivo);
                     limpiarTable(modeloUsuarioInactivo);
                     listarUsuarios();
                     listarUsuariosInactivo();
                     JOptionPane.showMessageDialog(null, "Cliente eliminado", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                }else{
+                } else {
                     JOptionPane.showMessageDialog(null, "Error al eliminar el cliente");
                 }
             }
@@ -184,17 +191,22 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
 
         //------------------------------------------------------------------------------------------------------------------------------------------}
         //Activar usuario, cambio de estado a "ACTIVO"
-        if(e.getSource() == vista.btnActivarUsuario){
-            if(vista.radioButtonFalseUser.isSelected()){
+        if (e.getSource() == vista.btnActivarUsuario) {
+            if (!vista.radioButtonTrueUser.isSelected()) {
                 JOptionPane.showMessageDialog(null, "Seleccione la opcion de 'ACTIVO' para continuar");
                 return;
             }
             
+            if(vista.radioButtonFalseUser.isSelected()){
+                JOptionPane.showMessageDialog(null, "La opcion de INACTIVO no debe estar seleccionada");
+                return;
+            }
+
             int idUsuario = Integer.parseInt(vista.txtActivarUsuarioId.getText());
             int respuesta = JOptionPane.showConfirmDialog(null, "¿Estás seguro de que deseas activar el usuario?", "Confirmación", JOptionPane.YES_NO_OPTION);
-            
-            if(respuesta == JOptionPane.YES_OPTION){
-                if(usuariosDAO.activarUsuario(idUsuario)){
+
+            if (respuesta == JOptionPane.YES_OPTION) {
+                if (usuariosDAO.activarUsuario(idUsuario)) {
                     limpiarUsuarioInactivo();
                     limpiarTable(modeloUsuarioInactivo);
                     limpiarTable(modeloUsuarioActivo);
@@ -202,10 +214,9 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
                     listarUsuariosInactivo();
                     JOptionPane.showMessageDialog(null, "El usuario se activo correctamente");
                 }
-            } 
+            }
         }
-        
-        
+
         //------------------------------------------------------------------------------------------------------------------------------------------
         //Nuevo usuario
         if (e.getSource() == vista.btnnuevouser) {
@@ -213,17 +224,51 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
             vista.btnregistraruser.setEnabled(true);
             vista.txtcontrasenaUser.setEnabled(true);
         }
-        
+
         //------------------------------------------------------------------------------------------------------------------------------------------
         //Control de evento para el radio button
-        if(e.getSource() == vista.radioButtonTrueUser){
+        if (e.getSource() == vista.radioButtonTrueUser) {
             vista.radioButtonFalseUser.setSelected(false);
         }
-        
-        if(e.getSource() == vista.radioButtonFalseUser){
+
+        if (e.getSource() == vista.radioButtonFalseUser) {
             vista.radioButtonTrueUser.setSelected(false);
         }
 
+        //------------------------------------------------------------------------------------------------------------------------------------------
+        // Abrir modal para seleccionar usuario y cambiar contraseña
+        if (e.getSource() == vista.btnBuscarUsuarioUpdatePassword) {
+            modalAddUsuarioConfig vistaModal = new modalAddUsuarioConfig(this.vista, true, vista);
+            vistaModal.setVisible(true);
+        }
+
+        //------------------------------------------------------------------------------------------------------------------------------------------
+        //Actualizacion de contraseña
+        if (e.getSource() == vista.btnActualizarPassword) {
+            String usuario = vista.txtUsuarioCambioPass.getText();
+            String passwordNuevo = String.valueOf(vista.txtNuevoPassword.getPassword());
+            String passwordRepetido = String.valueOf(vista.txtRepetirPassword.getPassword());
+            
+            if(usuario.isEmpty() || passwordNuevo.isEmpty() || passwordRepetido.isEmpty()){
+                JOptionPane.showMessageDialog(null, "Necesita completar todos los datos");
+                return;
+            }
+
+            //Comparar las contraseñas ingresadas
+            if (passwordNuevo.equals(passwordRepetido)) {
+                //Hashear password antes de enviarla a la BD
+                String hashedPassword = BCrypt.hashpw(passwordNuevo, BCrypt.gensalt());
+                boolean actualizarPassword = usuariosDAO.actualizarPassword(usuario, hashedPassword);
+                if (actualizarPassword) {
+                    limpiarDatosActualizarPassword();
+                    JOptionPane.showMessageDialog(null, "La contraseña se modifico correctamente");
+                } else {
+                    System.out.println("Error al modificar");
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "La nueva contraseña no coincide");
+            }
+        }
     }
 
     @Override
@@ -239,8 +284,8 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
             vista.txtcontrasenaUser.setEnabled(false);
             vista.btnregistraruser.setEnabled(false);
         }
-        
-        if(e.getSource() == vista.TableInactiveUsuarios){
+
+        if (e.getSource() == vista.TableInactiveUsuarios) {
             int fila = vista.TableInactiveUsuarios.rowAtPoint(e.getPoint());
             vista.txtActivarUsuarioId.setText(vista.TableInactiveUsuarios.getValueAt(fila, 0).toString());
             vista.txtActiveDniUser.setText(vista.TableInactiveUsuarios.getValueAt(fila, 1).toString());
@@ -301,9 +346,9 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
         }
         vista.TableMostrarUsuarios.setModel(modeloUsuarioActivo);
     }
-    
+
     //------------------------------------------------------------------------------------------------------------------------------------------
-    public void listarUsuariosInactivo(){
+    public void listarUsuariosInactivo() {
         ArrayList<Usuario> lista = usuariosDAO.listarUsuariosInactivo();
         modeloUsuarioInactivo = (DefaultTableModel) vista.TableInactiveUsuarios.getModel();
         Object[] obj = new Object[6];
@@ -326,13 +371,20 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
         vista.txtcontrasenaUser.setText(null);
         vista.txtbuscarUser.setText(null);
     }
-    
-    public void limpiarUsuarioInactivo(){
+
+    public void limpiarUsuarioInactivo() {
         vista.txtActivarUsuarioId.setText(null);
         vista.txtActiveDniUser.setText(null);
         vista.txtActiveNombreUser.setText(null);
         vista.txtActiveRolUser.setText(null);
         vista.txtActiveUsuarioUser.setText(null);
+    }
+    
+    public void limpiarDatosActualizarPassword(){
+        vista.txtUsuarioCambioPass.setText(null);
+        vista.txtNombreCambioPass.setText(null);
+        vista.txtNuevoPassword.setText(null);
+        vista.txtRepetirPassword.setText(null);
     }
 
     //------------------------------------------------------------------------------------------------------------------------------------------
@@ -351,7 +403,7 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
             vista.jTabbedPane1.setEnabledAt(1, false);
             vista.jTabbedPane2.setEnabledAt(1, false);
             vista.jTabbedPane2.setEnabledAt(2, false);
-            vista.JLabelUsuariosReg.setEnabled(false);          
+            vista.JLabelUsuariosReg.setEnabled(false);
         }
     }
 

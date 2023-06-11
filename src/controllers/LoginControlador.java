@@ -35,7 +35,7 @@ public class LoginControlador implements ActionListener {
                 JOptionPane.showMessageDialog(null, "Los campos están vacíos");
                 return;
             }
-
+          
             usuario = usuarioDAO.loginUsuario(user, password);
 
             if (usuario.getUsuario() != null) {

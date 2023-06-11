@@ -297,8 +297,13 @@ public class ClientesControlador implements MouseListener, ActionListener, KeyLi
         //------------------------------------------------------------------------------------------------------------------------------------------
         //Activar el cliente, cambio de estado a "ACTIVO"
         if(e.getSource() == vistaClientes.btnActivarCliente){
-            if(vistaClientes.radioButtonFalseCliente.isSelected()){
+            if(!vistaClientes.radioButtonTrueCliente.isSelected()){
                 JOptionPane.showMessageDialog(null, "Seleccione la opcion de 'ACTIVO' para continuar");
+                return;
+            }
+            
+            if(vistaClientes.radioButtonFalseCliente.isSelected()){
+                JOptionPane.showMessageDialog(null, "La opcion de INACTIVO no debe estar seleccionada");
                 return;
             }
             
@@ -311,12 +316,7 @@ public class ClientesControlador implements MouseListener, ActionListener, KeyLi
                     limpiarTable(modeloClienteActivo);
                     listarClientes();
                     listarClientesInactivo();
-                    vistaClientes.txtActivarClienteId.setText(null);
-                    vistaClientes.txtActiveNombreCliente.setText(null);
-                    vistaClientes.txtActiveNumeroDocumentoCliente.setText(null);
-                    vistaClientes.txtActiveTipoDocumento.setText(null);
-                    vistaClientes.txtActiveTelefonoCliente.setText(null);
-                    vistaClientes.txtActiveDireccion.setText(null);
+                    limpiarClienteInactivo();
                     JOptionPane.showMessageDialog(null, "El cliente se activo correctamente");
                 }
             }
@@ -390,6 +390,15 @@ public class ClientesControlador implements MouseListener, ActionListener, KeyLi
         vistaClientes.txttelefonocli.setText(null);
         vistaClientes.txadireccioncli.setText(null);
         vistaClientes.txtbuscarcli.setText(null);
+    }
+    
+    public void limpiarClienteInactivo(){
+        vistaClientes.txtActivarClienteId.setText(null);
+        vistaClientes.txtActiveNombreCliente.setText(null);
+        vistaClientes.txtActiveNumeroDocumentoCliente.setText(null);
+        vistaClientes.txtActiveTipoDocumento.setText(null);
+        vistaClientes.txtActiveTelefonoCliente.setText(null);
+        vistaClientes.txtActiveDireccion.setText(null);
     }
 
     //------------------------------------------------------------------------------------------------------------------------------------------

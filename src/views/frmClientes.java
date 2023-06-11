@@ -10,11 +10,17 @@ public class frmClientes extends javax.swing.JFrame {
     UsuariosDAO usuarioDAO = new UsuariosDAO();
     Cliente cliente = new Cliente();
     ClientesDAO clienteDAO = new ClientesDAO();
+    private static frmClientes instancia;
 
     public frmClientes() {
+        instancia = this;
         initComponents();
         ClientesControlador cli = new ClientesControlador(cliente, clienteDAO, this);
         UsuariosControlador users = new UsuariosControlador(usuario, usuarioDAO, this);
+    }
+    
+    public static frmClientes getInstancia() {
+        return instancia;
     }
 
     @SuppressWarnings("unchecked")
@@ -118,15 +124,15 @@ public class frmClientes extends javax.swing.JFrame {
         jPanel12 = new javax.swing.JPanel();
         jPanel13 = new javax.swing.JPanel();
         jLabel21 = new javax.swing.JLabel();
-        txtActiveNombreUser1 = new javax.swing.JTextField();
-        jLabel23 = new javax.swing.JLabel();
-        txtActiveDniUser1 = new javax.swing.JTextField();
+        txtUsuarioCambioPass = new javax.swing.JTextField();
         jLabel24 = new javax.swing.JLabel();
-        txtActiveUsuarioUser1 = new javax.swing.JTextField();
         btnActualizarPassword = new javax.swing.JButton();
-        txtActivarUsuarioId1 = new javax.swing.JTextField();
-        txtActiveRolUser1 = new javax.swing.JTextField();
         jLabel25 = new javax.swing.JLabel();
+        btnBuscarUsuarioUpdatePassword = new javax.swing.JButton();
+        txtNombreCambioPass = new javax.swing.JTextField();
+        jLabel26 = new javax.swing.JLabel();
+        txtNuevoPassword = new javax.swing.JPasswordField();
+        txtRepetirPassword = new javax.swing.JPasswordField();
         jPanel1 = new javax.swing.JPanel();
         JPanelCrearReg = new javax.swing.JPanel();
         JLabelCrearReg = new javax.swing.JLabel();
@@ -891,93 +897,92 @@ public class frmClientes extends javax.swing.JFrame {
         jPanel13.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del usuario"));
 
         jLabel21.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel21.setText("Nombre");
+        jLabel21.setText("Usuario");
 
-        txtActiveNombreUser1.setEditable(false);
-        txtActiveNombreUser1.setPreferredSize(null);
-
-        jLabel23.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel23.setText("DNI");
-
-        txtActiveDniUser1.setEditable(false);
-        txtActiveDniUser1.setPreferredSize(null);
+        txtUsuarioCambioPass.setEditable(false);
+        txtUsuarioCambioPass.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         jLabel24.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel24.setText("Usuario");
+        jLabel24.setText("Nueva contraseña");
 
-        txtActiveUsuarioUser1.setEditable(false);
-        txtActiveUsuarioUser1.setPreferredSize(null);
-
+        btnActualizarPassword.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         btnActualizarPassword.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/actualizar.png"))); // NOI18N
         btnActualizarPassword.setText("Actualizar contraseña");
         btnActualizarPassword.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnActualizarPassword.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
 
-        txtActivarUsuarioId1.setEditable(false);
-
-        txtActiveRolUser1.setEditable(false);
-        txtActiveRolUser1.setPreferredSize(null);
-
         jLabel25.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel25.setText("Rol");
+        jLabel25.setText("Repetir contraseña");
+
+        btnBuscarUsuarioUpdatePassword.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/lupa.png"))); // NOI18N
+        btnBuscarUsuarioUpdatePassword.setBorder(null);
+        btnBuscarUsuarioUpdatePassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarUsuarioUpdatePasswordActionPerformed(evt);
+            }
+        });
+
+        txtNombreCambioPass.setEditable(false);
+        txtNombreCambioPass.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jLabel26.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel26.setText("Nombres");
+
+        txtNuevoPassword.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        txtRepetirPassword.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         javax.swing.GroupLayout jPanel13Layout = new javax.swing.GroupLayout(jPanel13);
         jPanel13.setLayout(jPanel13Layout);
         jPanel13Layout.setHorizontalGroup(
             jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel13Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel13Layout.createSequentialGroup()
-                        .addGap(217, 217, 217)
-                        .addComponent(txtActivarUsuarioId1, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(155, 155, 155))
                     .addGroup(jPanel13Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(jLabel25)
+                        .addGap(35, 35, 35)
+                        .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel13Layout.createSequentialGroup()
-                                .addComponent(jLabel25)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(txtActiveRolUser1, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel13Layout.createSequentialGroup()
-                                .addComponent(jLabel24)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(txtActiveUsuarioUser1, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel13Layout.createSequentialGroup()
-                                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel21)
-                                    .addComponent(jLabel23))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txtActiveDniUser1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(txtActiveNombreUser1, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel13Layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
                                 .addComponent(btnActualizarPassword)
-                                .addGap(128, 128, 128)))))
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(txtRepetirPassword)))
+                    .addGroup(jPanel13Layout.createSequentialGroup()
+                        .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel24)
+                            .addComponent(jLabel26)
+                            .addComponent(jLabel21))
+                        .addGap(43, 43, 43)
+                        .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel13Layout.createSequentialGroup()
+                                .addComponent(txtUsuarioCambioPass, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnBuscarUsuarioUpdatePassword, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtNuevoPassword)
+                            .addComponent(txtNombreCambioPass))))
                 .addContainerGap())
         );
         jPanel13Layout.setVerticalGroup(
             jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel13Layout.createSequentialGroup()
-                .addGap(40, 40, 40)
-                .addComponent(txtActivarUsuarioId1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel13Layout.createSequentialGroup()
+                .addContainerGap(43, Short.MAX_VALUE)
                 .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtActiveNombreUser1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                    .addComponent(txtUsuarioCambioPass, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnBuscarUsuarioUpdatePassword, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(34, 34, 34)
                 .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtActiveDniUser1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                    .addComponent(txtNombreCambioPass, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel26))
+                .addGap(29, 29, 29)
                 .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel24, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtActiveUsuarioUser1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtNuevoPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel24, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(26, 26, 26)
+                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel25, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtActiveRolUser1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                    .addComponent(txtRepetirPassword, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(26, 26, 26)
                 .addComponent(btnActualizarPassword)
                 .addGap(28, 28, 28))
         );
@@ -989,17 +994,17 @@ public class frmClientes extends javax.swing.JFrame {
             .addGroup(jPanel12Layout.createSequentialGroup()
                 .addGap(245, 245, 245)
                 .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(246, Short.MAX_VALUE))
+                .addContainerGap(278, Short.MAX_VALUE))
         );
         jPanel12Layout.setVerticalGroup(
             jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel12Layout.createSequentialGroup()
                 .addGap(22, 22, 22)
                 .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addContainerGap(48, Short.MAX_VALUE))
         );
 
-        jTabbedPane2.addTab("Actualizacion de contraseña", jPanel12);
+        jTabbedPane2.addTab("Cambiar credenciales de acceso", jPanel12);
 
         jTabbedPane1.addTab("Mantenimiento", jTabbedPane2);
         jTabbedPane2.getAccessibleContext().setAccessibleName("");
@@ -1088,6 +1093,10 @@ public class frmClientes extends javax.swing.JFrame {
 
     }//GEN-LAST:event_txtDniUserActionPerformed
 
+    private void btnBuscarUsuarioUpdatePasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarUsuarioUpdatePasswordActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnBuscarUsuarioUpdatePasswordActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1149,6 +1158,7 @@ public class frmClientes extends javax.swing.JFrame {
     public javax.swing.JButton btnActualizarPassword;
     public javax.swing.JButton btnBuscarCliente;
     public javax.swing.JButton btnBuscarUsuario;
+    public javax.swing.JButton btnBuscarUsuarioUpdatePassword;
     public javax.swing.JButton btnmodificarUser;
     public javax.swing.JButton btnmodificarcli;
     public javax.swing.JButton btnnuevocli;
@@ -1175,9 +1185,9 @@ public class frmClientes extends javax.swing.JFrame {
     public javax.swing.JLabel jLabel20;
     public javax.swing.JLabel jLabel21;
     public javax.swing.JLabel jLabel22;
-    private javax.swing.JLabel jLabel23;
     public javax.swing.JLabel jLabel24;
     public javax.swing.JLabel jLabel25;
+    private javax.swing.JLabel jLabel26;
     public javax.swing.JLabel jLabel3;
     public javax.swing.JLabel jLabel4;
     public javax.swing.JLabel jLabel5;
@@ -1215,21 +1225,20 @@ public class frmClientes extends javax.swing.JFrame {
     public javax.swing.JTextPane txadireccioncli;
     public javax.swing.JTextField txtActivarClienteId;
     public javax.swing.JTextField txtActivarUsuarioId;
-    public javax.swing.JTextField txtActivarUsuarioId1;
     public javax.swing.JTextPane txtActiveDireccion;
     public javax.swing.JTextField txtActiveDniUser;
-    public javax.swing.JTextField txtActiveDniUser1;
     public javax.swing.JTextField txtActiveNombreCliente;
     public javax.swing.JTextField txtActiveNombreUser;
-    public javax.swing.JTextField txtActiveNombreUser1;
     public javax.swing.JTextField txtActiveNumeroDocumentoCliente;
     public javax.swing.JTextField txtActiveRolUser;
-    public javax.swing.JTextField txtActiveRolUser1;
     public javax.swing.JTextField txtActiveTelefonoCliente;
     public javax.swing.JTextField txtActiveTipoDocumento;
     public javax.swing.JTextField txtActiveUsuarioUser;
-    public javax.swing.JTextField txtActiveUsuarioUser1;
     public javax.swing.JTextField txtDniUser;
+    public javax.swing.JTextField txtNombreCambioPass;
+    public javax.swing.JPasswordField txtNuevoPassword;
+    public javax.swing.JPasswordField txtRepetirPassword;
+    public javax.swing.JTextField txtUsuarioCambioPass;
     public javax.swing.JTextField txtbuscarUser;
     public javax.swing.JTextField txtbuscarcli;
     public javax.swing.JPasswordField txtcontrasenaUser;
