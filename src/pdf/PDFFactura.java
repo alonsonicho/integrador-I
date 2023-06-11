@@ -9,7 +9,6 @@ import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Image;
-import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.Rectangle;
@@ -24,12 +23,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import views.frmVentas;
 
-public class PDF {
+public class PDFFactura {
 
     frmVentas vistaVentas;
     VentasDAO ventasDAO;
 
-    public PDF(frmVentas vistaVentas, VentasDAO ventasDAO) {
+    public PDFFactura(frmVentas vistaVentas, VentasDAO ventasDAO) {
         this.vistaVentas = vistaVentas;
         this.ventasDAO = ventasDAO;
     }
@@ -99,10 +98,12 @@ public class PDF {
             Date date = new Date();
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
             String formattedDate = sdf.format(date);
+            // Documento del cliente
+            String docCliente = vistaVentas.txtBuscarCliente.getText();
             celdaFactura.setBorder(Rectangle.NO_BORDER);
             celdaFactura.setVerticalAlignment(Element.ALIGN_MIDDLE);
             celdaFactura.setHorizontalAlignment(Element.ALIGN_LEFT);
-            celdaFactura.addElement(new Paragraph("Factura: " + idFactura+"\nFecha : "+formattedDate));
+            celdaFactura.addElement(new Paragraph("Factura: " + idFactura+"\nFecha : "+formattedDate+"\nCliente : "+docCliente));
             tablaEncabezado.addCell(celdaFactura);
 
             // Celdas vacías para mantener la alineación

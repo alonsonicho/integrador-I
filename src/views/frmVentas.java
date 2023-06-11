@@ -7,11 +7,11 @@ import controllers.*;
 import models.Cliente;
 import models.Factura;
 import models.Producto;
-import pdf.PDF;
+import pdf.PDFFactura;
 
 public class frmVentas extends javax.swing.JFrame {
 
-    PDF pdf;
+    PDFFactura pdf;
 
     Cliente cliente = new Cliente();
     ClientesDAO clientesDAO = new ClientesDAO();
@@ -19,10 +19,16 @@ public class frmVentas extends javax.swing.JFrame {
     ProductosDAO productosDAO = new ProductosDAO();
     Factura factura = new Factura();
     VentasDAO ventasDAO = new VentasDAO();
+    private static frmVentas instancia;
 
     public frmVentas() {
+        instancia = this;
         initComponents();
         VentasControlador ventas = new VentasControlador(pdf, cliente, clientesDAO, producto, productosDAO, factura, ventasDAO, this);
+    }
+    
+    public static frmVentas getInstancia() {
+        return instancia;
     }
 
     /**
@@ -64,6 +70,7 @@ public class frmVentas extends javax.swing.JFrame {
         txtStockDisponible = new javax.swing.JTextField();
         jLabel26 = new javax.swing.JLabel();
         txtCantidad = new javax.swing.JTextField();
+        btnModalAgregarProducto = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         txtNombreVendedor = new javax.swing.JTextField();
@@ -89,6 +96,7 @@ public class frmVentas extends javax.swing.JFrame {
         txtIGV = new javax.swing.JTextField();
         jLabel31 = new javax.swing.JLabel();
         txtTotalPagar = new javax.swing.JTextField();
+        btnDemo = new javax.swing.JButton();
         jPanel16 = new javax.swing.JPanel();
         jPanel11 = new javax.swing.JPanel();
         jScrollPane11 = new javax.swing.JScrollPane();
@@ -260,7 +268,6 @@ public class frmVentas extends javax.swing.JFrame {
 
         btnBuscarProducto.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         btnBuscarProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/lupa.png"))); // NOI18N
-        btnBuscarProducto.setText("Buscar");
         btnBuscarProducto.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         txtNombreProducto.setEditable(false);
@@ -274,6 +281,8 @@ public class frmVentas extends javax.swing.JFrame {
 
         jLabel26.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel26.setText("CANTIDAD");
+
+        btnModalAgregarProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/lista-de-verificacion.png"))); // NOI18N
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -298,11 +307,13 @@ public class frmVentas extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(jLabel29, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtStockDisponible))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(txtBuscarProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(28, 28, 28)
-                        .addComponent(btnBuscarProducto))
+                        .addComponent(txtStockDisponible, javax.swing.GroupLayout.DEFAULT_SIZE, 91, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addComponent(txtBuscarProducto)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnBuscarProducto)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnModalAgregarProducto))
                     .addComponent(txtNombreProducto)
                     .addComponent(txtCantidad))
                 .addContainerGap(15, Short.MAX_VALUE))
@@ -311,10 +322,12 @@ public class frmVentas extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(14, 14, 14)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(Buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtBuscarProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnBuscarProducto))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnBuscarProducto)
+                    .addComponent(btnModalAgregarProducto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(Buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtBuscarProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel25, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -329,7 +342,7 @@ public class frmVentas extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel26, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(26, 26, 26))
         );
 
         jPanel10.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 450, 240));
@@ -561,6 +574,9 @@ public class frmVentas extends javax.swing.JFrame {
 
         jPanel10.add(jPanel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 480, 450, 80));
 
+        btnDemo.setText("DEMO");
+        jPanel10.add(btnDemo, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 510, -1, -1));
+
         jPanel4.add(jPanel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1050, 580));
 
         jTabbedPane1.addTab("Nueva Venta", jPanel4);
@@ -681,10 +697,12 @@ public class frmVentas extends javax.swing.JFrame {
     public javax.swing.JButton btnBuscarCliente;
     public javax.swing.JButton btnBuscarProducto;
     public javax.swing.JButton btnCalcularCambio;
+    public javax.swing.JButton btnDemo;
     public javax.swing.JButton btnEliminar;
     public javax.swing.JButton btnEliminarDatosCliente;
     public javax.swing.JButton btnFacturaPDF;
     public javax.swing.JButton btnGenerarVenta;
+    public javax.swing.JButton btnModalAgregarProducto;
     public javax.swing.JButton btnNuevaFactura;
     public javax.swing.JComboBox<String> cbTipoDocumento;
     private javax.swing.JLabel jLabel1;

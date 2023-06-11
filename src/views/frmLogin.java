@@ -3,7 +3,7 @@ package views;
 import DAO.UsuariosDAO;
 import controllers.LoginControlador;
 import models.Usuario;
-import pdf.PDF;
+import pdf.PDFFactura;
 
 public class frmLogin extends javax.swing.JFrame {
 

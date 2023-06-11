@@ -111,6 +111,30 @@ public class ProductosDAO extends Conexion {
         }
         return pro;
     }
+    
+    public ArrayList<Producto> listarProductosFiltrado(String textoBusqueda){
+        String sql = "SELECT * FROM producto WHERE (idProducto LIKE ? OR nombreProducto LIKE ?) AND estado = 'ACTIVO'";
+        ArrayList<Producto> listaProductos = new ArrayList<>();
+        try {
+            Connection con = getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setString(1, "%" + textoBusqueda + "%");
+            ps.setString(2, "%" + textoBusqueda + "%");
+            rs = ps.executeQuery();
+            while(rs.next()){
+                Producto producto = new Producto();
+                producto.setIdProducto(rs.getString("idProducto"));
+                producto.setNombreProducto(rs.getString("nombreProducto"));
+                producto.setPrecio(rs.getDouble("precio"));
+                producto.setCantidad(rs.getInt("cantidad"));
+                listaProductos.add(producto);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return listaProductos;
+    }
+    
 
     public boolean eliminarProducto(String cod) {
         String nuevoEstado = "ELIMINADO";

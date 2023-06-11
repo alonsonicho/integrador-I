@@ -47,6 +47,8 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
         permisosUsuario();
         this.vista.radioButtonFalseUser.setSelected(true);
         this.vista.radioButtonTrueUser.setSelected(false);
+        this.vista.TableMostrarUsuarios.setDefaultEditor(Object.class, null);
+        this.vista.TableInactiveUsuarios.setDefaultEditor(Object.class, null);
     }
 
     @Override

@@ -34,6 +34,7 @@ public class CategoriasControlador implements ActionListener, MouseListener {
         this.vistaCategorias.JLabelSalirProd.addMouseListener(this);
         listarCategorias();
         listarBox();
+        this.vistaCategorias.TableCat.setDefaultEditor(Object.class, null);
     }
 
     @Override

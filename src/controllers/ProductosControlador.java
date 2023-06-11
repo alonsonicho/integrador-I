@@ -41,6 +41,7 @@ public class ProductosControlador implements ActionListener, MouseListener, KeyL
         this.vistaProductos.txtbuscarprod.addKeyListener(this);
         this.vistaProductos.btnBuscarProducto.addActionListener(this);
         listarProductos();
+        this.vistaProductos.TableProductos.setDefaultEditor(Object.class, null);
     }
 
     @Override

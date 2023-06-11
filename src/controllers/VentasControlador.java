@@ -15,12 +15,14 @@ import java.util.stream.Stream;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import models.*;
-import pdf.PDF;
+import pdf.PDFFactura;
+import pdf.PDFBoleta;
 import views.*;
+import views.modal.modalAgregarProducto;
 
 public class VentasControlador implements ActionListener, MouseListener {
 
-    PDF pdf;
+    PDFFactura pdf;
     Cliente cliente = new Cliente();
     ClientesDAO clientesDAO;
     Producto producto;
@@ -35,7 +37,7 @@ public class VentasControlador implements ActionListener, MouseListener {
     double igvFactura;
     double totalPagoFactura;
 
-    public VentasControlador(PDF pdf, Cliente cliente, ClientesDAO clientesDAO, Producto producto, ProductosDAO productosDAO, Factura factura, VentasDAO ventasDAO, frmVentas vistaVentas) {
+    public VentasControlador(PDFFactura pdf, Cliente cliente, ClientesDAO clientesDAO, Producto producto, ProductosDAO productosDAO, Factura factura, VentasDAO ventasDAO, frmVentas vistaVentas) {
         this.pdf = pdf;
         this.cliente = cliente;
         this.clientesDAO = clientesDAO;
@@ -60,12 +62,22 @@ public class VentasControlador implements ActionListener, MouseListener {
         this.vistaVentas.TableNuevaVenta.addMouseListener(this);
         this.vistaVentas.TableListadoVentas.addMouseListener(this);
         this.vistaVentas.cbTipoDocumento.addActionListener(this);
+        this.vistaVentas.btnModalAgregarProducto.addActionListener(this);
         cargarVendedor();
         cargarListaFactura();
+        this.vistaVentas.btnDemo.addActionListener(this);
+        //Establecer tablas como no editables
+        this.vistaVentas.TableNuevaVenta.setDefaultEditor(Object.class, null);
+        this.vistaVentas.TableListadoVentas.setDefaultEditor(Object.class, null);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        
+        if(e.getSource() == vistaVentas.btnDemo){
+            PDFBoleta boleta = new PDFBoleta(vistaVentas, ventasDAO);
+            boleta.iniciarPDF();
+        }
 
         //Buscar producto por su codigo
         if (e.getSource() == vistaVentas.btnBuscarProducto) {
@@ -294,8 +306,8 @@ public class VentasControlador implements ActionListener, MouseListener {
 
                 cargarListaFactura();
 
-                // Imprimir Venta PDF
-                PDF pdf = new PDF(vistaVentas, ventasDAO);
+                // Imprimir Venta PDFFactura
+                PDFFactura pdf = new PDFFactura(vistaVentas, ventasDAO);
                 pdf.iniciarPDF();
 
                 JOptionPane.showMessageDialog(null, "Venta Realizada");
@@ -305,7 +317,7 @@ public class VentasControlador implements ActionListener, MouseListener {
         }
 
         //------------------------------------------------------------------------------------------------------------------------------------------
-        // Abrir detalle factura PDF
+        // Abrir detalle factura PDFFactura
         if (e.getSource() == vistaVentas.btnFacturaPDF) {
             String idFactura = vistaVentas.txtIdFacturaPDF.getText();
 
@@ -393,6 +405,13 @@ public class VentasControlador implements ActionListener, MouseListener {
         if (e.getSource() == vistaVentas.btnEliminarDatosCliente) {
             vistaVentas.txtBuscarCliente.setText(null);
             vistaVentas.txtNombreCliente.setText(null);
+        }
+        
+        //------------------------------------------------------------------------------------------------------------------------------------------
+        // Abrir modal para seleccionar el producto y carga de datos
+        if(e.getSource() == vistaVentas.btnModalAgregarProducto){
+            modalAgregarProducto vistaModal = new modalAgregarProducto(this.vistaVentas, true, vistaVentas);
+            vistaModal.setVisible(true);
         }
 
     }

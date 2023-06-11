@@ -172,12 +172,13 @@ public class UsuariosDAO extends Conexion {
     }
     
     public ArrayList<Usuario> listarUsuariosFiltrados(String textoBusqueda){
-        String sql = "SELECT * FROM usuario WHERE nombre LIKE ? AND estado = 'ACTIVO'";
+        String sql = "SELECT * FROM usuario WHERE (nombre LIKE ? OR dni_usuario LIKE ?) AND estado = 'ACTIVO'";
         ArrayList<Usuario> listaUsuarios = new ArrayList<>();
         try {
             Connection con = getConnection();
             ps = con.prepareStatement(sql);
             ps.setString(1, "%" + textoBusqueda + "%");
+            ps.setString(2, "%" + textoBusqueda + "%");
             rs = ps.executeQuery();
             while(rs.next()){
                 Usuario usuario = new Usuario();

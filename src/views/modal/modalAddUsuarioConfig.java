@@ -72,14 +72,20 @@ public class modalAddUsuarioConfig extends javax.swing.JDialog {
         ));
         jScrollPane6.setViewportView(TableUpdateUsuarioLista);
 
+        btnModalUpdateAgregar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/insertar.png"))); // NOI18N
         btnModalUpdateAgregar.setText("Agregar");
+        btnModalUpdateAgregar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnModalUpdateAgregar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnModalUpdateAgregar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnModalUpdateAgregarActionPerformed(evt);
             }
         });
 
-        btnModalUpdateSalir.setText("Salir");
+        btnModalUpdateSalir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/eliminar.png"))); // NOI18N
+        btnModalUpdateSalir.setText("Cancelar");
+        btnModalUpdateSalir.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnModalUpdateSalir.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -96,9 +102,9 @@ public class modalAddUsuarioConfig extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(txtUpdateBuscarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(141, 141, 141)
-                        .addComponent(btnModalUpdateAgregar)
-                        .addGap(71, 71, 71)
+                        .addGap(142, 142, 142)
+                        .addComponent(btnModalUpdateAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(62, 62, 62)
                         .addComponent(btnModalUpdateSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -111,11 +117,11 @@ public class modalAddUsuarioConfig extends javax.swing.JDialog {
                     .addComponent(jLabel26, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnModalUpdateAgregar, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
-                    .addComponent(btnModalUpdateSalir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(12, 12, 12)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnModalUpdateSalir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnModalUpdateAgregar, javax.swing.GroupLayout.DEFAULT_SIZE, 57, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();

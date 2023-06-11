@@ -45,6 +45,8 @@ public class ClientesControlador implements MouseListener, ActionListener, KeyLi
         listarClientesInactivo();
         this.vistaClientes.radioButtonFalseCliente.setSelected(true);
         this.vistaClientes.radioButtonTrueCliente.setSelected(false);
+        this.vistaClientes.TableInactiveClientes.setDefaultEditor(Object.class, null);
+        this.vistaClientes.TableMostrarClientes.setDefaultEditor(Object.class, null);
     }
 
     @Override
