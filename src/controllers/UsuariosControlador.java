@@ -61,7 +61,7 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
             String password = String.valueOf(vista.txtcontrasenaUser.getPassword());
 
             if (user.isEmpty() || nombre.isEmpty() || dni.isEmpty() || password.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Todos los campos son obligatorios");
+                JOptionPane.showMessageDialog(null, "Por favor complete todos los campos obligatorios.", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
@@ -83,7 +83,7 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
                 limpiarTable(modeloUsuarioActivo);
                 listarUsuarios();
                 limpiar();
-                JOptionPane.showMessageDialog(null, "Usuario registrado con éxito");
+                JOptionPane.showMessageDialog(null, "Usuario registrado con éxito", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             }
 
         }
@@ -98,7 +98,7 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
             String idUsuario = vista.txtidusuario.getText();
 
             if (dni.isEmpty() || nombre.isEmpty() || user.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Todos los campos son obligatorios");
+                JOptionPane.showMessageDialog(null, "Por favor complete todos los campos obligatorios.", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
@@ -117,7 +117,7 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
                 limpiarTable(modeloUsuarioActivo);
                 limpiar();
                 listarUsuarios();
-                JOptionPane.showMessageDialog(null, "Usuario modificado correctamente");
+                JOptionPane.showMessageDialog(null, "Usuario modificado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             }
         }
 
@@ -214,7 +214,7 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
                     limpiarTable(modeloUsuarioActivo);
                     listarUsuarios();
                     listarUsuariosInactivo();
-                    JOptionPane.showMessageDialog(null, "El usuario se activo correctamente");
+                    JOptionPane.showMessageDialog(null, "El usuario se activo correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         }
@@ -252,7 +252,7 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
             String passwordRepetido = String.valueOf(vista.txtRepetirPassword.getPassword());
             
             if(usuario.isEmpty() || passwordNuevo.isEmpty() || passwordRepetido.isEmpty()){
-                JOptionPane.showMessageDialog(null, "Necesita completar todos los datos");
+                JOptionPane.showMessageDialog(null, "Por favor complete todos los campos obligatorios.", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
@@ -263,7 +263,7 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
                 boolean actualizarPassword = usuariosDAO.actualizarPassword(usuario, hashedPassword);
                 if (actualizarPassword) {
                     limpiarDatosActualizarPassword();
-                    JOptionPane.showMessageDialog(null, "La contraseña se modifico correctamente");
+                    JOptionPane.showMessageDialog(null, "La contraseña se modifico correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     System.out.println("Error al modificar");
                 }

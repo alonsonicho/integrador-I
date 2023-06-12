@@ -36,13 +36,13 @@ public class PDFFactura {
     public void iniciarPDF() {
         try {
             //Datos de la factura
-            String idFactura = ventasDAO.obtenerUltimoIdFactura();
+            String idVenta = ventasDAO.obtenerUltimoIdFactura();
             String ruc = "10343953671";
             String nombreEmpresa = "Minimarket Los Andes";
             String direccion = "Av. Leoncio Prado #165";
 
             FileOutputStream archivo;
-            File file = new File("src/pdf/" + idFactura + ".pdf");
+            File file = new File("src/pdf/" + idVenta + ".pdf");
             archivo = new FileOutputStream(file);
 
             Document doc = new Document(new Rectangle(600, 400));
@@ -99,11 +99,11 @@ public class PDFFactura {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
             String formattedDate = sdf.format(date);
             // Documento del cliente
-            String docCliente = vistaVentas.txtBuscarCliente.getText();
+            String docCliente = vistaVentas.txtNumeroDocumentoCliente.getText();
             celdaFactura.setBorder(Rectangle.NO_BORDER);
             celdaFactura.setVerticalAlignment(Element.ALIGN_MIDDLE);
             celdaFactura.setHorizontalAlignment(Element.ALIGN_LEFT);
-            celdaFactura.addElement(new Paragraph("Factura: " + idFactura+"\nFecha : "+formattedDate+"\nCliente : "+docCliente));
+            celdaFactura.addElement(new Paragraph("Factura: " + idVenta+"\nFecha : "+formattedDate+"\nCliente : "+docCliente));
             tablaEncabezado.addCell(celdaFactura);
 
             // Celdas vacías para mantener la alineación
@@ -172,7 +172,7 @@ public class PDFFactura {
             String totalPago = vistaVentas.txtTotalPagar.getText();
             
             Font fontDatosPago = new Font(FontFactory.getFont(FontFactory.HELVETICA, 10));
-            Paragraph total = new Paragraph("Subtotal: S/"+subtotalPago+"\nIGV : S/"+igvPago+"\nDescuento: S/0.00\nTotal: "+totalPago, fontDatosPago);
+            Paragraph total = new Paragraph("Subtotal: S/"+subtotalPago+"\nIGV : S/"+igvPago+"\nTotal: "+totalPago, fontDatosPago);
             total.setAlignment(Element.ALIGN_RIGHT);
             doc.add(total);
 

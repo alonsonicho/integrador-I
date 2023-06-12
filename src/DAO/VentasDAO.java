@@ -15,15 +15,17 @@ public class VentasDAO extends Conexion {
     ResultSet rs;
 
     public Factura registrarVenta(Factura factura) {
-        String sql = "{call crearFactura(?,?,?,?,?)}";
+        String sql = "{call crearFactura(?,?,?,?,?,?,?)}";
         try {
             Connection con = getConnection();
             CallableStatement ps = con.prepareCall(sql);
-            ps.setInt(1, factura.getCliente().getIdCliente());
-            ps.setInt(2, factura.getUsuario().getIdUsuario());
-            ps.setDate(3, factura.getFecha());
-            ps.setDouble(4, factura.getTotal());
-            ps.setString(5, "ACTIVO");
+            ps.setString(1, factura.getTipoPago());
+            ps.setString(2, factura.getTipoDocumentoVenta());
+            ps.setInt(3, factura.getCliente().getIdCliente());
+            ps.setInt(4, factura.getUsuario().getIdUsuario());
+            ps.setDate(5, factura.getFecha());
+            ps.setDouble(6, factura.getTotal());
+            ps.setString(7, "ACTIVO");
             ps.execute();
             return factura;
         } catch (SQLException e) {

@@ -32,7 +32,7 @@ public class LoginControlador implements ActionListener {
             String password = String.valueOf(frmLogin.txtclave.getPassword());
 
             if (user.isEmpty() || password.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Los campos están vacíos");
+                JOptionPane.showMessageDialog(null, "Los campos están vacíos", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
                 return;
             }
           

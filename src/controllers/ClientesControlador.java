@@ -13,7 +13,7 @@ import javax.swing.table.DefaultTableModel;
 import models.*;
 import views.*;
 
-public class ClientesControlador implements MouseListener, ActionListener, KeyListener {
+public class ClientesControlador implements MouseListener, ActionListener {
 
     frmClientes vistaClientes;
     frmVentas vistaVentas;
@@ -32,7 +32,6 @@ public class ClientesControlador implements MouseListener, ActionListener, KeyLi
         this.vistaClientes.btnBuscarCliente.addActionListener(this);
         this.vistaClientes.JMenuEliminarCli.addActionListener(this);
         this.vistaClientes.TableMostrarClientes.addMouseListener(this);
-        this.vistaClientes.txtbuscarcli.addKeyListener(this);
         this.vistaClientes.JLabelCrearReg.addMouseListener(this);
         this.vistaClientes.JLabelUsuariosReg.addMouseListener(this);
         this.vistaClientes.JLabelSalirReg.addMouseListener(this);
@@ -62,9 +61,9 @@ public class ClientesControlador implements MouseListener, ActionListener, KeyLi
             vistaClientes.txadireccioncli.setText(vistaClientes.TableMostrarClientes.getValueAt(fila, 5).toString());
             vistaClientes.btnregistrarcli.setEnabled(false);
         }
-        
+
         //------------------------------------------------------------------------------------------------------------------------------------------
-        if(e.getSource() == vistaClientes.TableInactiveClientes){
+        if (e.getSource() == vistaClientes.TableInactiveClientes) {
             int fila = vistaClientes.TableInactiveClientes.rowAtPoint(e.getPoint());
             vistaClientes.txtActivarClienteId.setText(vistaClientes.TableInactiveClientes.getValueAt(fila, 0).toString());
             vistaClientes.txtActiveTipoDocumento.setText(vistaClientes.TableInactiveClientes.getValueAt(fila, 1).toString());
@@ -126,37 +125,37 @@ public class ClientesControlador implements MouseListener, ActionListener, KeyLi
         //Registrar Cliente
         if (e.getSource() == vistaClientes.btnregistrarcli) {
             String nombreCliente = vistaClientes.txtnombrecli.getText();
-            String dniCliente = vistaClientes.txtdni.getText();
+            String numeroDocumentoCliente = vistaClientes.txtdni.getText();
             String telefonoCliente = vistaClientes.txttelefonocli.getText();
             String direccionCliente = vistaClientes.txadireccioncli.getText();
             String tipoDocumento = vistaClientes.cbTipoDocumento.getSelectedItem().toString();
-            
-            if (nombreCliente.isEmpty() || dniCliente.isEmpty() || telefonoCliente.isEmpty() || direccionCliente.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Todos los campos son obligatorios");
+
+            if (nombreCliente.isEmpty() || numeroDocumentoCliente.isEmpty() || telefonoCliente.isEmpty() || direccionCliente.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Por favor complete todos los campos obligatorios.", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            
+
             //Validar campos con numeros, se ejecuta si devuelve false
-            if (!validarCamposEnteros(dniCliente, telefonoCliente)) {
+            if (!validarCamposEnteros(numeroDocumentoCliente, telefonoCliente)) {
                 return;
             }
-            
+
             //Verificar el tipo de documento ingresado #DNI o #RUC
-            if(tipoDocumento.equals("DNI")){
-                if (dniCliente.length() != 8) {
+            if (tipoDocumento.equals("DNI")) {
+                if (numeroDocumentoCliente.length() != 8) {
                     JOptionPane.showMessageDialog(null, "El DNI debe tener 8 dígitos");
                     return;
                 }
-            }else if(tipoDocumento.equals("RUC")){
-                if (!dniCliente.startsWith("10") || dniCliente.length() != 10) {
-                    JOptionPane.showMessageDialog(null, "El RUC debe comenzar con '10' y tener 10 dígitos");
+            } else if (tipoDocumento.equals("RUC")) {
+                if (!(numeroDocumentoCliente.startsWith("10") || numeroDocumentoCliente.startsWith("20")) || numeroDocumentoCliente.length() != 10) {
+                    JOptionPane.showMessageDialog(null, "El RUC debe comenzar con '10' o '20' y tener 10 dígitos", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
             }
- 
-            int dni = Integer.parseInt(dniCliente);
+
+            int dni = Integer.parseInt(numeroDocumentoCliente);
             int telefono = Integer.parseInt(telefonoCliente);
-            
+
             cl.setTipoDocumento(tipoDocumento);
             cl.setDni(dni);
             cl.setNombre(nombreCliente);
@@ -167,7 +166,7 @@ public class ClientesControlador implements MouseListener, ActionListener, KeyLi
                 limpiarTable(modeloClienteActivo);
                 listarClientes();
                 limpiar();
-                JOptionPane.showMessageDialog(null, "Cliente Registrado");
+                JOptionPane.showMessageDialog(null, "Cliente Registrado", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             }
         }
 
@@ -180,50 +179,59 @@ public class ClientesControlador implements MouseListener, ActionListener, KeyLi
             String telefonoCliente = vistaClientes.txttelefonocli.getText();
             String direccionCliente = vistaClientes.txadireccioncli.getText();
             String tipoDocumento = vistaClientes.cbTipoDocumento.getSelectedItem().toString();
-            
+
+            //Verificar que se selecciono una fila de la tabla
             if (idCliente.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Selecciona una fila");
                 return;
             }
-            
-            if (nombreCliente.isEmpty() || dniCliente.isEmpty() || telefonoCliente.isEmpty() || direccionCliente.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Todos los campos son obligatorios");
+
+            if (dniCliente.isEmpty() || tipoDocumento.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "El tipo y n° de documento son obligatorios", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            
-             //Validar campos con numeros, se ejecuta si devuelve false
+
+            //Validar si se ingresan valores String o caracteres en campos numericos
             if (!validarCamposEnteros(dniCliente, telefonoCliente)) {
                 return;
             }
-            
-            if(tipoDocumento.equals("DNI")){
+
+            //Validacion para asignar el tipo de documento
+            if (tipoDocumento.equals("DNI")) {
                 if (dniCliente.length() != 8) {
-                    JOptionPane.showMessageDialog(null, "El DNI debe tener 8 dígitos");
+                    JOptionPane.showMessageDialog(null, "El DNI debe tener 8 dígitos", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
-            }else if(tipoDocumento.equals("RUC")){
-                if (!dniCliente.startsWith("10") || dniCliente.length() != 10) {
-                    JOptionPane.showMessageDialog(null, "El RUC debe comenzar con '10' y tener 10 dígitos");
+            } else if (tipoDocumento.equals("RUC")) {
+                if (!(dniCliente.startsWith("10") || dniCliente.startsWith("20")) || dniCliente.length() != 10) {
+                    JOptionPane.showMessageDialog(null, "El RUC debe comenzar con '10' o '20' y tener 10 dígitos", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
             }
-            
+
             int idCli = Integer.parseInt(idCliente);
             int dni = Integer.parseInt(dniCliente);
-            int telefono = Integer.parseInt(telefonoCliente);
-            
+            int telefono;
+            if (telefonoCliente.isEmpty()) {
+                telefono = 0; // Asignar un valor predeterminado de 0 cuando la cadena está vacía
+            } else {
+                telefono = Integer.parseInt(telefonoCliente); // Convertir la cadena a entero
+            }
+
+            //int telefono = Integer.parseInt(telefonoCliente);
+
             cl.setTipoDocumento(tipoDocumento);
             cl.setDni(dni);
             cl.setNombre(nombreCliente);
             cl.setTelefono(telefono);
             cl.setDireccion(direccionCliente);
             cl.setIdCliente(idCli);
-            
+
             if (clienteDAO.actualizarCliente(cl)) {
                 limpiarTable(modeloClienteActivo);
                 listarClientes();
                 limpiar();
-                JOptionPane.showMessageDialog(null, "Cliente modificado");
+                JOptionPane.showMessageDialog(null, "Los datos del cliente se actualizaron correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             }
         }
 
@@ -231,22 +239,23 @@ public class ClientesControlador implements MouseListener, ActionListener, KeyLi
         //Buscar cliente
         if (e.getSource() == vistaClientes.btnBuscarCliente) {
             String dniClienteString = vistaClientes.txtbuscarcli.getText();
-            
+
+            //Verificar que el campo de N°Documento no se encuentre vacio
             if (dniClienteString.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Ingrese el DNI del cliente");
+                JOptionPane.showMessageDialog(null, "Ingrese el DNI del cliente", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            
-             //Validar campos con numeros, se ejecuta si devuelve false
+
+            //Validar los campos numericos, se ejecuta si devuelve false
             if (!validarCamposEnteros(dniClienteString)) {
                 return;
             }
-            
+
             int dniCliente = Integer.parseInt(dniClienteString);
-            
+
             try {
                 cl = clienteDAO.buscarCliente(dniCliente);
-                if (cl.getDni() !=0 ) {
+                if (cl.getDni() != 0) {
                     vistaClientes.txtnombrecli.setText(cl.getNombre());
                     vistaClientes.cbTipoDocumento.setSelectedItem(cl.getTipoDocumento());
                     vistaClientes.txtdni.setText(String.valueOf(cl.getDni()));
@@ -255,33 +264,33 @@ public class ClientesControlador implements MouseListener, ActionListener, KeyLi
                     vistaClientes.txtidcli.setText(String.valueOf(cl.getIdCliente()));
                     vistaClientes.btnregistrarcli.setEnabled(false);
                 } else {
-                    JOptionPane.showMessageDialog(null, "No existe el DNI ingresado");
+                    JOptionPane.showMessageDialog(null, "No existe el DNI ingresado", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
                 }
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage());
-            } 
+            }
         }
 
         //------------------------------------------------------------------------------------------------------------------------------------------
-        //Nuevo Cliente
+        //Nuevo Cliente, limpiar todos los datos del formulario
         if (e.getSource() == vistaClientes.btnnuevocli) {
             limpiar();
             vistaClientes.btnregistrarcli.setEnabled(true);
         }
-        
+
         //------------------------------------------------------------------------------------------------------------------------------------------
         //Eliminar Cliente
-        if(e.getSource() == vistaClientes.JMenuEliminarCli){
+        if (e.getSource() == vistaClientes.JMenuEliminarCli) {
             String idClienteStr = vistaClientes.txtidcli.getText();
-            
+
             if (idClienteStr.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Selecciona una fila con el cliente");
                 return;
             }
-            
+
             int idCliente = Integer.parseInt(idClienteStr);
             int respuesta = JOptionPane.showConfirmDialog(null, "¿Estás seguro de que deseas eliminar el cliente?", "Confirmación", JOptionPane.YES_NO_OPTION);
-            
+
             if (respuesta == JOptionPane.YES_OPTION) {
                 if (clienteDAO.eliminarCliente(idCliente)) {
                     limpiar();
@@ -295,59 +304,44 @@ public class ClientesControlador implements MouseListener, ActionListener, KeyLi
                 }
             }
         }
-        
+
         //------------------------------------------------------------------------------------------------------------------------------------------
         //Activar el cliente, cambio de estado a "ACTIVO"
-        if(e.getSource() == vistaClientes.btnActivarCliente){
-            if(!vistaClientes.radioButtonTrueCliente.isSelected()){
-                JOptionPane.showMessageDialog(null, "Seleccione la opcion de 'ACTIVO' para continuar");
+        if (e.getSource() == vistaClientes.btnActivarCliente) {
+            if (!vistaClientes.radioButtonTrueCliente.isSelected()) {
+                JOptionPane.showMessageDialog(null, "Seleccione la opcion de 'ACTIVO' para continuar", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            
-            if(vistaClientes.radioButtonFalseCliente.isSelected()){
-                JOptionPane.showMessageDialog(null, "La opcion de INACTIVO no debe estar seleccionada");
+
+            if (vistaClientes.radioButtonFalseCliente.isSelected()) {
+                JOptionPane.showMessageDialog(null, "La opcion de INACTIVO no debe estar seleccionada", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            
+
             int idCliente = Integer.parseInt(vistaClientes.txtActivarClienteId.getText());
             int respuesta = JOptionPane.showConfirmDialog(null, "¿Estás seguro de que deseas activar el cliente?", "Confirmación", JOptionPane.YES_NO_OPTION);
-            
+
             if (respuesta == JOptionPane.YES_OPTION) {
-                if(clienteDAO.activarCliente(idCliente)){
+                if (clienteDAO.activarCliente(idCliente)) {
                     limpiarTable(modeloClienteInactivo);
                     limpiarTable(modeloClienteActivo);
                     listarClientes();
                     listarClientesInactivo();
                     limpiarClienteInactivo();
-                    JOptionPane.showMessageDialog(null, "El cliente se activo correctamente");
+                    JOptionPane.showMessageDialog(null, "El cliente se activo correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         }
-        
+
         //------------------------------------------------------------------------------------------------------------------------------------------
         //Control de evento para el radio button
-        if(e.getSource() == vistaClientes.radioButtonTrueCliente){
+        if (e.getSource() == vistaClientes.radioButtonTrueCliente) {
             vistaClientes.radioButtonFalseCliente.setSelected(false);
         }
-        if(e.getSource() == vistaClientes.radioButtonFalseCliente){
+        if (e.getSource() == vistaClientes.radioButtonFalseCliente) {
             vistaClientes.radioButtonTrueCliente.setSelected(false);
         }
 
-    }
-
-    @Override
-    public void keyTyped(KeyEvent ke) {
-        //////////////////////////////
-    }
-
-    @Override
-    public void keyPressed(KeyEvent ke) {
-        //////////////////////////////
-    }
-
-    @Override
-    public void keyReleased(KeyEvent ke) {
-        //////////////////////////////
     }
 
     //------------------------------------------------------------------------------------------------------------------------------------------
@@ -366,9 +360,9 @@ public class ClientesControlador implements MouseListener, ActionListener, KeyLi
         }
         vistaClientes.TableMostrarClientes.setModel(modeloClienteActivo);
     }
-    
+
     //------------------------------------------------------------------------------------------------------------------------------------------
-    public void listarClientesInactivo(){
+    public void listarClientesInactivo() {
         List<Cliente> lista = clienteDAO.listarClientesInactivo();
         modeloClienteInactivo = (DefaultTableModel) vistaClientes.TableInactiveClientes.getModel();
         Object[] obj = new Object[6];
@@ -393,8 +387,8 @@ public class ClientesControlador implements MouseListener, ActionListener, KeyLi
         vistaClientes.txadireccioncli.setText(null);
         vistaClientes.txtbuscarcli.setText(null);
     }
-    
-    public void limpiarClienteInactivo(){
+
+    public void limpiarClienteInactivo() {
         vistaClientes.txtActivarClienteId.setText(null);
         vistaClientes.txtActiveNombreCliente.setText(null);
         vistaClientes.txtActiveNumeroDocumentoCliente.setText(null);
@@ -414,17 +408,19 @@ public class ClientesControlador implements MouseListener, ActionListener, KeyLi
     //-------------------------------------------------------------------------------------------------------------------------------------------
     public boolean validarCamposEnteros(String... valores) {
         for (String valor : valores) {
+
+            if (valor.isEmpty()) {
+                continue; // Saltar a la siguiente iteración si el valor está vacío
+            }
+
             try {
                 Long.parseLong(valor.trim());
             } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(null, "El valor ingresado  '" + valor + "'  no puede contener letras o caracteres");
+                JOptionPane.showMessageDialog(null, "El valor ingresado  '" + valor + "'  no puede contener letras o caracteres", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
                 return false;
             }
-        } 
+        }
         return true;
     }
-
-
-
 
 }

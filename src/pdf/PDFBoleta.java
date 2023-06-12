@@ -35,13 +35,13 @@ public class PDFBoleta {
     public void iniciarPDF() {
         try {
             
-            //String idFactura = ventasDAO.obtenerUltimoIdFactura();
+            String idVenta = ventasDAO.obtenerUltimoIdFactura();
             String ruc = "20343953671";
             String nombreEmpresa = "Minimarket Los Andes";
             String direccionEmpresa = "Av. Leoncio Prado #165";
 
             FileOutputStream archivo;
-            File file = new File("src/pdf/demo.pdf");
+            File file = new File("src/pdf/"+idVenta+".pdf");
             archivo = new FileOutputStream(file);
             
             Document document = new Document(PageSize.A6);
@@ -76,7 +76,7 @@ public class PDFBoleta {
 
             //---------------------------------------------------------------------//
             //Informacion del ticket
-            Paragraph numeroTicket = new Paragraph("N° Ticket: F0001", new Font(Font.FontFamily.HELVETICA, 9));
+            Paragraph numeroTicket = new Paragraph("N° Ticket: "+idVenta, new Font(Font.FontFamily.HELVETICA, 9));
             numeroTicket.setAlignment(Element.ALIGN_LEFT);
             document.add(numeroTicket);
             
@@ -88,7 +88,7 @@ public class PDFBoleta {
             document.add(cliente);
             
             // Documento del cliente
-            String docCliente = vistaVentas.txtBuscarCliente.getText();
+            String docCliente = vistaVentas.txtNumeroDocumentoCliente.getText();
             Paragraph documentoCliente = new Paragraph("N° documento: "+docCliente, new Font(Font.FontFamily.HELVETICA, 9));
             documentoCliente.setAlignment(Element.ALIGN_LEFT);
             document.add(documentoCliente);

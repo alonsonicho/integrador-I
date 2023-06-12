@@ -31,7 +31,7 @@ public class ClientesDAO extends Conexion {
             return true;
         } catch (SQLIntegrityConstraintViolationException e) {
             System.out.println(e.getMessage());
-            JOptionPane.showMessageDialog(null, "El DNI '" + cliente.getDni() + "' ya esta siendo utilizado.");
+            JOptionPane.showMessageDialog(null, "El N° de documento '" + cliente.getDni() + "' ya esta siendo utilizado.");
             return false;
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -57,7 +57,7 @@ public class ClientesDAO extends Conexion {
             String errorMessage = e.getMessage();
             System.out.println(errorMessage);
             if (errorMessage.contains("dni")) {
-                JOptionPane.showMessageDialog(null, "El dni '" + cli.getDni() + "' ya esta registrado para otro cliente");
+                JOptionPane.showMessageDialog(null, "El N° de documento '" + cli.getDni() + "' ya esta registrado para otro cliente");
             }
             return false;
         } catch (SQLException e) {
@@ -89,6 +89,29 @@ public class ClientesDAO extends Conexion {
             System.out.println(e.getMessage());
         }
         return listaCliente;
+    }
+    
+    //Listar clientes filtrado con texto busqueda
+    public ArrayList<Cliente> listarClientesFiltrado(String textoBusqueda){
+        String sql = "SELECT * FROM cliente WHERE (dni LIKE ? OR nombre LIKE ?) AND estado = 'ACTIVO'";
+        ArrayList<Cliente> listaClientes = new ArrayList<>();
+        try {
+            Connection con = getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setString(1, "%" + textoBusqueda + "%");
+            ps.setString(2, "%" + textoBusqueda + "%");
+            rs = ps.executeQuery();
+            while(rs.next()){
+                Cliente cliente = new Cliente();
+                cliente.setTipoDocumento(rs.getString("tipoDocumento"));
+                cliente.setDni(rs.getInt("dni"));
+                cliente.setNombre(rs.getString("nombre"));
+                listaClientes.add(cliente);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return listaClientes;
     }
     
     //Listar clientes en estado "INACTIVO"

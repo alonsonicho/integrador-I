@@ -113,7 +113,7 @@ public class ProductosDAO extends Conexion {
     }
     
     public ArrayList<Producto> listarProductosFiltrado(String textoBusqueda){
-        String sql = "SELECT * FROM producto WHERE (idProducto LIKE ? OR nombreProducto LIKE ?) AND estado = 'ACTIVO'";
+        String sql = "SELECT * FROM producto WHERE (idProducto LIKE ? OR nombreProducto LIKE ?) AND estado = 'ACTIVO' AND cantidad > 0";
         ArrayList<Producto> listaProductos = new ArrayList<>();
         try {
             Connection con = getConnection();

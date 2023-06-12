@@ -53,7 +53,7 @@ public class ProductosControlador implements ActionListener, MouseListener, KeyL
             String cantidad = vistaProductos.txtCantidadPro.getText();
 
             if (descripcion.isEmpty() || precioVenta.isEmpty() || cantidad.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Todos los campos son obligatorios");
+                JOptionPane.showMessageDialog(null, "Por favor complete todos los campos obligatorios.", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
             }
             
             if(!validarCamposNumericos(cantidad, precioVenta)){
@@ -79,7 +79,7 @@ public class ProductosControlador implements ActionListener, MouseListener, KeyL
                 limpiar();
                 limpiarTable();
                 listarProductos();
-                JOptionPane.showMessageDialog(null, "Producto registrado");
+                JOptionPane.showMessageDialog(null, "Producto registrado", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 JOptionPane.showMessageDialog(null, "Error al registrar el producto");
             }
@@ -158,7 +158,7 @@ public class ProductosControlador implements ActionListener, MouseListener, KeyL
             String codigoProducto = vistaProductos.txtbuscarprod.getText();
 
             if (codigoProducto.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Ingrese el código de producto");
+                JOptionPane.showMessageDialog(null, "Ingrese el código de producto", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
                 return;
             }
             
