@@ -107,8 +107,16 @@ public class frmVentas extends javax.swing.JFrame {
         TableListadoVentas = new javax.swing.JTable();
         PaginadoVentas = new javax.swing.JPanel();
         btnFacturaPDF = new javax.swing.JButton();
-        txtIdFacturaPDF = new javax.swing.JTextField();
         btnAnularFactura = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        TableDetalleVenta = new javax.swing.JTable();
+        jPanel12 = new javax.swing.JPanel();
+        fechaDesde = new com.toedter.calendar.JDateChooser();
+        fechaHasta = new com.toedter.calendar.JDateChooser();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        txtIdFacturaPDF = new javax.swing.JTextField();
+        labelNumeroRegistros = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -155,7 +163,7 @@ public class frmVentas extends javax.swing.JFrame {
         JLabelVentas.setForeground(new java.awt.Color(255, 255, 255));
         JLabelVentas.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         JLabelVentas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/registrar_1.png"))); // NOI18N
-        JLabelVentas.setText("Ventas");
+        JLabelVentas.setText("Reporte de Ventas");
         JLabelVentas.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         javax.swing.GroupLayout JPanelVentasLayout = new javax.swing.GroupLayout(JPanelVentas);
@@ -625,7 +633,7 @@ public class frmVentas extends javax.swing.JFrame {
         jPanel16.setBackground(new java.awt.Color(204, 204, 204));
         jPanel16.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel11.setBackground(new java.awt.Color(204, 153, 255));
+        jPanel11.setBackground(new java.awt.Color(255, 255, 255));
         jPanel11.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         TableListadoVentas.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
@@ -634,12 +642,12 @@ public class frmVentas extends javax.swing.JFrame {
 
             },
             new String [] {
-                "N° FACTURA", "DNI VENDEDOR", "FECHA", "DNI CLIENTE", "TOTAL"
+                "Cod Venta", "Tipo Venta", "Vendedor", "Fecha", "Nombre Cliente", "Total"
             }
         ));
         jScrollPane11.setViewportView(TableListadoVentas);
 
-        jPanel11.add(jScrollPane11, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 140, 1000, 340));
+        jPanel11.add(jScrollPane11, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 140, 1000, 170));
 
         javax.swing.GroupLayout PaginadoVentasLayout = new javax.swing.GroupLayout(PaginadoVentas);
         PaginadoVentas.setLayout(PaginadoVentasLayout);
@@ -657,15 +665,65 @@ public class frmVentas extends javax.swing.JFrame {
         btnFacturaPDF.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/pdf.png"))); // NOI18N
         jPanel11.add(btnFacturaPDF, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 40, 70, 80));
 
-        txtIdFacturaPDF.setEditable(false);
-        jPanel11.add(txtIdFacturaPDF, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 70, 90, 30));
-
         btnAnularFactura.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnAnularFactura.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/eliminar.png"))); // NOI18N
         btnAnularFactura.setText("ANULAR");
         btnAnularFactura.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnAnularFactura.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jPanel11.add(btnAnularFactura, new org.netbeans.lib.awtextra.AbsoluteConstraints(870, 40, -1, 80));
+
+        TableDetalleVenta.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Cod Producto", "Nombre", "Descripcion", "Precio", "Cantidad", "Subtotal"
+            }
+        ));
+        jScrollPane1.setViewportView(TableDetalleVenta);
+
+        jPanel11.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 350, 1000, 130));
+
+        jPanel12.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Opciones de busqueda"));
+
+        jLabel8.setText("Desde :");
+
+        jLabel9.setText("Hasta :");
+
+        javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
+        jPanel12.setLayout(jPanel12Layout);
+        jPanel12Layout.setHorizontalGroup(
+            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel12Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel8)
+                .addGap(18, 18, 18)
+                .addComponent(fechaDesde, javax.swing.GroupLayout.DEFAULT_SIZE, 152, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel9)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(fechaHasta, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel12Layout.setVerticalGroup(
+            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel12Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(fechaDesde, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
+                    .addComponent(fechaHasta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+
+        jPanel11.add(jPanel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 40, 460, 70));
+
+        txtIdFacturaPDF.setEditable(false);
+        jPanel11.add(txtIdFacturaPDF, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 60, 90, 30));
+
+        labelNumeroRegistros.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jPanel11.add(labelNumeroRegistros, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 320, 160, 20));
 
         jPanel16.add(jPanel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1050, 580));
 
@@ -731,6 +789,7 @@ public class frmVentas extends javax.swing.JFrame {
     public javax.swing.JPanel JPanelSalirVentas;
     public javax.swing.JPanel JPanelVentas;
     private javax.swing.JPanel PaginadoVentas;
+    public javax.swing.JTable TableDetalleVenta;
     public javax.swing.JTable TableListadoVentas;
     public javax.swing.JTable TableNuevaVenta;
     public javax.swing.JButton btnAgregarProducto;
@@ -746,6 +805,8 @@ public class frmVentas extends javax.swing.JFrame {
     public javax.swing.JButton btnNuevaFactura;
     public javax.swing.JComboBox<String> cbTipoDocumentoVenta;
     public javax.swing.JComboBox<String> cbTipoPago;
+    public com.toedter.calendar.JDateChooser fechaDesde;
+    public com.toedter.calendar.JDateChooser fechaHasta;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel25;
@@ -761,9 +822,12 @@ public class frmVentas extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
+    private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel16;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -773,9 +837,11 @@ public class frmVentas extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane11;
     private javax.swing.JScrollPane jScrollPane9;
     public javax.swing.JTabbedPane jTabbedPane1;
+    public javax.swing.JLabel labelNumeroRegistros;
     public javax.swing.JTextField txtBuscarProducto;
     public javax.swing.JTextField txtCambio;
     public javax.swing.JTextField txtCantidad;

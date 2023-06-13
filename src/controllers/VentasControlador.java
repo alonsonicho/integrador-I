@@ -3,12 +3,18 @@ package controllers;
 import DAO.*;
 import java.awt.Desktop;
 import java.awt.event.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.stream.Stream;
+import java.util.Date;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import models.*;
 import pdf.PDFFactura;
@@ -17,7 +23,7 @@ import views.*;
 import views.modal.modalAgregarCliente;
 import views.modal.modalAgregarProducto;
 
-public class VentasControlador implements ActionListener, MouseListener, ItemListener {
+public class VentasControlador implements ActionListener, MouseListener, ItemListener, PropertyChangeListener {
 
     PDFFactura pdf;
     Cliente cliente = new Cliente();
@@ -29,6 +35,7 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
     frmVentas vistaVentas;
     DefaultTableModel modelo = new DefaultTableModel();
     DefaultTableModel modeloVentas = new DefaultTableModel();
+    DefaultTableModel modeloDetalleVenta = new DefaultTableModel();
 
     double subtotalFactura;
     double igvFactura;
@@ -61,11 +68,17 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
         this.vistaVentas.btnModalAgregarProducto.addActionListener(this);
         this.vistaVentas.cbTipoPago.addItemListener(this);
         this.vistaVentas.cbTipoDocumentoVenta.addItemListener(this);
+        this.vistaVentas.fechaDesde.getDateEditor().addPropertyChangeListener(this);
+        this.vistaVentas.fechaHasta.getDateEditor().addPropertyChangeListener(this);
         cargarVendedor();
         cargarListaFactura();
+        centrarDatosTabla(vistaVentas.TableNuevaVenta);
+        centrarDatosTabla(vistaVentas.TableListadoVentas);
+        centrarDatosTabla(vistaVentas.TableDetalleVenta);
         //Establecer tablas como no editables
         this.vistaVentas.TableNuevaVenta.setDefaultEditor(Object.class, null);
         this.vistaVentas.TableListadoVentas.setDefaultEditor(Object.class, null);
+        this.vistaVentas.TableDetalleVenta.setDefaultEditor(Object.class, null);
         this.vistaVentas.txtTipoDocumentoCliente.setText("DNI");
     }
 
@@ -293,7 +306,7 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
                 PDFBoleta pdf = new PDFBoleta(vistaVentas, ventasDAO);
                 pdf.iniciarPDF();
             }
-            
+
             JOptionPane.showMessageDialog(null, "Venta Realizada", "Éxito", JOptionPane.INFORMATION_MESSAGE);
         }
 
@@ -401,6 +414,9 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
             modalAgregarCliente vistaModal = new modalAgregarCliente(this.vistaVentas, true, vistaVentas);
             vistaModal.setVisible(true);
         }
+
+        //------------------------------------------------------------------------------------------------------------------------------------------
+        // Filtrar ventas por fechas
     }
 
     //------------------------------------------------------------------------------------------------------------------------------------------
@@ -423,6 +439,27 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
         if (e.getSource() == vistaVentas.TableListadoVentas) {
             int fila = vistaVentas.TableListadoVentas.rowAtPoint(e.getPoint());
             vistaVentas.txtIdFacturaPDF.setText(vistaVentas.TableListadoVentas.getValueAt(fila, 0).toString());
+
+            String codigoFactura = vistaVentas.TableListadoVentas.getValueAt(fila, 0).toString();
+            // Obtener el detalle de la factura según la venta seleccionada
+            ArrayList<DetalleFactura> detalleFactura = ventasDAO.obtenerDetalleFacturaVenta(codigoFactura);
+
+            modeloDetalleVenta = (DefaultTableModel) vistaVentas.TableDetalleVenta.getModel();
+            modeloDetalleVenta.setRowCount(0); // Limpiar la tabla antes de agregar los nuevos datos
+
+            for (DetalleFactura detalle : detalleFactura) {
+                Object[] rowData = {
+                    detalle.getProducto().getIdProducto(),
+                    detalle.getProducto().getNombreProducto(),
+                    detalle.getProducto().getDescripcion(),
+                    detalle.getProducto().getPrecio(),
+                    detalle.getCantidad(),
+                    detalle.getTotal()
+                };
+                modeloDetalleVenta.addRow(rowData);
+            }
+            // Actualizar la tabla visualmente
+            vistaVentas.TableDetalleVenta.setModel(modeloDetalleVenta);
         }
 
     }
@@ -498,13 +535,17 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
         Object[] obj = new Object[6];
         for (int i = 0; i < lista.size(); i++) {
             obj[0] = lista.get(i).getCodigo();
-            obj[1] = lista.get(i).getUsuario().getDniUsuario();
-            obj[2] = lista.get(i).getFecha();
-            obj[3] = lista.get(i).getCliente().getDni();
-            obj[4] = lista.get(i).getTotal();
+            obj[1] = lista.get(i).getTipoDocumentoVenta();
+            obj[2] = lista.get(i).getUsuario().getNombre();
+            obj[3] = lista.get(i).getFecha();
+            obj[4] = lista.get(i).getCliente().getNombre();
+            obj[5] = lista.get(i).getTotal();
             modeloVentas.addRow(obj);
         }
         vistaVentas.TableListadoVentas.setModel(modeloVentas);
+        //Obtener el numero de filas de la tabla
+        int numeroRegistros = vistaVentas.TableListadoVentas.getRowCount();
+        vistaVentas.labelNumeroRegistros.setText("Registros encontrados :"+numeroRegistros);
     }
 
     //------------------------------------------------------------------------------------------------------------------------------------------
@@ -594,7 +635,63 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
         } else {
             vistaVentas.txtTipoDocumentoCliente.setText("DNI");
         }
+    }
 
+    @Override
+    public void propertyChange(PropertyChangeEvent e) {
+        if ("date".equals(e.getPropertyName())) {
+            // Obtener la fecha de inicio y fecha fin seleccionadas del JDateChooser
+            Date fechaInicio = vistaVentas.fechaDesde.getDate();
+            Date fechaFin = vistaVentas.fechaHasta.getDate();
+
+            // Verificar que ambas fechas estén seleccionadas
+            if (fechaInicio != null && fechaFin != null) {
+                // Convertir las fechas al formato deseado ("yyyy-MM-dd")
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                String strFechaInicio = dateFormat.format(fechaInicio);
+                String strFechaFin = dateFormat.format(fechaFin);
+
+                // Obtener las ventas por el rango de fechas
+                ArrayList<Factura> ventasFiltradas = ventasDAO.obtenerVentasPorFecha(strFechaInicio, strFechaFin);
+
+                // Utilizar las ventas filtradas...
+                modeloVentas = (DefaultTableModel) vistaVentas.TableListadoVentas.getModel();
+
+                // Limpiar la tabla
+                modeloVentas.setRowCount(0);
+
+                // Agregar las filas con los datos de las ventas
+                for (Factura venta : ventasFiltradas) {
+                    Object[] fila = new Object[]{
+                        venta.getCodigo(),
+                        venta.getTipoDocumentoVenta(),
+                        venta.getUsuario().getNombre(),
+                        venta.getFecha(),
+                        venta.getCliente().getNombre(),
+                        venta.getTotal()
+                    };
+                    modeloVentas.addRow(fila);
+                }
+
+                // Actualizar la tabla visualmente
+                vistaVentas.TableListadoVentas.setModel(modeloVentas);
+                // Actualizar el numero de registros
+                int numeroRegistros = vistaVentas.TableListadoVentas.getRowCount();
+                vistaVentas.labelNumeroRegistros.setText("Registros encontrados :"+numeroRegistros);
+            }
+        }
+    }
+
+    public void centrarDatosTabla(JTable table) {
+        // Centrar el contenido de las celdas
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+        table.setDefaultRenderer(Object.class, centerRenderer);
+
+        // Centrar el contenido del encabezado
+        DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) table.getTableHeader().getDefaultRenderer();
+        headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+        table.getTableHeader().setDefaultRenderer(headerRenderer);
     }
 
 }
