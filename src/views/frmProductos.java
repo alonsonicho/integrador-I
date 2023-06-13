@@ -65,13 +65,13 @@ public class frmProductos extends javax.swing.JFrame {
         jPanel16 = new javax.swing.JPanel();
         jPanel20 = new javax.swing.JPanel();
         jLabel21 = new javax.swing.JLabel();
-        txtNombreCat = new javax.swing.JTextField();
-        btnNuevoCat = new javax.swing.JButton();
-        btnRegitrarCat = new javax.swing.JButton();
-        btnModificarCat = new javax.swing.JButton();
-        txtIdCat = new javax.swing.JTextField();
+        txtNombreCategoria = new javax.swing.JTextField();
+        btnNuevaCategoria = new javax.swing.JButton();
+        btnRegitrarCategoria = new javax.swing.JButton();
+        btnModificarCategoria = new javax.swing.JButton();
+        txtIdCategoria = new javax.swing.JTextField();
         jScrollPane7 = new javax.swing.JScrollPane();
-        TableCat = new javax.swing.JTable();
+        TableCategorias = new javax.swing.JTable();
         PaginadoCat = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         JPanelProductos = new javax.swing.JPanel();
@@ -291,16 +291,16 @@ public class frmProductos extends javax.swing.JFrame {
         jLabel21.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel21.setText("Nombre");
 
-        btnNuevoCat.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        btnNuevoCat.setText("Nuevo");
+        btnNuevaCategoria.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        btnNuevaCategoria.setText("Nuevo");
 
-        btnRegitrarCat.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        btnRegitrarCat.setText("Registrar");
+        btnRegitrarCategoria.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        btnRegitrarCategoria.setText("Registrar");
 
-        btnModificarCat.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        btnModificarCat.setText("Modificar");
+        btnModificarCategoria.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        btnModificarCategoria.setText("Modificar");
 
-        txtIdCat.setEditable(false);
+        txtIdCategoria.setEditable(false);
 
         javax.swing.GroupLayout jPanel20Layout = new javax.swing.GroupLayout(jPanel20);
         jPanel20.setLayout(jPanel20Layout);
@@ -308,42 +308,42 @@ public class frmProductos extends javax.swing.JFrame {
             jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel20Layout.createSequentialGroup()
                 .addGap(22, 22, 22)
-                .addComponent(btnNuevoCat, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnNuevaCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnRegitrarCat)
+                .addComponent(btnRegitrarCategoria)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnModificarCat)
+                .addComponent(btnModificarCategoria)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel20Layout.createSequentialGroup()
                 .addContainerGap(39, Short.MAX_VALUE)
                 .addGroup(jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(txtIdCat, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtIdCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel20Layout.createSequentialGroup()
                         .addComponent(jLabel21)
                         .addGap(26, 26, 26)
-                        .addComponent(txtNombreCat, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(txtNombreCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(36, 36, 36))
         );
         jPanel20Layout.setVerticalGroup(
             jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel20Layout.createSequentialGroup()
                 .addGap(63, 63, 63)
-                .addComponent(txtIdCat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtIdCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 75, Short.MAX_VALUE)
                 .addGroup(jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtNombreCat, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtNombreCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel21))
                 .addGap(86, 86, 86)
                 .addGroup(jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnNuevoCat, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnRegitrarCat, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnModificarCat, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnNuevaCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnRegitrarCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnModificarCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(123, 123, 123))
         );
 
         jPanel16.add(jPanel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 310, 450));
 
-        TableCat.setModel(new javax.swing.table.DefaultTableModel(
+        TableCategorias.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -351,9 +351,9 @@ public class frmProductos extends javax.swing.JFrame {
                 "ID CATEGORIA", "NOMBRE"
             }
         ));
-        TableCat.setComponentPopupMenu(JPopupCat);
-        TableCat.setRowHeight(20);
-        jScrollPane7.setViewportView(TableCat);
+        TableCategorias.setComponentPopupMenu(JPopupCat);
+        TableCategorias.setRowHeight(20);
+        jScrollPane7.setViewportView(TableCategorias);
 
         jPanel16.add(jScrollPane7, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 10, 600, 380));
 
@@ -526,15 +526,15 @@ public class frmProductos extends javax.swing.JFrame {
     private javax.swing.JPopupMenu JPopupProd;
     public javax.swing.JPanel PaginadoCat;
     private javax.swing.JPanel PaginadorPro;
-    public javax.swing.JTable TableCat;
+    public javax.swing.JTable TableCategorias;
     public javax.swing.JTable TableProductos;
     public javax.swing.JButton btnBuscarProducto;
-    public javax.swing.JButton btnModificarCat;
+    public javax.swing.JButton btnModificarCategoria;
     public javax.swing.JButton btnModificarPro;
-    public javax.swing.JButton btnNuevoCat;
+    public javax.swing.JButton btnNuevaCategoria;
     public javax.swing.JButton btnNuevoPro;
     public javax.swing.JButton btnRegistrarPro;
-    public javax.swing.JButton btnRegitrarCat;
+    public javax.swing.JButton btnRegitrarCategoria;
     public javax.swing.JComboBox<Object> cbxCatPro;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -557,8 +557,8 @@ public class frmProductos extends javax.swing.JFrame {
     private javax.swing.JLabel lblcantidad;
     public javax.swing.JTextField txtCantidadPro;
     public javax.swing.JTextField txtDescripcionPro;
-    public javax.swing.JTextField txtIdCat;
-    public javax.swing.JTextField txtNombreCat;
+    public javax.swing.JTextField txtIdCategoria;
+    public javax.swing.JTextField txtNombreCategoria;
     public javax.swing.JTextField txtNombreProducto;
     public javax.swing.JTextField txtPrecioVentaPro;
     public javax.swing.JTextField txtbuscarprod;

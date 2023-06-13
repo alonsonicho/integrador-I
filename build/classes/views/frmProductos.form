@@ -562,21 +562,21 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
-                          <Component id="btnNuevoCat" min="-2" pref="72" max="-2" attributes="0"/>
+                          <Component id="btnNuevaCategoria" min="-2" pref="72" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="btnRegitrarCat" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnRegitrarCategoria" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="btnModificarCat" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnModificarCategoria" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace pref="39" max="32767" attributes="0"/>
                           <Group type="103" groupAlignment="1" attributes="0">
-                              <Component id="txtIdCat" min="-2" pref="70" max="-2" attributes="0"/>
+                              <Component id="txtIdCategoria" min="-2" pref="70" max="-2" attributes="0"/>
                               <Group type="102" attributes="0">
                                   <Component id="jLabel21" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
-                                  <Component id="txtNombreCat" min="-2" pref="150" max="-2" attributes="0"/>
+                                  <Component id="txtNombreCategoria" min="-2" pref="150" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
@@ -587,17 +587,17 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="-2" pref="63" max="-2" attributes="0"/>
-                          <Component id="txtIdCat" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtIdCategoria" min="-2" max="-2" attributes="0"/>
                           <EmptySpace pref="75" max="32767" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="txtNombreCat" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
+                              <Component id="txtNombreCategoria" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
                               <Component id="jLabel21" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" pref="86" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="btnNuevoCat" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
-                              <Component id="btnRegitrarCat" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
-                              <Component id="btnModificarCat" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
+                              <Component id="btnNuevaCategoria" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
+                              <Component id="btnRegitrarCategoria" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
+                              <Component id="btnModificarCategoria" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" pref="123" max="-2" attributes="0"/>
                       </Group>
@@ -613,12 +613,12 @@
                     <Property name="text" type="java.lang.String" value="Nombre"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JTextField" name="txtNombreCat">
+                <Component class="javax.swing.JTextField" name="txtNombreCategoria">
                   <AuxValues>
                     <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
                   </AuxValues>
                 </Component>
-                <Component class="javax.swing.JButton" name="btnNuevoCat">
+                <Component class="javax.swing.JButton" name="btnNuevaCategoria">
                   <Properties>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Tahoma" size="12" style="1"/>
@@ -629,7 +629,7 @@
                     <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
                   </AuxValues>
                 </Component>
-                <Component class="javax.swing.JButton" name="btnRegitrarCat">
+                <Component class="javax.swing.JButton" name="btnRegitrarCategoria">
                   <Properties>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Tahoma" size="12" style="1"/>
@@ -640,7 +640,7 @@
                     <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
                   </AuxValues>
                 </Component>
-                <Component class="javax.swing.JButton" name="btnModificarCat">
+                <Component class="javax.swing.JButton" name="btnModificarCategoria">
                   <Properties>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Tahoma" size="12" style="1"/>
@@ -651,7 +651,7 @@
                     <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
                   </AuxValues>
                 </Component>
-                <Component class="javax.swing.JTextField" name="txtIdCat">
+                <Component class="javax.swing.JTextField" name="txtIdCategoria">
                   <Properties>
                     <Property name="editable" type="boolean" value="false"/>
                   </Properties>
@@ -673,7 +673,7 @@
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
               <SubComponents>
-                <Component class="javax.swing.JTable" name="TableCat">
+                <Component class="javax.swing.JTable" name="TableCategorias">
                   <Properties>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                       <Table columnCount="2" rowCount="0">

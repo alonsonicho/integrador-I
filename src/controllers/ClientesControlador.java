@@ -3,14 +3,13 @@ package controllers;
 import DAO.ClientesDAO;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import models.*;
+import util.Utilidades;
 import views.*;
 
 public class ClientesControlador implements MouseListener, ActionListener {
@@ -130,13 +129,13 @@ public class ClientesControlador implements MouseListener, ActionListener {
             String direccionCliente = vistaClientes.txadireccioncli.getText();
             String tipoDocumento = vistaClientes.cbTipoDocumento.getSelectedItem().toString();
 
-            if (nombreCliente.isEmpty() || numeroDocumentoCliente.isEmpty() || telefonoCliente.isEmpty() || direccionCliente.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Por favor complete todos los campos obligatorios.", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
+            if(!Utilidades.validarCamposVacios(nombreCliente, numeroDocumentoCliente, telefonoCliente, direccionCliente)){
                 return;
             }
-
+            
             //Validar campos con numeros, se ejecuta si devuelve false
-            if (!validarCamposEnteros(numeroDocumentoCliente, telefonoCliente)) {
+            boolean camposSonEnteros = Utilidades.validarCamposNumericos(numeroDocumentoCliente, telefonoCliente);
+            if (!camposSonEnteros) {
                 return;
             }
 
@@ -163,7 +162,7 @@ public class ClientesControlador implements MouseListener, ActionListener {
             cl.setDireccion(direccionCliente);
             //Registro del cliente
             if (clienteDAO.registrarCliente(cl)) {
-                limpiarTable(modeloClienteActivo);
+                Utilidades.limpiarTable(modeloClienteActivo);
                 listarClientes();
                 limpiar();
                 JOptionPane.showMessageDialog(null, "Cliente Registrado", "Éxito", JOptionPane.INFORMATION_MESSAGE);
@@ -192,7 +191,8 @@ public class ClientesControlador implements MouseListener, ActionListener {
             }
 
             //Validar si se ingresan valores String o caracteres en campos numericos
-            if (!validarCamposEnteros(dniCliente, telefonoCliente)) {
+            boolean camposSonEnteros = Utilidades.validarCamposNumericos(dniCliente, telefonoCliente);
+            if (!camposSonEnteros) {
                 return;
             }
 
@@ -219,7 +219,6 @@ public class ClientesControlador implements MouseListener, ActionListener {
             }
 
             //int telefono = Integer.parseInt(telefonoCliente);
-
             cl.setTipoDocumento(tipoDocumento);
             cl.setDni(dni);
             cl.setNombre(nombreCliente);
@@ -228,7 +227,7 @@ public class ClientesControlador implements MouseListener, ActionListener {
             cl.setIdCliente(idCli);
 
             if (clienteDAO.actualizarCliente(cl)) {
-                limpiarTable(modeloClienteActivo);
+                Utilidades.limpiarTable(modeloClienteActivo);
                 listarClientes();
                 limpiar();
                 JOptionPane.showMessageDialog(null, "Los datos del cliente se actualizaron correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
@@ -241,13 +240,14 @@ public class ClientesControlador implements MouseListener, ActionListener {
             String dniClienteString = vistaClientes.txtbuscarcli.getText();
 
             //Verificar que el campo de N°Documento no se encuentre vacio
-            if (dniClienteString.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Ingrese el DNI del cliente", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
+            if(!Utilidades.validarCamposVacios(dniClienteString)){
+                vistaClientes.txtbuscarcli.requestFocus();
                 return;
             }
-
+           
             //Validar los campos numericos, se ejecuta si devuelve false
-            if (!validarCamposEnteros(dniClienteString)) {
+            boolean camposSonEnteros = Utilidades.validarCamposNumericos(dniClienteString);
+            if (!camposSonEnteros) {
                 return;
             }
 
@@ -294,8 +294,8 @@ public class ClientesControlador implements MouseListener, ActionListener {
             if (respuesta == JOptionPane.YES_OPTION) {
                 if (clienteDAO.eliminarCliente(idCliente)) {
                     limpiar();
-                    limpiarTable(modeloClienteActivo);
-                    limpiarTable(modeloClienteInactivo);
+                    Utilidades.limpiarTable(modeloClienteActivo);
+                    Utilidades.limpiarTable(modeloClienteInactivo);
                     listarClientes();
                     listarClientesInactivo();
                     JOptionPane.showMessageDialog(null, "Cliente eliminado", "Éxito", JOptionPane.INFORMATION_MESSAGE);
@@ -323,8 +323,8 @@ public class ClientesControlador implements MouseListener, ActionListener {
 
             if (respuesta == JOptionPane.YES_OPTION) {
                 if (clienteDAO.activarCliente(idCliente)) {
-                    limpiarTable(modeloClienteInactivo);
-                    limpiarTable(modeloClienteActivo);
+                    Utilidades.limpiarTable(modeloClienteInactivo);
+                    Utilidades.limpiarTable(modeloClienteActivo);
                     listarClientes();
                     listarClientesInactivo();
                     limpiarClienteInactivo();
@@ -395,32 +395,6 @@ public class ClientesControlador implements MouseListener, ActionListener {
         vistaClientes.txtActiveTipoDocumento.setText(null);
         vistaClientes.txtActiveTelefonoCliente.setText(null);
         vistaClientes.txtActiveDireccion.setText(null);
-    }
-
-    //------------------------------------------------------------------------------------------------------------------------------------------
-    public void limpiarTable(DefaultTableModel modelo) {
-        for (int i = 0; i < modelo.getRowCount(); i++) {
-            modelo.removeRow(i);
-            i = i - 1;
-        }
-    }
-
-    //-------------------------------------------------------------------------------------------------------------------------------------------
-    public boolean validarCamposEnteros(String... valores) {
-        for (String valor : valores) {
-
-            if (valor.isEmpty()) {
-                continue; // Saltar a la siguiente iteración si el valor está vacío
-            }
-
-            try {
-                Long.parseLong(valor.trim());
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(null, "El valor ingresado  '" + valor + "'  no puede contener letras o caracteres", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
-                return false;
-            }
-        }
-        return true;
     }
 
 }

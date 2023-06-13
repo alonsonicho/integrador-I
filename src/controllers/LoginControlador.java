@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 import models.Session;
 import models.Usuario;
+import util.Utilidades;
 import views.frmLogin;
 import views.frmMenuPrincipal;
 
@@ -31,11 +32,10 @@ public class LoginControlador implements ActionListener {
             String user = frmLogin.txtusuario.getText();
             String password = String.valueOf(frmLogin.txtclave.getPassword());
 
-            if (user.isEmpty() || password.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Los campos están vacíos", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
+            if(!Utilidades.validarCamposVacios(user, password)){
                 return;
             }
-          
+            
             usuario = usuarioDAO.loginUsuario(user, password);
 
             if (usuario.getUsuario() != null) {

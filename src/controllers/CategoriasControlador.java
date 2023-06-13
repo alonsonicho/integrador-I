@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import models.Categoria;
+import util.Utilidades;
 import views.frmMenuPrincipal;
 import views.frmProductos;
 
@@ -23,61 +24,55 @@ public class CategoriasControlador implements ActionListener, MouseListener {
         this.categoria = categoria;
         this.categoriasDAO = categoriasDAO;
         this.vistaCategorias = vistaCategorias;
-        this.vistaCategorias.btnRegitrarCat.addActionListener(this);
-        this.vistaCategorias.btnNuevoCat.addActionListener(this);
-        this.vistaCategorias.btnModificarCat.addActionListener(this);
-        this.vistaCategorias.TableCat.addMouseListener(this);
+        this.vistaCategorias.btnRegitrarCategoria.addActionListener(this);
+        this.vistaCategorias.btnNuevaCategoria.addActionListener(this);
+        this.vistaCategorias.btnModificarCategoria.addActionListener(this);
+        this.vistaCategorias.TableCategorias.addMouseListener(this);
         this.vistaCategorias.JLabelCategoria.addMouseListener(this);
         this.vistaCategorias.JMenuEliminarCat.addActionListener(this);
         this.vistaCategorias.JLabelSalirProd.addMouseListener(this);
         listarCategorias();
         listarBox();
-        this.vistaCategorias.TableCat.setDefaultEditor(Object.class, null);
+        this.vistaCategorias.TableCategorias.setDefaultEditor(Object.class, null);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         // Registrar Categoria
-        if (e.getSource() == vistaCategorias.btnRegitrarCat) {
-            String nombreCategoria = vistaCategorias.txtNombreCat.getText();
+        if (e.getSource() == vistaCategorias.btnRegitrarCategoria) {
+            String nombreCategoria = vistaCategorias.txtNombreCategoria.getText();
             //Verificar si el campo no se encuentra vacio
-            if (nombreCategoria.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Por favor complete todos los campos obligatorios.", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
-                vistaCategorias.txtNombreCat.requestFocus();
-            } else {
-                categoria.setNombreCategoria(nombreCategoria);
-                //Llamado al metodo para el registro de la categoria
-                if (categoriasDAO.registrarCategoria(categoria)) {
-                    limpiar();
-                    limpiarTable();
-                    listarCategorias();
-                    JOptionPane.showMessageDialog(null, "Categoria registrada", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                }
+            if (!Utilidades.validarCamposVacios(nombreCategoria)) {
+                return;
             }
+
+            categoria.setNombreCategoria(nombreCategoria);
+            //Llamado al metodo para el registro de la categoria
+            if (categoriasDAO.registrarCategoria(categoria)) {
+                limpiar();
+                Utilidades.limpiarTable(modelo);
+                listarCategorias();
+                JOptionPane.showMessageDialog(null, "Categoria registrada", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            }
+
         }
 
         //-------------------------------------------------------------------------------------------------------------------------------
         // Actualizar categoria
-        if (e.getSource() == vistaCategorias.btnModificarCat) {
-            String idCat = vistaCategorias.txtIdCat.getText();
-            String nombreCat = vistaCategorias.txtNombreCat.getText();
-            //Verificar si no se ha seleccionado una fila de la tabla
-            if (idCat.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Selecciona una categoria");
+        if (e.getSource() == vistaCategorias.btnModificarCategoria) {
+            String idCat = vistaCategorias.txtIdCategoria.getText();
+            String nombreCat = vistaCategorias.txtNombreCategoria.getText();
+            //Verificar que los campos se encuentren completos
+            if(!Utilidades.validarCamposVacios(idCat, nombreCat)){
                 return;
             }
-
-            if (nombreCat.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Por favor complete todos los campos obligatorios.", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
+            
             categoria.setNombreCategoria(nombreCat);
             categoria.setIdCategoria(idCat);
             //Llamado al metodo para actualizar
             if (categoriasDAO.actualizarCategoria(categoria)) {
                 limpiar();
-                limpiarTable();
+                Utilidades.limpiarTable(modelo);
                 listarCategorias();
                 JOptionPane.showMessageDialog(null, "Categoria actualizada", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             }
@@ -86,7 +81,7 @@ public class CategoriasControlador implements ActionListener, MouseListener {
         //-------------------------------------------------------------------------------------------------------------------------------
         // Eliminar Categoria
         if (e.getSource() == vistaCategorias.JMenuEliminarCat) {
-            String codigo = vistaCategorias.txtIdCat.getText();
+            String codigo = vistaCategorias.txtIdCategoria.getText();
 
             if (codigo.equals("")) {
                 JOptionPane.showMessageDialog(null, "Selecione una categoria");
@@ -97,7 +92,7 @@ public class CategoriasControlador implements ActionListener, MouseListener {
             if (respuesta == JOptionPane.YES_OPTION) {
                 if (categoriasDAO.eliminarCategoria(codigo)) {
                     limpiar();
-                    limpiarTable();
+                    Utilidades.limpiarTable(modelo);
                     listarCategorias();
                     listarBox();
                     JOptionPane.showMessageDialog(null, "Producto eliminado", "Éxito", JOptionPane.INFORMATION_MESSAGE);
@@ -108,25 +103,25 @@ public class CategoriasControlador implements ActionListener, MouseListener {
         }
 
         //-------------------------------------------------------------------------------------------------------------------------------
-        if (e.getSource() == vistaCategorias.btnNuevoCat) {
+        if (e.getSource() == vistaCategorias.btnNuevaCategoria) {
             limpiar();
-            vistaCategorias.btnRegitrarCat.setEnabled(true);
+            vistaCategorias.btnRegitrarCategoria.setEnabled(true);
         }
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
 
-        if (e.getSource() == vistaCategorias.TableCat) {
-            int fila = vistaCategorias.TableCat.rowAtPoint(e.getPoint());
-            vistaCategorias.txtIdCat.setText(vistaCategorias.TableCat.getValueAt(fila, 0).toString());
-            vistaCategorias.txtNombreCat.setText(vistaCategorias.TableCat.getValueAt(fila, 1).toString());
-            vistaCategorias.btnRegitrarCat.setEnabled(false);
+        if (e.getSource() == vistaCategorias.TableCategorias) {
+            int fila = vistaCategorias.TableCategorias.rowAtPoint(e.getPoint());
+            vistaCategorias.txtIdCategoria.setText(vistaCategorias.TableCategorias.getValueAt(fila, 0).toString());
+            vistaCategorias.txtNombreCategoria.setText(vistaCategorias.TableCategorias.getValueAt(fila, 1).toString());
+            vistaCategorias.btnRegitrarCategoria.setEnabled(false);
         }
 
         if (e.getSource() == vistaCategorias.JLabelCategoria) {
             vistaCategorias.jTabbedPane1.setSelectedIndex(1);
-            limpiarTable();
+            Utilidades.limpiarTable(modelo);
             listarCategorias();
         }
 
@@ -160,28 +155,20 @@ public class CategoriasControlador implements ActionListener, MouseListener {
     //------------------------------------------------------------------------------------------------------------------------------------------
     public void listarCategorias() {
         ArrayList<Categoria> lista = categoriasDAO.listarCategorias();
-        modelo = (DefaultTableModel) vistaCategorias.TableCat.getModel();
+        modelo = (DefaultTableModel) vistaCategorias.TableCategorias.getModel();
         Object[] obj = new Object[2];
         for (int i = 0; i < lista.size(); i++) {
             obj[0] = lista.get(i).getIdCategoria();
             obj[1] = lista.get(i).getNombreCategoria();
             modelo.addRow(obj);
         }
-        vistaCategorias.TableCat.setModel(modelo);
-    }
-
-    //------------------------------------------------------------------------------------------------------------------------------------------
-    public void limpiarTable() {
-        for (int i = 0; i < modelo.getRowCount(); i++) {
-            modelo.removeRow(i);
-            i = i - 1;
-        }
+        vistaCategorias.TableCategorias.setModel(modelo);
     }
 
     //------------------------------------------------------------------------------------------------------------------------------------------
     public void limpiar() {
-        vistaCategorias.txtIdCat.setText(null);
-        vistaCategorias.txtNombreCat.setText(null);
+        vistaCategorias.txtIdCategoria.setText(null);
+        vistaCategorias.txtNombreCategoria.setText(null);
     }
 
     //------------------------------------------------------------------------------------------------------------------------------------------

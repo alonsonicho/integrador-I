@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import models.*;
+import util.Utilidades;
 import views.frmProductos;
 import views.frmVentas;
 
@@ -25,7 +26,6 @@ public class ProductosControlador implements ActionListener, MouseListener, KeyL
     CategoriasDAO categoriasDAO;
     DefaultTableModel modeloProductos = new DefaultTableModel();
 
-    
     public ProductosControlador(Producto pro, ProductosDAO productosDAO, frmProductos vistaProductos, frmVentas vistaVentas, CategoriasDAO categoriasDAO) {
         this.pro = pro;
         this.productosDAO = productosDAO;
@@ -48,19 +48,19 @@ public class ProductosControlador implements ActionListener, MouseListener, KeyL
     public void actionPerformed(ActionEvent e) {
         //Registrar producto
         if (e.getSource() == vistaProductos.btnRegistrarPro) {
+            String nombreProducto = vistaProductos.txtNombreProducto.getText();
             String descripcion = vistaProductos.txtDescripcionPro.getText();
             String precioVenta = vistaProductos.txtPrecioVentaPro.getText();
             String cantidad = vistaProductos.txtCantidadPro.getText();
 
-            if (descripcion.isEmpty() || precioVenta.isEmpty() || cantidad.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Por favor complete todos los campos obligatorios.", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
-            }
-            
-            if(!validarCamposNumericos(cantidad, precioVenta)){
+            if (!Utilidades.validarCamposVacios(nombreProducto, descripcion, precioVenta, cantidad)) {
                 return;
             }
-            
-            String idProducto = vistaProductos.txtidprod.getText();
+
+            if (!validarCamposNumericos(cantidad, precioVenta)) {
+                return;
+            }
+
             String nombreCategoria = vistaProductos.cbxCatPro.getSelectedItem().toString();
             String idCategoria = categoriasDAO.obtenerIdCategoria(nombreCategoria);
 
@@ -68,16 +68,15 @@ public class ProductosControlador implements ActionListener, MouseListener, KeyL
             categoria.setIdCategoria(idCategoria);
 
             Producto producto = new Producto();
-            producto.setIdProducto(idProducto);
             producto.setCategoria(categoria);
-            producto.setNombreProducto(vistaProductos.txtNombreProducto.getText());
+            producto.setNombreProducto(nombreProducto);
             producto.setDescripcion(descripcion);
             producto.setCantidad(Integer.parseInt(cantidad));
             producto.setPrecio(Double.parseDouble(precioVenta));
 
             if (productosDAO.registrarProducto(producto)) {
                 limpiar();
-                limpiarTable();
+                Utilidades.limpiarTable(modeloProductos);
                 listarProductos();
                 JOptionPane.showMessageDialog(null, "Producto registrado", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             } else {
@@ -94,39 +93,41 @@ public class ProductosControlador implements ActionListener, MouseListener, KeyL
             if (idProducto.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Seleccione una fila");
             } else {
+                String nombreProducto = vistaProductos.txtNombreProducto.getText();
                 String descripcion = vistaProductos.txtDescripcionPro.getText();
                 String precioVenta = vistaProductos.txtPrecioVentaPro.getText();
                 String cantidad = vistaProductos.txtCantidadPro.getText();
 
-                if (descripcion.isEmpty() || precioVenta.isEmpty() || cantidad.isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "Todos los campos son obligatorios");
-                } else {
-                    String nombreCategoria = vistaProductos.cbxCatPro.getSelectedItem().toString();
-                    String idCategoria = null;
-
-                    if (!nombreCategoria.equals("Sin categoria")) {
-                        idCategoria = categoriasDAO.obtenerIdCategoria(nombreCategoria);
-                    }
-
-                    Categoria categoria = new Categoria();
-                    categoria.setIdCategoria(idCategoria);
-
-                    pro.setCategoria(categoria);
-                    pro.setNombreProducto(vistaProductos.txtNombreProducto.getText());
-                    pro.setDescripcion(descripcion);
-                    pro.setCantidad(Integer.parseInt(cantidad));
-                    pro.setPrecio(Double.parseDouble(precioVenta));
-                    pro.setIdProducto(idProducto);
-
-                    if (productosDAO.actualizarProducto(pro)) {
-                        limpiar();
-                        limpiarTable();
-                        listarProductos();
-                        JOptionPane.showMessageDialog(null, "Producto actualizado");
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Error al actualizar");
-                    }
+                if (!Utilidades.validarCamposVacios(nombreProducto, descripcion, precioVenta, cantidad)) {
+                    return;
                 }
+
+                String nombreCategoria = vistaProductos.cbxCatPro.getSelectedItem().toString();
+                String idCategoria = null;
+
+                if (!nombreCategoria.equals("Sin categoria")) {
+                    idCategoria = categoriasDAO.obtenerIdCategoria(nombreCategoria);
+                }
+
+                Categoria categoria = new Categoria();
+                categoria.setIdCategoria(idCategoria);
+
+                pro.setCategoria(categoria);
+                pro.setNombreProducto(nombreProducto);
+                pro.setDescripcion(descripcion);
+                pro.setCantidad(Integer.parseInt(cantidad));
+                pro.setPrecio(Double.parseDouble(precioVenta));
+                pro.setIdProducto(idProducto);
+
+                if (productosDAO.actualizarProducto(pro)) {
+                    limpiar();
+                    Utilidades.limpiarTable(modeloProductos);
+                    listarProductos();
+                    JOptionPane.showMessageDialog(null, "Producto actualizado");
+                } else {
+                    JOptionPane.showMessageDialog(null, "Error al actualizar");
+                }
+
             }
         }
 
@@ -142,7 +143,7 @@ public class ProductosControlador implements ActionListener, MouseListener, KeyL
                 if (respuesta == JOptionPane.YES_OPTION) {
                     if (productosDAO.eliminarProducto(codigo)) {
                         limpiar();
-                        limpiarTable();
+                        Utilidades.limpiarTable(modeloProductos);
                         listarProductos();
                         JOptionPane.showMessageDialog(null, "Producto eliminado", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                     } else {
@@ -157,11 +158,10 @@ public class ProductosControlador implements ActionListener, MouseListener, KeyL
         if (e.getSource() == vistaProductos.btnBuscarProducto) {
             String codigoProducto = vistaProductos.txtbuscarprod.getText();
 
-            if (codigoProducto.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Ingrese el código de producto", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
+            if(!Utilidades.validarCamposVacios(codigoProducto)){
                 return;
             }
-            
+
             try {
                 pro = productosDAO.buscarProducto(codigoProducto);
                 if (pro.getIdProducto() != null) {
@@ -209,7 +209,7 @@ public class ProductosControlador implements ActionListener, MouseListener, KeyL
 
         if (e.getSource() == vistaProductos.JLabelProductos) {
             vistaProductos.jTabbedPane1.setSelectedIndex(0);
-            limpiarTable();
+            Utilidades.limpiarTable(modeloProductos);
             listarProductos();
         }
 
@@ -283,14 +283,6 @@ public class ProductosControlador implements ActionListener, MouseListener, KeyL
     }
 
     //------------------------------------------------------------------------------------------------------------------------------------------
-    public void limpiarTable() {
-        for (int i = 0; i < modeloProductos.getRowCount(); i++) {
-            modeloProductos.removeRow(i);
-            i = i - 1;
-        }
-    }
-
-    //------------------------------------------------------------------------------------------------------------------------------------------
     public boolean validarCamposNumericos(String valorInt, String valorDouble) {
         try {
             int cantidad = Integer.parseInt(valorInt);
@@ -301,6 +293,5 @@ public class ProductosControlador implements ActionListener, MouseListener, KeyL
             return false;
         }
     }
-
 
 }

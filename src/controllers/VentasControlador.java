@@ -12,13 +12,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import models.*;
 import pdf.PDFFactura;
 import pdf.PDFBoleta;
+import util.Utilidades;
 import views.*;
 import views.modal.modalAgregarCliente;
 import views.modal.modalAgregarProducto;
@@ -72,9 +70,9 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
         this.vistaVentas.fechaHasta.getDateEditor().addPropertyChangeListener(this);
         cargarVendedor();
         cargarListaFactura();
-        centrarDatosTabla(vistaVentas.TableNuevaVenta);
-        centrarDatosTabla(vistaVentas.TableListadoVentas);
-        centrarDatosTabla(vistaVentas.TableDetalleVenta);
+        Utilidades.centrarDatosTabla(vistaVentas.TableNuevaVenta);
+        Utilidades.centrarDatosTabla(vistaVentas.TableListadoVentas);
+        Utilidades.centrarDatosTabla(vistaVentas.TableDetalleVenta);
         //Establecer tablas como no editables
         this.vistaVentas.TableNuevaVenta.setDefaultEditor(Object.class, null);
         this.vistaVentas.TableListadoVentas.setDefaultEditor(Object.class, null);
@@ -88,8 +86,7 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
         //Buscar producto por su codigo
         if (e.getSource() == vistaVentas.btnBuscarProducto) {
             String codigo = vistaVentas.txtBuscarProducto.getText();
-            if (codigo.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Ingrese el código de producto");
+            if(!Utilidades.validarCamposVacios(codigo)){
                 return;
             }
 
@@ -125,7 +122,8 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
                 return;
             }
 
-            if (!validarCamposNumericos(cantidadTexto)) {
+            boolean camposSonNumeros = Utilidades.validarCamposNumericos(cantidadTexto);
+            if (!camposSonNumeros) {
                 return;
             }
 
@@ -195,14 +193,13 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
         //Registrar Factura
         if (e.getSource() == vistaVentas.btnGenerarVenta) {
             String numeroDocumentoCliente = vistaVentas.txtNumeroDocumentoCliente.getText();
-            String nombreVendedor = vistaVentas.txtNombreVendedor.getText();
 
-            if (numeroDocumentoCliente.isEmpty() || nombreVendedor.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Por favor complete todos los campos obligatorios.", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
+            if(!Utilidades.validarCamposVacios(numeroDocumentoCliente)){
                 return;
             }
 
-            if (!validarCamposNumericos(numeroDocumentoCliente)) {
+            boolean camposSonNumeros = Utilidades.validarCamposNumericos(numeroDocumentoCliente);
+            if (!camposSonNumeros) {
                 return;
             }
 
@@ -230,18 +227,6 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
             if (cliente == null || cliente.getIdCliente() == 0) {
                 // El cliente no está registrado, se procede a registrar
                 Cliente nuevoCliente = new Cliente();
-
-                // Creacion de un nuevo flujo para filtrar el tipo de documento que se le asignara
-                //String tipoDocumentoCliente = Stream.of(numeroDocCliente)
-                //        .filter(doc -> (doc.startsWith("10") || doc.startsWith("20")) && doc.length() == 10)
-                //      .map(doc -> "RUC")
-                //    .findFirst() // Obtenemos el primer resultado o un Optional vacío
-                //  .orElse("DNI");
-                //tipoDocCliente = compararDocCliente.equals(tipoDocCliente) ? compararDocCliente : "";
-                //if (!tipoDocumentoCliente.equals(tipoDocCliente)) {
-                //  JOptionPane.showMessageDialog(null, "El documento ingresado no coincide con el tipo de documento");
-                //return;
-                //}
                 nuevoCliente.setTipoDocumento(tipoDocCliente);
                 nuevoCliente.setDni(numeroCliente);
                 clientesDAO.registrarCliente(nuevoCliente);
@@ -371,7 +356,7 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
             if (respuesta == JOptionPane.YES_OPTION) {
                 if (ventasDAO.anularFactura(idFactura)) {
                     vistaVentas.txtIdFacturaPDF.setText(null);
-                    limpiarTable();
+                    Utilidades.limpiarTable(modelo);
                     cargarListaFactura();
                     JOptionPane.showMessageDialog(null, "Factura anulada", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                 } else {
@@ -384,7 +369,7 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
         //Nueva Factura
         if (e.getSource() == vistaVentas.btnNuevaFactura) {
             limpiarDatosProducto();
-            limpiarTable();
+            Utilidades.limpiarTable(modelo);
             vistaVentas.txtNumeroDocumentoCliente.setText(null);
             vistaVentas.txtNombreCliente.setText(null);
             vistaVentas.txtImporte.setText(null);
@@ -494,12 +479,6 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
     }
 
     //------------------------------------------------------------------------------------------------------------------------------------------
-    public void limpiarTable() {
-        for (int i = 0; i < modelo.getRowCount(); i++) {
-            modelo.removeRow(i);
-            i = i - 1;
-        }
-    }
 
     //------------------------------------------------------------------------------------------------------------------------------------------
     public void calcularTotalPagoFactura() {
@@ -557,18 +536,7 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
     }
 
     //------------------------------------------------------------------------------------------------------------------------------------------
-    public boolean validarCamposNumericos(String... valores) {
-        for (String valor : valores) {
-            try {
-                Long.parseLong(valor);
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(null, "El valor ingresado  '" + valor + "'  no puede contener letras o caracteres", "Advertencia", JOptionPane.WARNING_MESSAGE);
-                return false;
-            }
-        }
-        return true;
-    }
-
+    
     public boolean esDouble(String valor) {
         try {
             Double.parseDouble(valor);
@@ -682,16 +650,6 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
         }
     }
 
-    public void centrarDatosTabla(JTable table) {
-        // Centrar el contenido de las celdas
-        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-        table.setDefaultRenderer(Object.class, centerRenderer);
-
-        // Centrar el contenido del encabezado
-        DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) table.getTableHeader().getDefaultRenderer();
-        headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-        table.getTableHeader().setDefaultRenderer(headerRenderer);
-    }
+    
 
 }

@@ -15,6 +15,7 @@ import models.*;
 import views.frmClientes;
 import views.frmProductos;
 import org.mindrot.jbcrypt.BCrypt;
+import util.Utilidades;
 import views.modal.modalAddUsuarioConfig;
 
 public class UsuariosControlador implements ActionListener, MouseListener, KeyListener {
@@ -59,14 +60,14 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
             String nombre = vista.txtnombreUser.getText();
             String dni = vista.txtDniUser.getText();
             String password = String.valueOf(vista.txtcontrasenaUser.getPassword());
-
-            if (user.isEmpty() || nombre.isEmpty() || dni.isEmpty() || password.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Por favor complete todos los campos obligatorios.", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
+            
+            if(!Utilidades.validarCamposVacios(user, nombre, dni, password)){
                 return;
             }
 
             //Validar campos con numeros, se ejecuta si devuelve false
-            if (!validarCamposNumericos(dni)) {
+            boolean camposSonEnteros = Utilidades.validarCamposNumericos(dni);
+            if (!camposSonEnteros) {
                 return;
             }
 
@@ -80,7 +81,7 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
             usuario.setRol(vista.cbroluser.getSelectedItem().toString());
 
             if (usuariosDAO.registrarUsuario(usuario)) {
-                limpiarTable(modeloUsuarioActivo);
+                Utilidades.limpiarTable(modeloUsuarioActivo);
                 listarUsuarios();
                 limpiar();
                 JOptionPane.showMessageDialog(null, "Usuario registrado con éxito", "Éxito", JOptionPane.INFORMATION_MESSAGE);
@@ -97,13 +98,13 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
             String rol = vista.cbroluser.getSelectedItem().toString();
             String idUsuario = vista.txtidusuario.getText();
 
-            if (dni.isEmpty() || nombre.isEmpty() || user.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Por favor complete todos los campos obligatorios.", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
+            if(!Utilidades.validarCamposVacios(dni, nombre, user)){
                 return;
             }
 
             //Validar campos con numeros, se ejecuta si devuelve false
-            if (!validarCamposNumericos(dni)) {
+            boolean camposSonEnteros = Utilidades.validarCamposNumericos(dni);
+            if (!camposSonEnteros) {
                 return;
             }
 
@@ -114,7 +115,7 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
             usuario.setIdUsuario(Integer.parseInt(idUsuario));
 
             if (usuariosDAO.actualizarUsuario(usuario)) {
-                limpiarTable(modeloUsuarioActivo);
+                Utilidades.limpiarTable(modeloUsuarioActivo);
                 limpiar();
                 listarUsuarios();
                 JOptionPane.showMessageDialog(null, "Usuario modificado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
@@ -126,13 +127,13 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
         if (e.getSource() == vista.btnBuscarUsuario) {
             String dniUsuarioStr = vista.txtbuscarUser.getText();
 
-            if (dniUsuarioStr.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Ingresar DNI del usuario");
+            if(!Utilidades.validarCamposVacios(dniUsuarioStr)){
                 return;
             }
 
             //Validar campos con numeros
-            if (!validarCamposNumericos(dniUsuarioStr)) {
+            boolean camposSonEnteros = Utilidades.validarCamposNumericos(dniUsuarioStr);
+            if (!camposSonEnteros) {
                 return;
             }
 
@@ -180,8 +181,8 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
             if (respuesta == JOptionPane.YES_OPTION) {
                 if (usuariosDAO.eliminarUsuario(idUsuario)) {
                     limpiar();
-                    limpiarTable(modeloUsuarioActivo);
-                    limpiarTable(modeloUsuarioInactivo);
+                    Utilidades.limpiarTable(modeloUsuarioActivo);
+                    Utilidades.limpiarTable(modeloUsuarioInactivo);
                     listarUsuarios();
                     listarUsuariosInactivo();
                     JOptionPane.showMessageDialog(null, "Cliente eliminado", "Éxito", JOptionPane.INFORMATION_MESSAGE);
@@ -210,8 +211,8 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
             if (respuesta == JOptionPane.YES_OPTION) {
                 if (usuariosDAO.activarUsuario(idUsuario)) {
                     limpiarUsuarioInactivo();
-                    limpiarTable(modeloUsuarioInactivo);
-                    limpiarTable(modeloUsuarioActivo);
+                    Utilidades.limpiarTable(modeloUsuarioInactivo);
+                    Utilidades.limpiarTable(modeloUsuarioActivo);
                     listarUsuarios();
                     listarUsuariosInactivo();
                     JOptionPane.showMessageDialog(null, "El usuario se activo correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
@@ -251,11 +252,10 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
             String passwordNuevo = String.valueOf(vista.txtNuevoPassword.getPassword());
             String passwordRepetido = String.valueOf(vista.txtRepetirPassword.getPassword());
             
-            if(usuario.isEmpty() || passwordNuevo.isEmpty() || passwordRepetido.isEmpty()){
-                JOptionPane.showMessageDialog(null, "Por favor complete todos los campos obligatorios.", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
+            if(!Utilidades.validarCamposVacios(usuario, passwordNuevo, passwordRepetido)){
                 return;
             }
-
+            
             //Comparar las contraseñas ingresadas
             if (passwordNuevo.equals(passwordRepetido)) {
                 //Hashear password antes de enviarla a la BD
@@ -268,7 +268,7 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
                     System.out.println("Error al modificar");
                 }
             } else {
-                JOptionPane.showMessageDialog(null, "La nueva contraseña no coincide");
+                JOptionPane.showMessageDialog(null, "Las contraseñas ingresadas no coinciden");
             }
         }
     }
@@ -390,14 +390,6 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
     }
 
     //------------------------------------------------------------------------------------------------------------------------------------------
-    public void limpiarTable(DefaultTableModel modelo) {
-        for (int i = 0; i < modelo.getRowCount(); i++) {
-            modelo.removeRow(i);
-            i = i - 1;
-        }
-    }
-
-    //------------------------------------------------------------------------------------------------------------------------------------------
     public void permisosUsuario() {
         //Obtener usuario actual
         Usuario usuarioActual = Session.getUsuarioActual();
@@ -410,16 +402,5 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
     }
 
     //------------------------------------------------------------------------------------------------------------------------------------------
-    public boolean validarCamposNumericos(String... valores) {
-        for (String valor : valores) {
-            try {
-                Integer.parseInt(valor);
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(null, "El valor ingresado  '" + valor + "'  no puede contener letras o caracteres");
-                return false;
-            }
-        }
-        return true;
-    }
 
 }
