@@ -10,10 +10,7 @@ import javax.swing.table.DefaultTableModel;
 public class Utilidades {
 
     public static void limpiarTable(DefaultTableModel modelo) {
-        for (int i = 0; i < modelo.getRowCount(); i++) {
-            modelo.removeRow(i);
-            i = i - 1;
-        }
+        modelo.setRowCount(0);
     }
 
     public static void centrarDatosTabla(JTable table) {
@@ -26,6 +23,10 @@ public class Utilidades {
         DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) table.getTableHeader().getDefaultRenderer();
         headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
         table.getTableHeader().setDefaultRenderer(headerRenderer);
+    }
+    
+    public static void bloquearEdicionTabla(JTable table){
+        table.setDefaultEditor(Object.class, null);
     }
 
     public static boolean validarCamposNumericos(String... valores) {

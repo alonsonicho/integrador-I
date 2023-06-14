@@ -5,10 +5,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import models.*;
+import operaciones.ClientesOp;
 import util.Utilidades;
 import views.*;
 
@@ -17,9 +17,10 @@ public class ClientesControlador implements MouseListener, ActionListener {
     frmClientes vistaClientes;
     frmVentas vistaVentas;
     Cliente cl;
-    ClientesDAO clienteDAO;
+    ClientesDAO clienteDAO = new ClientesDAO();
     DefaultTableModel modeloClienteActivo = new DefaultTableModel();
     DefaultTableModel modeloClienteInactivo = new DefaultTableModel();
+    ClientesOp clientesOP = new ClientesOp(clienteDAO);
 
     public ClientesControlador(Cliente cl, ClientesDAO clienteDAO, frmClientes vistaClientes) {
         this.vistaClientes = vistaClientes;
@@ -39,12 +40,14 @@ public class ClientesControlador implements MouseListener, ActionListener {
         this.vistaClientes.btnActivarCliente.addActionListener(this);
         this.vistaClientes.radioButtonTrueCliente.addActionListener(this);
         this.vistaClientes.radioButtonFalseCliente.addActionListener(this);
-        listarClientes();
-        listarClientesInactivo();
+        clientesOP.listarClientes(modeloClienteActivo, vistaClientes.TableMostrarClientes);
+        clientesOP.listarClientesInactivo(modeloClienteInactivo, vistaClientes.TableInactiveClientes);
         this.vistaClientes.radioButtonFalseCliente.setSelected(true);
         this.vistaClientes.radioButtonTrueCliente.setSelected(false);
-        this.vistaClientes.TableInactiveClientes.setDefaultEditor(Object.class, null);
-        this.vistaClientes.TableMostrarClientes.setDefaultEditor(Object.class, null);
+        Utilidades.centrarDatosTabla(vistaClientes.TableMostrarClientes);
+        Utilidades.centrarDatosTabla(vistaClientes.TableInactiveClientes);
+        Utilidades.bloquearEdicionTabla(vistaClientes.TableMostrarClientes);
+        Utilidades.bloquearEdicionTabla(vistaClientes.TableInactiveClientes);
     }
 
     @Override
@@ -129,10 +132,10 @@ public class ClientesControlador implements MouseListener, ActionListener {
             String direccionCliente = vistaClientes.txadireccioncli.getText();
             String tipoDocumento = vistaClientes.cbTipoDocumento.getSelectedItem().toString();
 
-            if(!Utilidades.validarCamposVacios(nombreCliente, numeroDocumentoCliente, telefonoCliente, direccionCliente)){
+            if (!Utilidades.validarCamposVacios(nombreCliente, numeroDocumentoCliente, telefonoCliente, direccionCliente)) {
                 return;
             }
-            
+
             //Validar campos con numeros, se ejecuta si devuelve false
             boolean camposSonEnteros = Utilidades.validarCamposNumericos(numeroDocumentoCliente, telefonoCliente);
             if (!camposSonEnteros) {
@@ -162,8 +165,8 @@ public class ClientesControlador implements MouseListener, ActionListener {
             cl.setDireccion(direccionCliente);
             //Registro del cliente
             if (clienteDAO.registrarCliente(cl)) {
-                Utilidades.limpiarTable(modeloClienteActivo);
-                listarClientes();
+                clientesOP.listarClientes(modeloClienteActivo, vistaClientes.TableMostrarClientes);
+                //listarClientes();
                 limpiar();
                 JOptionPane.showMessageDialog(null, "Cliente Registrado", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             }
@@ -227,8 +230,7 @@ public class ClientesControlador implements MouseListener, ActionListener {
             cl.setIdCliente(idCli);
 
             if (clienteDAO.actualizarCliente(cl)) {
-                Utilidades.limpiarTable(modeloClienteActivo);
-                listarClientes();
+                clientesOP.listarClientes(modeloClienteActivo, vistaClientes.TableMostrarClientes);
                 limpiar();
                 JOptionPane.showMessageDialog(null, "Los datos del cliente se actualizaron correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             }
@@ -240,11 +242,11 @@ public class ClientesControlador implements MouseListener, ActionListener {
             String dniClienteString = vistaClientes.txtbuscarcli.getText();
 
             //Verificar que el campo de N°Documento no se encuentre vacio
-            if(!Utilidades.validarCamposVacios(dniClienteString)){
+            if (!Utilidades.validarCamposVacios(dniClienteString)) {
                 vistaClientes.txtbuscarcli.requestFocus();
                 return;
             }
-           
+
             //Validar los campos numericos, se ejecuta si devuelve false
             boolean camposSonEnteros = Utilidades.validarCamposNumericos(dniClienteString);
             if (!camposSonEnteros) {
@@ -294,10 +296,8 @@ public class ClientesControlador implements MouseListener, ActionListener {
             if (respuesta == JOptionPane.YES_OPTION) {
                 if (clienteDAO.eliminarCliente(idCliente)) {
                     limpiar();
-                    Utilidades.limpiarTable(modeloClienteActivo);
-                    Utilidades.limpiarTable(modeloClienteInactivo);
-                    listarClientes();
-                    listarClientesInactivo();
+                    clientesOP.listarClientes(modeloClienteActivo, vistaClientes.TableMostrarClientes);
+                    clientesOP.listarClientesInactivo(modeloClienteInactivo, vistaClientes.TableInactiveClientes);
                     JOptionPane.showMessageDialog(null, "Cliente eliminado", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     JOptionPane.showMessageDialog(null, "Error al eliminar el cliente");
@@ -323,10 +323,8 @@ public class ClientesControlador implements MouseListener, ActionListener {
 
             if (respuesta == JOptionPane.YES_OPTION) {
                 if (clienteDAO.activarCliente(idCliente)) {
-                    Utilidades.limpiarTable(modeloClienteInactivo);
-                    Utilidades.limpiarTable(modeloClienteActivo);
-                    listarClientes();
-                    listarClientesInactivo();
+                    clientesOP.listarClientes(modeloClienteActivo, vistaClientes.TableMostrarClientes);
+                    clientesOP.listarClientesInactivo(modeloClienteInactivo, vistaClientes.TableInactiveClientes);
                     limpiarClienteInactivo();
                     JOptionPane.showMessageDialog(null, "El cliente se activo correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                 }
@@ -344,41 +342,6 @@ public class ClientesControlador implements MouseListener, ActionListener {
 
     }
 
-    //------------------------------------------------------------------------------------------------------------------------------------------
-    public void listarClientes() {
-        List<Cliente> lista = clienteDAO.listarClientes();
-        modeloClienteActivo = (DefaultTableModel) vistaClientes.TableMostrarClientes.getModel();
-        Object[] obj = new Object[6];
-        for (int i = 0; i < lista.size(); i++) {
-            obj[0] = lista.get(i).getIdCliente();
-            obj[1] = lista.get(i).getTipoDocumento();
-            obj[2] = lista.get(i).getDni();
-            obj[3] = lista.get(i).getNombre() != null ? lista.get(i).getNombre() : "";
-            obj[4] = lista.get(i).getTelefono() != 0 ? lista.get(i).getTelefono() : "";
-            obj[5] = lista.get(i).getDireccion() != null ? lista.get(i).getDireccion() : "";
-            modeloClienteActivo.addRow(obj);
-        }
-        vistaClientes.TableMostrarClientes.setModel(modeloClienteActivo);
-    }
-
-    //------------------------------------------------------------------------------------------------------------------------------------------
-    public void listarClientesInactivo() {
-        List<Cliente> lista = clienteDAO.listarClientesInactivo();
-        modeloClienteInactivo = (DefaultTableModel) vistaClientes.TableInactiveClientes.getModel();
-        Object[] obj = new Object[6];
-        for (int i = 0; i < lista.size(); i++) {
-            obj[0] = lista.get(i).getIdCliente();
-            obj[1] = lista.get(i).getTipoDocumento();
-            obj[2] = lista.get(i).getDni();
-            obj[3] = lista.get(i).getNombre() != null ? lista.get(i).getNombre() : "";
-            obj[4] = lista.get(i).getTelefono() != 0 ? lista.get(i).getTelefono() : "";
-            obj[5] = lista.get(i).getDireccion() != null ? lista.get(i).getDireccion() : "";
-            modeloClienteInactivo.addRow(obj);
-        }
-        vistaClientes.TableInactiveClientes.setModel(modeloClienteInactivo);
-    }
-
-    //------------------------------------------------------------------------------------------------------------------------------------------
     public void limpiar() {
         vistaClientes.txtidcli.setText(null);
         vistaClientes.txtdni.setText(null);

@@ -5,10 +5,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import models.Categoria;
+import operaciones.CategoriasOp;
 import util.Utilidades;
 import views.frmMenuPrincipal;
 import views.frmProductos;
@@ -16,9 +16,10 @@ import views.frmProductos;
 public class CategoriasControlador implements ActionListener, MouseListener {
 
     Categoria categoria = new Categoria();
-    CategoriasDAO categoriasDAO;
+    CategoriasDAO categoriasDAO = new CategoriasDAO();
     frmProductos vistaCategorias;
     DefaultTableModel modelo = new DefaultTableModel();
+    CategoriasOp categoriasOp = new CategoriasOp(categoriasDAO);
 
     public CategoriasControlador(Categoria categoria, CategoriasDAO categoriasDAO, frmProductos vistaCategorias) {
         this.categoria = categoria;
@@ -31,9 +32,10 @@ public class CategoriasControlador implements ActionListener, MouseListener {
         this.vistaCategorias.JLabelCategoria.addMouseListener(this);
         this.vistaCategorias.JMenuEliminarCat.addActionListener(this);
         this.vistaCategorias.JLabelSalirProd.addMouseListener(this);
-        listarCategorias();
-        listarBox();
-        this.vistaCategorias.TableCategorias.setDefaultEditor(Object.class, null);
+        categoriasOp.listarCategorias(modelo, vistaCategorias.TableCategorias);
+        categoriasOp.listarCategoriasComboBox(vistaCategorias.cbxCatPro);
+        Utilidades.bloquearEdicionTabla(vistaCategorias.TableCategorias);
+        Utilidades.centrarDatosTabla(vistaCategorias.TableCategorias);
     }
 
     @Override
@@ -50,8 +52,8 @@ public class CategoriasControlador implements ActionListener, MouseListener {
             //Llamado al metodo para el registro de la categoria
             if (categoriasDAO.registrarCategoria(categoria)) {
                 limpiar();
-                Utilidades.limpiarTable(modelo);
-                listarCategorias();
+                categoriasOp.listarCategorias(modelo, vistaCategorias.TableCategorias);
+                categoriasOp.listarCategoriasComboBox(vistaCategorias.cbxCatPro);
                 JOptionPane.showMessageDialog(null, "Categoria registrada", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             }
 
@@ -63,17 +65,17 @@ public class CategoriasControlador implements ActionListener, MouseListener {
             String idCat = vistaCategorias.txtIdCategoria.getText();
             String nombreCat = vistaCategorias.txtNombreCategoria.getText();
             //Verificar que los campos se encuentren completos
-            if(!Utilidades.validarCamposVacios(idCat, nombreCat)){
+            if (!Utilidades.validarCamposVacios(idCat, nombreCat)) {
                 return;
             }
-            
+
             categoria.setNombreCategoria(nombreCat);
             categoria.setIdCategoria(idCat);
             //Llamado al metodo para actualizar
             if (categoriasDAO.actualizarCategoria(categoria)) {
                 limpiar();
-                Utilidades.limpiarTable(modelo);
-                listarCategorias();
+                categoriasOp.listarCategorias(modelo, vistaCategorias.TableCategorias);
+                categoriasOp.listarCategoriasComboBox(vistaCategorias.cbxCatPro);
                 JOptionPane.showMessageDialog(null, "Categoria actualizada", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             }
         }
@@ -92,9 +94,8 @@ public class CategoriasControlador implements ActionListener, MouseListener {
             if (respuesta == JOptionPane.YES_OPTION) {
                 if (categoriasDAO.eliminarCategoria(codigo)) {
                     limpiar();
-                    Utilidades.limpiarTable(modelo);
-                    listarCategorias();
-                    listarBox();
+                    categoriasOp.listarCategorias(modelo, vistaCategorias.TableCategorias);
+                    categoriasOp.listarCategoriasComboBox(vistaCategorias.cbxCatPro);
                     JOptionPane.showMessageDialog(null, "Producto eliminado", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     JOptionPane.showMessageDialog(null, "Error al eliminar producto");
@@ -121,8 +122,7 @@ public class CategoriasControlador implements ActionListener, MouseListener {
 
         if (e.getSource() == vistaCategorias.JLabelCategoria) {
             vistaCategorias.jTabbedPane1.setSelectedIndex(1);
-            Utilidades.limpiarTable(modelo);
-            listarCategorias();
+            categoriasOp.listarCategorias(modelo, vistaCategorias.TableCategorias);
         }
 
         if (e.getSource() == vistaCategorias.JLabelSalirProd) {
@@ -153,32 +153,9 @@ public class CategoriasControlador implements ActionListener, MouseListener {
     }
 
     //------------------------------------------------------------------------------------------------------------------------------------------
-    public void listarCategorias() {
-        ArrayList<Categoria> lista = categoriasDAO.listarCategorias();
-        modelo = (DefaultTableModel) vistaCategorias.TableCategorias.getModel();
-        Object[] obj = new Object[2];
-        for (int i = 0; i < lista.size(); i++) {
-            obj[0] = lista.get(i).getIdCategoria();
-            obj[1] = lista.get(i).getNombreCategoria();
-            modelo.addRow(obj);
-        }
-        vistaCategorias.TableCategorias.setModel(modelo);
-    }
-
-    //------------------------------------------------------------------------------------------------------------------------------------------
     public void limpiar() {
         vistaCategorias.txtIdCategoria.setText(null);
         vistaCategorias.txtNombreCategoria.setText(null);
-    }
-
-    //------------------------------------------------------------------------------------------------------------------------------------------
-    //Listar las categorias en el comboBox
-    public void listarBox() {
-        vistaCategorias.cbxCatPro.removeAllItems();
-        ArrayList<Categoria> lista = categoriasDAO.listarCategorias();
-        for (Categoria cat : lista) {
-            vistaCategorias.cbxCatPro.addItem(cat.getNombreCategoria());
-        }
     }
 
 }

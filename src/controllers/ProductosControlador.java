@@ -2,17 +2,16 @@ package controllers;
 
 import DAO.CategoriasDAO;
 import DAO.ProductosDAO;
-import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import models.*;
+import operaciones.ProductosOp;
 import util.Utilidades;
 import views.frmProductos;
 import views.frmVentas;
@@ -20,11 +19,12 @@ import views.frmVentas;
 public class ProductosControlador implements ActionListener, MouseListener, KeyListener {
 
     Producto pro;
-    ProductosDAO productosDAO;
+    ProductosDAO productosDAO = new ProductosDAO();
     frmProductos vistaProductos;
     frmVentas vistaVentas;
     CategoriasDAO categoriasDAO;
     DefaultTableModel modeloProductos = new DefaultTableModel();
+    ProductosOp productosOp = new ProductosOp(productosDAO);
 
     public ProductosControlador(Producto pro, ProductosDAO productosDAO, frmProductos vistaProductos, frmVentas vistaVentas, CategoriasDAO categoriasDAO) {
         this.pro = pro;
@@ -40,8 +40,9 @@ public class ProductosControlador implements ActionListener, MouseListener, KeyL
         this.vistaProductos.JLabelProductos.addMouseListener(this);
         this.vistaProductos.txtbuscarprod.addKeyListener(this);
         this.vistaProductos.btnBuscarProducto.addActionListener(this);
-        listarProductos();
-        this.vistaProductos.TableProductos.setDefaultEditor(Object.class, null);
+        productosOp.listarProductos(modeloProductos, vistaProductos.TableProductos);
+        Utilidades.centrarDatosTabla(vistaProductos.TableProductos);
+        Utilidades.bloquearEdicionTabla(vistaProductos.TableProductos);
     }
 
     @Override
@@ -76,8 +77,7 @@ public class ProductosControlador implements ActionListener, MouseListener, KeyL
 
             if (productosDAO.registrarProducto(producto)) {
                 limpiar();
-                Utilidades.limpiarTable(modeloProductos);
-                listarProductos();
+                productosOp.listarProductos(modeloProductos, vistaProductos.TableProductos);
                 JOptionPane.showMessageDialog(null, "Producto registrado", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 JOptionPane.showMessageDialog(null, "Error al registrar el producto");
@@ -121,8 +121,7 @@ public class ProductosControlador implements ActionListener, MouseListener, KeyL
 
                 if (productosDAO.actualizarProducto(pro)) {
                     limpiar();
-                    Utilidades.limpiarTable(modeloProductos);
-                    listarProductos();
+                    productosOp.listarProductos(modeloProductos, vistaProductos.TableProductos);
                     JOptionPane.showMessageDialog(null, "Producto actualizado");
                 } else {
                     JOptionPane.showMessageDialog(null, "Error al actualizar");
@@ -143,8 +142,7 @@ public class ProductosControlador implements ActionListener, MouseListener, KeyL
                 if (respuesta == JOptionPane.YES_OPTION) {
                     if (productosDAO.eliminarProducto(codigo)) {
                         limpiar();
-                        Utilidades.limpiarTable(modeloProductos);
-                        listarProductos();
+                        productosOp.listarProductos(modeloProductos, vistaProductos.TableProductos);
                         JOptionPane.showMessageDialog(null, "Producto eliminado", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                     } else {
                         JOptionPane.showMessageDialog(null, "Error al eliminar producto");
@@ -158,7 +156,7 @@ public class ProductosControlador implements ActionListener, MouseListener, KeyL
         if (e.getSource() == vistaProductos.btnBuscarProducto) {
             String codigoProducto = vistaProductos.txtbuscarprod.getText();
 
-            if(!Utilidades.validarCamposVacios(codigoProducto)){
+            if (!Utilidades.validarCamposVacios(codigoProducto)) {
                 return;
             }
 
@@ -209,8 +207,7 @@ public class ProductosControlador implements ActionListener, MouseListener, KeyL
 
         if (e.getSource() == vistaProductos.JLabelProductos) {
             vistaProductos.jTabbedPane1.setSelectedIndex(0);
-            Utilidades.limpiarTable(modeloProductos);
-            listarProductos();
+            productosOp.listarProductos(modeloProductos, vistaProductos.TableProductos);
         }
 
     }
@@ -251,27 +248,6 @@ public class ProductosControlador implements ActionListener, MouseListener, KeyL
     }
 
     //------------------------------------------------------------------------------------------------------------------------------------------
-    public void listarProductos() {
-        ArrayList<Producto> lista = productosDAO.listarProductos();
-        modeloProductos = new DefaultTableModel();
-        modeloProductos = (DefaultTableModel) vistaProductos.TableProductos.getModel();
-        Object[] obj = new Object[6];
-        for (int i = 0; i < lista.size(); i++) {
-            obj[0] = lista.get(i).getIdProducto();
-            if (lista.get(i).getCategoria().getNombreCategoria() == null) {
-                obj[1] = "Sin categoria";
-            } else {
-                obj[1] = lista.get(i).getCategoria().getNombreCategoria();
-            }
-            obj[2] = lista.get(i).getNombreProducto();
-            obj[3] = lista.get(i).getDescripcion();
-            obj[4] = lista.get(i).getCantidad();
-            obj[5] = lista.get(i).getPrecio();
-            modeloProductos.addRow(obj);
-        }
-        vistaProductos.TableProductos.setModel(modeloProductos);
-    }
-
     //------------------------------------------------------------------------------------------------------------------------------------------
     public void limpiar() {
         vistaProductos.txtidprod.setText(null);

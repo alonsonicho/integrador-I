@@ -7,15 +7,15 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import models.*;
+import operaciones.ReportesOp;
+import operaciones.VentasOp;
 import pdf.PDFFactura;
-import pdf.PDFBoleta;
 import util.Utilidades;
 import views.*;
 import views.modal.modalAgregarCliente;
@@ -29,11 +29,13 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
     Producto producto;
     ProductosDAO productosDAO;
     Factura factura = new Factura();
-    VentasDAO ventasDAO;
+    VentasDAO ventasDAO = new VentasDAO();
     frmVentas vistaVentas;
     DefaultTableModel modelo = new DefaultTableModel();
     DefaultTableModel modeloVentas = new DefaultTableModel();
     DefaultTableModel modeloDetalleVenta = new DefaultTableModel();
+    ReportesOp reportesOp = new ReportesOp(ventasDAO);
+    VentasOp ventasOp = new VentasOp(ventasDAO);
 
     double subtotalFactura;
     double igvFactura;
@@ -68,15 +70,14 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
         this.vistaVentas.cbTipoDocumentoVenta.addItemListener(this);
         this.vistaVentas.fechaDesde.getDateEditor().addPropertyChangeListener(this);
         this.vistaVentas.fechaHasta.getDateEditor().addPropertyChangeListener(this);
-        cargarVendedor();
-        cargarListaFactura();
+        ventasOp.cargarDatosVendedor(vistaVentas.txtNombreVendedor);
+        reportesOp.cargarListaFactura(modeloVentas, vistaVentas.TableListadoVentas, vistaVentas.labelNumeroRegistros);
         Utilidades.centrarDatosTabla(vistaVentas.TableNuevaVenta);
         Utilidades.centrarDatosTabla(vistaVentas.TableListadoVentas);
         Utilidades.centrarDatosTabla(vistaVentas.TableDetalleVenta);
-        //Establecer tablas como no editables
-        this.vistaVentas.TableNuevaVenta.setDefaultEditor(Object.class, null);
-        this.vistaVentas.TableListadoVentas.setDefaultEditor(Object.class, null);
-        this.vistaVentas.TableDetalleVenta.setDefaultEditor(Object.class, null);
+        Utilidades.bloquearEdicionTabla(vistaVentas.TableNuevaVenta);
+        Utilidades.bloquearEdicionTabla(vistaVentas.TableListadoVentas);
+        Utilidades.bloquearEdicionTabla(vistaVentas.TableDetalleVenta);
         this.vistaVentas.txtTipoDocumentoCliente.setText("DNI");
     }
 
@@ -86,7 +87,7 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
         //Buscar producto por su codigo
         if (e.getSource() == vistaVentas.btnBuscarProducto) {
             String codigo = vistaVentas.txtBuscarProducto.getText();
-            if(!Utilidades.validarCamposVacios(codigo)){
+            if (!Utilidades.validarCamposVacios(codigo)) {
                 return;
             }
 
@@ -194,7 +195,7 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
         if (e.getSource() == vistaVentas.btnGenerarVenta) {
             String numeroDocumentoCliente = vistaVentas.txtNumeroDocumentoCliente.getText();
 
-            if(!Utilidades.validarCamposVacios(numeroDocumentoCliente)){
+            if (!Utilidades.validarCamposVacios(numeroDocumentoCliente)) {
                 return;
             }
 
@@ -208,7 +209,7 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
             String numeroDocCliente = vistaVentas.txtNumeroDocumentoCliente.getText();
             String tipoVenta = vistaVentas.cbTipoDocumentoVenta.getSelectedItem().toString();
 
-            boolean tipoDocumentoCorrecto = validarTipoVentaDocumento(tipoVenta, tipoDocCliente, numeroDocCliente);
+            boolean tipoDocumentoCorrecto = ventasOp.validarTipoVentaDocumento(tipoVenta, tipoDocCliente, numeroDocCliente);
             if (!tipoDocumentoCorrecto) {
                 return;
             }
@@ -281,16 +282,10 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
                 }
             }
 
-            cargarListaFactura();
+            reportesOp.cargarListaFactura(modeloVentas, vistaVentas.TableListadoVentas, vistaVentas.labelNumeroRegistros);
 
             // Imprimir el PDF segun el Tipo de venta
-            if (tipoVenta.equals("FACTURA")) {
-                PDFFactura pdf = new PDFFactura(vistaVentas, ventasDAO);
-                pdf.iniciarPDF();
-            } else {
-                PDFBoleta pdf = new PDFBoleta(vistaVentas, ventasDAO);
-                pdf.iniciarPDF();
-            }
+            ventasOp.imprimirPDF(vistaVentas, tipoVenta);
 
             JOptionPane.showMessageDialog(null, "Venta Realizada", "Éxito", JOptionPane.INFORMATION_MESSAGE);
         }
@@ -356,8 +351,7 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
             if (respuesta == JOptionPane.YES_OPTION) {
                 if (ventasDAO.anularFactura(idFactura)) {
                     vistaVentas.txtIdFacturaPDF.setText(null);
-                    Utilidades.limpiarTable(modelo);
-                    cargarListaFactura();
+                    reportesOp.cargarListaFactura(modeloVentas, vistaVentas.TableListadoVentas, vistaVentas.labelNumeroRegistros);
                     JOptionPane.showMessageDialog(null, "Factura anulada", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     JOptionPane.showMessageDialog(null, "Error al eliminar el cliente");
@@ -399,9 +393,6 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
             modalAgregarCliente vistaModal = new modalAgregarCliente(this.vistaVentas, true, vistaVentas);
             vistaModal.setVisible(true);
         }
-
-        //------------------------------------------------------------------------------------------------------------------------------------------
-        // Filtrar ventas por fechas
     }
 
     //------------------------------------------------------------------------------------------------------------------------------------------
@@ -470,116 +461,6 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
     }
 
     //------------------------------------------------------------------------------------------------------------------------------------------
-    public void limpiarDatosProducto() {
-        vistaVentas.txtBuscarProducto.setText(null);
-        vistaVentas.txtNombreProducto.setText(null);
-        vistaVentas.txtCantidad.setText(null);
-        vistaVentas.txtPrecio.setText(null);
-        vistaVentas.txtStockDisponible.setText(null);
-    }
-
-    //------------------------------------------------------------------------------------------------------------------------------------------
-
-    //------------------------------------------------------------------------------------------------------------------------------------------
-    public void calcularTotalPagoFactura() {
-        subtotalFactura = 0;
-        igvFactura = 0;
-        totalPagoFactura = 0;
-        int numeroFilas = vistaVentas.TableNuevaVenta.getRowCount();
-        for (int i = 0; i < numeroFilas; i++) {
-            double totalPorProducto = (double) vistaVentas.TableNuevaVenta.getModel().getValueAt(i, 4);
-            subtotalFactura += totalPorProducto;
-        }
-        igvFactura = subtotalFactura * 0.18;
-        totalPagoFactura = subtotalFactura + igvFactura;
-
-        vistaVentas.txtSubtotal.setText(String.format("%.2f", subtotalFactura));
-        vistaVentas.txtIGV.setText(String.format("%.2f", igvFactura));
-        vistaVentas.txtTotalPagar.setText(String.format("%.2f", totalPagoFactura));
-    }
-
-    //------------------------------------------------------------------------------------------------------------------------------------------
-    public void cargarVendedor() {
-        Usuario usuarioActual = Session.getUsuarioActual();
-        String nombreVendedor = (usuarioActual != null) ? usuarioActual.getNombre() : "Vendedor no registrado";
-        vistaVentas.txtNombreVendedor.setText(nombreVendedor);
-    }
-
-    //------------------------------------------------------------------------------------------------------------------------------------------
-    public void cargarListaFactura() {
-        ArrayList<Factura> lista = ventasDAO.listarFacturas();
-        modeloVentas = new DefaultTableModel();
-        modeloVentas = (DefaultTableModel) vistaVentas.TableListadoVentas.getModel();
-        modeloVentas.setRowCount(0);
-        Object[] obj = new Object[6];
-        for (int i = 0; i < lista.size(); i++) {
-            obj[0] = lista.get(i).getCodigo();
-            obj[1] = lista.get(i).getTipoDocumentoVenta();
-            obj[2] = lista.get(i).getUsuario().getNombre();
-            obj[3] = lista.get(i).getFecha();
-            obj[4] = lista.get(i).getCliente().getNombre();
-            obj[5] = lista.get(i).getTotal();
-            modeloVentas.addRow(obj);
-        }
-        vistaVentas.TableListadoVentas.setModel(modeloVentas);
-        //Obtener el numero de filas de la tabla
-        int numeroRegistros = vistaVentas.TableListadoVentas.getRowCount();
-        vistaVentas.labelNumeroRegistros.setText("Registros encontrados :"+numeroRegistros);
-    }
-
-    //------------------------------------------------------------------------------------------------------------------------------------------
-    public void calcularCambio() {
-        double importe = Double.parseDouble(vistaVentas.txtImporte.getText());
-        double cambio = importe - totalPagoFactura;
-
-        vistaVentas.txtCambio.setText(String.valueOf(cambio));
-    }
-
-    //------------------------------------------------------------------------------------------------------------------------------------------
-    
-    public boolean esDouble(String valor) {
-        try {
-            Double.parseDouble(valor);
-            return true;
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "El valor ingresado  '" + valor + "'  no puede contener letras o caracteres", "Advertencia", JOptionPane.WARNING_MESSAGE);
-            return false;
-        }
-    }
-
-    private boolean validarTipoVentaDocumento(String tipoVenta, String tipoDocCliente, String numeroDocCliente) {
-        if (tipoVenta.equals("BOLETA")) {
-            if (!tipoDocCliente.equals("DNI")) {
-                JOptionPane.showMessageDialog(null, "El tipo de documento del cliente debe ser DNI para una venta de tipo boleta.", "Advertencia", JOptionPane.WARNING_MESSAGE);
-                return false;
-            }
-
-            if (numeroDocCliente.length() != 8) {
-                JOptionPane.showMessageDialog(null, "El número de documento del cliente debe tener una longitud de 8 caracteres para una venta de tipo boleta.", "Advertencia", JOptionPane.WARNING_MESSAGE);
-                return false;
-            }
-        } else if (tipoVenta.equals("FACTURA")) {
-            if (!tipoDocCliente.equals("RUC")) {
-                JOptionPane.showMessageDialog(null, "El tipo de documento del cliente debe ser RUC para una venta de tipo factura.", "Advertencia", JOptionPane.WARNING_MESSAGE);
-                return false;
-            }
-
-            if (numeroDocCliente.length() != 10) {
-                JOptionPane.showMessageDialog(null, "El número de documento del cliente debe tener una longitud de 10 caracteres para una venta de tipo factura.", "Advertencia", JOptionPane.WARNING_MESSAGE);
-                return false;
-            }
-
-            if (!numeroDocCliente.startsWith("10") && !numeroDocCliente.startsWith("20")) {
-                JOptionPane.showMessageDialog(null, "El número de documento del cliente debe comenzar con '10' o '20' para una venta de tipo factura.", "Advertencia", JOptionPane.WARNING_MESSAGE);
-                return false;
-            }
-        } else {
-            JOptionPane.showMessageDialog(null, "Tipo de venta no válido.", "Advertencia", JOptionPane.WARNING_MESSAGE);
-            return false;
-        }
-        return true;
-    }
-
     @Override
     public void itemStateChanged(ItemEvent e) {
         //------------------------------------------------------------------------------------------------------------------------------------------
@@ -605,6 +486,7 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
         }
     }
 
+    //------------------------------------------------------------------------------------------------------------------------------------------
     @Override
     public void propertyChange(PropertyChangeEvent e) {
         if ("date".equals(e.getPropertyName())) {
@@ -612,44 +494,55 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
             Date fechaInicio = vistaVentas.fechaDesde.getDate();
             Date fechaFin = vistaVentas.fechaHasta.getDate();
 
-            // Verificar que ambas fechas estén seleccionadas
-            if (fechaInicio != null && fechaFin != null) {
-                // Convertir las fechas al formato deseado ("yyyy-MM-dd")
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                String strFechaInicio = dateFormat.format(fechaInicio);
-                String strFechaFin = dateFormat.format(fechaFin);
-
-                // Obtener las ventas por el rango de fechas
-                ArrayList<Factura> ventasFiltradas = ventasDAO.obtenerVentasPorFecha(strFechaInicio, strFechaFin);
-
-                // Utilizar las ventas filtradas...
-                modeloVentas = (DefaultTableModel) vistaVentas.TableListadoVentas.getModel();
-
-                // Limpiar la tabla
-                modeloVentas.setRowCount(0);
-
-                // Agregar las filas con los datos de las ventas
-                for (Factura venta : ventasFiltradas) {
-                    Object[] fila = new Object[]{
-                        venta.getCodigo(),
-                        venta.getTipoDocumentoVenta(),
-                        venta.getUsuario().getNombre(),
-                        venta.getFecha(),
-                        venta.getCliente().getNombre(),
-                        venta.getTotal()
-                    };
-                    modeloVentas.addRow(fila);
-                }
-
-                // Actualizar la tabla visualmente
-                vistaVentas.TableListadoVentas.setModel(modeloVentas);
-                // Actualizar el numero de registros
-                int numeroRegistros = vistaVentas.TableListadoVentas.getRowCount();
-                vistaVentas.labelNumeroRegistros.setText("Registros encontrados :"+numeroRegistros);
-            }
+            //Llamado a la funcion para filtrar por fechas
+            reportesOp.filtrarVentasPorFecha(fechaInicio, fechaFin, modeloVentas, vistaVentas.TableListadoVentas, vistaVentas.labelNumeroRegistros);
         }
     }
 
-    
+    //------------------------------------------------------------------------------------------------------------------------------------------
+    public void limpiarDatosProducto() {
+        vistaVentas.txtBuscarProducto.setText(null);
+        vistaVentas.txtNombreProducto.setText(null);
+        vistaVentas.txtCantidad.setText(null);
+        vistaVentas.txtPrecio.setText(null);
+        vistaVentas.txtStockDisponible.setText(null);
+    }
+
+    //------------------------------------------------------------------------------------------------------------------------------------------
+    public void calcularCambio() {
+        double importe = Double.parseDouble(vistaVentas.txtImporte.getText());
+        double cambio = importe - totalPagoFactura;
+
+        vistaVentas.txtCambio.setText(String.valueOf(cambio));
+    }
+
+    //------------------------------------------------------------------------------------------------------------------------------------------
+    public boolean esDouble(String valor) {
+        try {
+            Double.parseDouble(valor);
+            return true;
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "El valor ingresado  '" + valor + "'  no puede contener letras o caracteres", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+    }
+
+    //------------------------------------------------------------------------------------------------------------------------------------------
+    public void calcularTotalPagoFactura() {
+        subtotalFactura = 0;
+        igvFactura = 0;
+        totalPagoFactura = 0;
+        int numeroFilas = vistaVentas.TableNuevaVenta.getRowCount();
+        for (int i = 0; i < numeroFilas; i++) {
+            double totalPorProducto = (double) vistaVentas.TableNuevaVenta.getModel().getValueAt(i, 4);
+            subtotalFactura += totalPorProducto;
+        }
+        igvFactura = subtotalFactura * 0.18;
+        totalPagoFactura = subtotalFactura + igvFactura;
+
+        vistaVentas.txtSubtotal.setText(String.format("%.2f", subtotalFactura));
+        vistaVentas.txtIGV.setText(String.format("%.2f", igvFactura));
+        vistaVentas.txtTotalPagar.setText(String.format("%.2f", totalPagoFactura));
+    }
 
 }

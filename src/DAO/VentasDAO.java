@@ -7,7 +7,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import models.*;
 
 public class VentasDAO extends Conexion {
@@ -71,10 +70,10 @@ public class VentasDAO extends Conexion {
     public ArrayList<Factura> listarFacturas() {
         ArrayList<Factura> listado = new ArrayList();
         String sql = "SELECT f.idFactura, f.tipoPago, f.tipoDocumentoVenta, f.idCliente, f.idVendedor, f.fecha, f.total, f.estado, u.nombre AS nombreVendedor, c.nombre AS nombreCliente "
-            + "FROM factura f "
-            + "JOIN usuario u ON f.idVendedor = u.idUsuario "
-            + "JOIN cliente c ON f.idCliente = c.idCliente "
-            + "WHERE f.estado = 'ACTIVO'";
+                + "FROM factura f "
+                + "JOIN usuario u ON f.idVendedor = u.idUsuario "
+                + "JOIN cliente c ON f.idCliente = c.idCliente "
+                + "WHERE f.estado = 'ACTIVO'";
         try {
             Connection con = getConnection();
             ps = con.prepareStatement(sql);
@@ -137,9 +136,6 @@ public class VentasDAO extends Conexion {
 
     //Reportes
     public ArrayList<Factura> obtenerVentasPorFecha(String fechaInicio, String fechaFin) {
-        //String sql = "SELECT idFactura, tipoPago, tipoDocumentoVenta, idCliente, idVendedor, fecha, total, estado "
-        //       + "FROM factura "
-        //        + "WHERE fecha BETWEEN ? AND ?";
         String sql = "SELECT f.idFactura, f.tipoPago, f.tipoDocumentoVenta, f.idCliente, f.idVendedor, f.fecha, f.total, f.estado, u.nombre AS nombreVendedor, c.nombre AS nombreCliente "
                 + "FROM factura f "
                 + "JOIN usuario u ON f.idVendedor = u.idUsuario "
@@ -178,9 +174,8 @@ public class VentasDAO extends Conexion {
         }
         return listaVentas;
     }
-    
-    
-    public ArrayList<DetalleFactura> obtenerDetalleFacturaVenta(String codigo){
+
+    public ArrayList<DetalleFactura> obtenerDetalleFacturaVenta(String codigo) {
         String sql = "SELECT p.idProducto, p.nombreProducto, p.descripcion, p.precio, d.cantidad, d.subtotal "
                 + "FROM producto p "
                 + "INNER JOIN detalleFactura d ON p.idProducto = d.idProducto "
@@ -191,7 +186,7 @@ public class VentasDAO extends Conexion {
             ps = con.prepareStatement(sql);
             ps.setString(1, codigo);
             rs = ps.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 DetalleFactura detalle = new DetalleFactura();
                 //Insertar datos del producto
                 Producto producto = new Producto();

@@ -35,7 +35,7 @@ public class UsuariosDAO extends Conexion {
                     us.setPassword(passwordHash);
                     us.setRol(rs.getString("rol"));
                     us.setEstado(rs.getString("estado"));
-                } 
+                }
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -170,8 +170,8 @@ public class UsuariosDAO extends Conexion {
         }
         return us;
     }
-    
-    public ArrayList<Usuario> listarUsuariosFiltrados(String textoBusqueda){
+
+    public ArrayList<Usuario> listarUsuariosFiltrados(String textoBusqueda) {
         String sql = "SELECT * FROM usuario WHERE (nombre LIKE ? OR dni_usuario LIKE ?) AND estado = 'ACTIVO'";
         ArrayList<Usuario> listaUsuarios = new ArrayList<>();
         try {
@@ -180,7 +180,7 @@ public class UsuariosDAO extends Conexion {
             ps.setString(1, "%" + textoBusqueda + "%");
             ps.setString(2, "%" + textoBusqueda + "%");
             rs = ps.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 Usuario usuario = new Usuario();
                 usuario.setDniUsuario(rs.getInt("dni_usuario"));
                 usuario.setNombre(rs.getString("nombre"));
@@ -193,7 +193,6 @@ public class UsuariosDAO extends Conexion {
         }
         return listaUsuarios;
     }
-    
 
     public boolean eliminarUsuario(int id) {
         String nuevoEstado = "INACTIVO";
@@ -211,7 +210,7 @@ public class UsuariosDAO extends Conexion {
         }
     }
 
-    public boolean activarUsuario (int id) {
+    public boolean activarUsuario(int id) {
         String nuevoEstado = "ACTIVO";
         String sql = "UPDATE usuario SET estado = ? WHERE idUsuario = ?";
         try {
@@ -225,14 +224,14 @@ public class UsuariosDAO extends Conexion {
             return false;
         }
     }
-    
-    public boolean actualizarPassword (String usuario, String password){
+
+    public boolean actualizarPassword(String usuario, String password) {
         String sql = "UPDATE usuario SET password = ? WHERE usuario = ?";
         try {
             Connection con = getConnection();
             ps = con.prepareStatement(sql);
             ps.setString(1, password);
-            ps.setString(2, usuario);       
+            ps.setString(2, usuario);
             ps.execute();
             return true;
         } catch (SQLException e) {

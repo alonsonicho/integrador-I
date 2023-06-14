@@ -111,8 +111,8 @@ public class ProductosDAO extends Conexion {
         }
         return pro;
     }
-    
-    public ArrayList<Producto> listarProductosFiltrado(String textoBusqueda){
+
+    public ArrayList<Producto> listarProductosFiltrado(String textoBusqueda) {
         String sql = "SELECT * FROM producto WHERE (idProducto LIKE ? OR nombreProducto LIKE ?) AND estado = 'ACTIVO' AND cantidad > 0";
         ArrayList<Producto> listaProductos = new ArrayList<>();
         try {
@@ -121,7 +121,7 @@ public class ProductosDAO extends Conexion {
             ps.setString(1, "%" + textoBusqueda + "%");
             ps.setString(2, "%" + textoBusqueda + "%");
             rs = ps.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 Producto producto = new Producto();
                 producto.setIdProducto(rs.getString("idProducto"));
                 producto.setNombreProducto(rs.getString("nombreProducto"));
@@ -134,7 +134,6 @@ public class ProductosDAO extends Conexion {
         }
         return listaProductos;
     }
-    
 
     public boolean eliminarProducto(String cod) {
         String nuevoEstado = "ELIMINADO";

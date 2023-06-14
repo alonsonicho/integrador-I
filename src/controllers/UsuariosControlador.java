@@ -7,13 +7,11 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.ArrayList;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import models.*;
+import operaciones.UsuariosOp;
 import views.frmClientes;
-import views.frmProductos;
 import org.mindrot.jbcrypt.BCrypt;
 import util.Utilidades;
 import views.modal.modalAddUsuarioConfig;
@@ -21,10 +19,11 @@ import views.modal.modalAddUsuarioConfig;
 public class UsuariosControlador implements ActionListener, MouseListener, KeyListener {
 
     Usuario usuario;
-    UsuariosDAO usuariosDAO;
+    UsuariosDAO usuariosDAO = new UsuariosDAO();
     frmClientes vista;
     DefaultTableModel modeloUsuarioActivo = new DefaultTableModel();
     DefaultTableModel modeloUsuarioInactivo = new DefaultTableModel();
+    UsuariosOp usuariosOp = new UsuariosOp(usuariosDAO);
 
     public UsuariosControlador(Usuario usuario, UsuariosDAO usuariosDAO, frmClientes vista) {
         this.usuario = usuario;
@@ -43,13 +42,15 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
         this.vista.radioButtonFalseCliente.addActionListener(this);
         this.vista.btnBuscarUsuarioUpdatePassword.addActionListener(this);
         this.vista.btnActualizarPassword.addActionListener(this);
-        listarUsuarios();
-        listarUsuariosInactivo();
+        usuariosOp.listarUsuarios(modeloUsuarioActivo, vista.TableMostrarUsuarios);
+        usuariosOp.listarUsuariosInactivo(modeloUsuarioInactivo, vista.TableInactiveUsuarios);
         permisosUsuario();
         this.vista.radioButtonFalseUser.setSelected(true);
         this.vista.radioButtonTrueUser.setSelected(false);
-        this.vista.TableMostrarUsuarios.setDefaultEditor(Object.class, null);
-        this.vista.TableInactiveUsuarios.setDefaultEditor(Object.class, null);
+        Utilidades.centrarDatosTabla(vista.TableMostrarUsuarios);
+        Utilidades.centrarDatosTabla(vista.TableInactiveUsuarios);
+        Utilidades.bloquearEdicionTabla(vista.TableMostrarUsuarios);
+        Utilidades.bloquearEdicionTabla(vista.TableInactiveUsuarios);
     }
 
     @Override
@@ -60,8 +61,8 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
             String nombre = vista.txtnombreUser.getText();
             String dni = vista.txtDniUser.getText();
             String password = String.valueOf(vista.txtcontrasenaUser.getPassword());
-            
-            if(!Utilidades.validarCamposVacios(user, nombre, dni, password)){
+
+            if (!Utilidades.validarCamposVacios(user, nombre, dni, password)) {
                 return;
             }
 
@@ -81,8 +82,7 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
             usuario.setRol(vista.cbroluser.getSelectedItem().toString());
 
             if (usuariosDAO.registrarUsuario(usuario)) {
-                Utilidades.limpiarTable(modeloUsuarioActivo);
-                listarUsuarios();
+                usuariosOp.listarUsuarios(modeloUsuarioActivo, vista.TableMostrarUsuarios);
                 limpiar();
                 JOptionPane.showMessageDialog(null, "Usuario registrado con éxito", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             }
@@ -98,7 +98,7 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
             String rol = vista.cbroluser.getSelectedItem().toString();
             String idUsuario = vista.txtidusuario.getText();
 
-            if(!Utilidades.validarCamposVacios(dni, nombre, user)){
+            if (!Utilidades.validarCamposVacios(dni, nombre, user)) {
                 return;
             }
 
@@ -115,9 +115,8 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
             usuario.setIdUsuario(Integer.parseInt(idUsuario));
 
             if (usuariosDAO.actualizarUsuario(usuario)) {
-                Utilidades.limpiarTable(modeloUsuarioActivo);
                 limpiar();
-                listarUsuarios();
+                usuariosOp.listarUsuarios(modeloUsuarioActivo, vista.TableMostrarUsuarios);
                 JOptionPane.showMessageDialog(null, "Usuario modificado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             }
         }
@@ -127,7 +126,7 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
         if (e.getSource() == vista.btnBuscarUsuario) {
             String dniUsuarioStr = vista.txtbuscarUser.getText();
 
-            if(!Utilidades.validarCamposVacios(dniUsuarioStr)){
+            if (!Utilidades.validarCamposVacios(dniUsuarioStr)) {
                 return;
             }
 
@@ -181,10 +180,8 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
             if (respuesta == JOptionPane.YES_OPTION) {
                 if (usuariosDAO.eliminarUsuario(idUsuario)) {
                     limpiar();
-                    Utilidades.limpiarTable(modeloUsuarioActivo);
-                    Utilidades.limpiarTable(modeloUsuarioInactivo);
-                    listarUsuarios();
-                    listarUsuariosInactivo();
+                    usuariosOp.listarUsuarios(modeloUsuarioActivo, vista.TableMostrarUsuarios);
+                    usuariosOp.listarUsuariosInactivo(modeloUsuarioInactivo, vista.TableInactiveUsuarios);
                     JOptionPane.showMessageDialog(null, "Cliente eliminado", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     JOptionPane.showMessageDialog(null, "Error al eliminar el cliente");
@@ -199,8 +196,8 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
                 JOptionPane.showMessageDialog(null, "Seleccione la opcion de 'ACTIVO' para continuar");
                 return;
             }
-            
-            if(vista.radioButtonFalseUser.isSelected()){
+
+            if (vista.radioButtonFalseUser.isSelected()) {
                 JOptionPane.showMessageDialog(null, "La opcion de INACTIVO no debe estar seleccionada");
                 return;
             }
@@ -211,10 +208,8 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
             if (respuesta == JOptionPane.YES_OPTION) {
                 if (usuariosDAO.activarUsuario(idUsuario)) {
                     limpiarUsuarioInactivo();
-                    Utilidades.limpiarTable(modeloUsuarioInactivo);
-                    Utilidades.limpiarTable(modeloUsuarioActivo);
-                    listarUsuarios();
-                    listarUsuariosInactivo();
+                    usuariosOp.listarUsuarios(modeloUsuarioActivo, vista.TableMostrarUsuarios);
+                    usuariosOp.listarUsuariosInactivo(modeloUsuarioInactivo, vista.TableInactiveUsuarios);
                     JOptionPane.showMessageDialog(null, "El usuario se activo correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
@@ -251,11 +246,11 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
             String usuario = vista.txtUsuarioCambioPass.getText();
             String passwordNuevo = String.valueOf(vista.txtNuevoPassword.getPassword());
             String passwordRepetido = String.valueOf(vista.txtRepetirPassword.getPassword());
-            
-            if(!Utilidades.validarCamposVacios(usuario, passwordNuevo, passwordRepetido)){
+
+            if (!Utilidades.validarCamposVacios(usuario, passwordNuevo, passwordRepetido)) {
                 return;
             }
-            
+
             //Comparar las contraseñas ingresadas
             if (passwordNuevo.equals(passwordRepetido)) {
                 //Hashear password antes de enviarla a la BD
@@ -334,38 +329,6 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
     }
 
     //------------------------------------------------------------------------------------------------------------------------------------------
-    public void listarUsuarios() {
-        ArrayList<Usuario> lista = usuariosDAO.listarUsuarios();
-        modeloUsuarioActivo = (DefaultTableModel) vista.TableMostrarUsuarios.getModel();
-        Object[] obj = new Object[6];
-        for (int i = 0; i < lista.size(); i++) {
-            obj[0] = lista.get(i).getIdUsuario();
-            obj[1] = lista.get(i).getDniUsuario();
-            obj[2] = lista.get(i).getNombre();
-            obj[3] = lista.get(i).getUsuario();
-            obj[4] = lista.get(i).getRol();
-            modeloUsuarioActivo.addRow(obj);
-        }
-        vista.TableMostrarUsuarios.setModel(modeloUsuarioActivo);
-    }
-
-    //------------------------------------------------------------------------------------------------------------------------------------------
-    public void listarUsuariosInactivo() {
-        ArrayList<Usuario> lista = usuariosDAO.listarUsuariosInactivo();
-        modeloUsuarioInactivo = (DefaultTableModel) vista.TableInactiveUsuarios.getModel();
-        Object[] obj = new Object[6];
-        for (int i = 0; i < lista.size(); i++) {
-            obj[0] = lista.get(i).getIdUsuario();
-            obj[1] = lista.get(i).getDniUsuario();
-            obj[2] = lista.get(i).getNombre();
-            obj[3] = lista.get(i).getUsuario();
-            obj[4] = lista.get(i).getRol();
-            modeloUsuarioInactivo.addRow(obj);
-        }
-        vista.TableInactiveUsuarios.setModel(modeloUsuarioInactivo);
-    }
-
-    //------------------------------------------------------------------------------------------------------------------------------------------
     public void limpiar() {
         vista.txtDniUser.setText(null);
         vista.txtnombreUser.setText(null);
@@ -381,8 +344,8 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
         vista.txtActiveRolUser.setText(null);
         vista.txtActiveUsuarioUser.setText(null);
     }
-    
-    public void limpiarDatosActualizarPassword(){
+
+    public void limpiarDatosActualizarPassword() {
         vista.txtUsuarioCambioPass.setText(null);
         vista.txtNombreCambioPass.setText(null);
         vista.txtNuevoPassword.setText(null);
@@ -402,5 +365,4 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
     }
 
     //------------------------------------------------------------------------------------------------------------------------------------------
-
 }

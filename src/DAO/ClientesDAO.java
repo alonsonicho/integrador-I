@@ -90,9 +90,9 @@ public class ClientesDAO extends Conexion {
         }
         return listaCliente;
     }
-    
+
     //Listar clientes filtrado con texto busqueda
-    public ArrayList<Cliente> listarClientesFiltrado(String textoBusqueda){
+    public ArrayList<Cliente> listarClientesFiltrado(String textoBusqueda) {
         String sql = "SELECT * FROM cliente WHERE (dni LIKE ? OR nombre LIKE ?) AND estado = 'ACTIVO'";
         ArrayList<Cliente> listaClientes = new ArrayList<>();
         try {
@@ -101,7 +101,7 @@ public class ClientesDAO extends Conexion {
             ps.setString(1, "%" + textoBusqueda + "%");
             ps.setString(2, "%" + textoBusqueda + "%");
             rs = ps.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 Cliente cliente = new Cliente();
                 cliente.setTipoDocumento(rs.getString("tipoDocumento"));
                 cliente.setDni(rs.getInt("dni"));
@@ -113,7 +113,7 @@ public class ClientesDAO extends Conexion {
         }
         return listaClientes;
     }
-    
+
     //Listar clientes en estado "INACTIVO"
     public ArrayList<Cliente> listarClientesInactivo() {
         ArrayList<Cliente> listaCliente = new ArrayList();
@@ -197,7 +197,7 @@ public class ClientesDAO extends Conexion {
             return false;
         }
     }
-    
+
     public boolean activarCliente(int id) {
         String nuevoEstado = "ACTIVO";
         String sql = "UPDATE cliente SET estado = ? WHERE idCliente = ?";

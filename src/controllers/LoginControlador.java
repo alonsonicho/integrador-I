@@ -32,10 +32,10 @@ public class LoginControlador implements ActionListener {
             String user = frmLogin.txtusuario.getText();
             String password = String.valueOf(frmLogin.txtclave.getPassword());
 
-            if(!Utilidades.validarCamposVacios(user, password)){
+            if (!Utilidades.validarCamposVacios(user, password)) {
                 return;
             }
-            
+
             usuario = usuarioDAO.loginUsuario(user, password);
 
             if (usuario.getUsuario() != null) {
