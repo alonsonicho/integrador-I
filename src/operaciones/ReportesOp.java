@@ -17,19 +17,20 @@ public class ReportesOp {
         this.ventasDAO = ventasDAO;
     }
 
-    public void filtrarVentasPorFecha(Date fechaInicio, Date fechaFin, DefaultTableModel modeloVentas, JTable tablaVentas, JLabel labelNumeroRegistros) {
+    public void filtrarVentasPorFecha(String tipoPago, String tipoDocumentoVenta, Date fechaInicio, Date fechaFin, DefaultTableModel modeloVentas, JTable tablaVentas, JLabel labelNumeroRegistros) {
         if (fechaInicio != null && fechaFin != null) {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             String strFechaInicio = dateFormat.format(fechaInicio);
             String strFechaFin = dateFormat.format(fechaFin);
 
-            ArrayList<Factura> ventasFiltradas = ventasDAO.obtenerVentasPorFecha(strFechaInicio, strFechaFin);
+            ArrayList<Factura> ventasFiltradas = ventasDAO.obtenerVentasPorFiltros(tipoPago, tipoDocumentoVenta, strFechaInicio, strFechaFin);
             modeloVentas = (DefaultTableModel) tablaVentas.getModel();
             modeloVentas.setRowCount(0);
             for (Factura venta : ventasFiltradas) {
                 Object[] fila = new Object[]{
                     venta.getCodigo(),
                     venta.getTipoDocumentoVenta(),
+                    venta.getTipoPago(),
                     venta.getUsuario().getNombre(),
                     venta.getFecha(),
                     venta.getCliente().getNombre(),
@@ -44,19 +45,20 @@ public class ReportesOp {
             labelNumeroRegistros.setText("Registros encontrados: " + numeroRegistros);
         }
     }
-
+    
     public void cargarListaFactura(DefaultTableModel modelo, JTable tabla, JLabel label) {
         ArrayList<Factura> lista = this.ventasDAO.listarFacturas();
         modelo = (DefaultTableModel) tabla.getModel();
         modelo.setRowCount(0);
-        Object[] obj = new Object[6];
+        Object[] obj = new Object[7];
         for (int i = 0; i < lista.size(); i++) {
             obj[0] = lista.get(i).getCodigo();
             obj[1] = lista.get(i).getTipoDocumentoVenta();
-            obj[2] = lista.get(i).getUsuario().getNombre();
-            obj[3] = lista.get(i).getFecha();
-            obj[4] = lista.get(i).getCliente().getNombre();
-            obj[5] = lista.get(i).getTotal();
+            obj[2] = lista.get(i).getTipoPago();
+            obj[3] = lista.get(i).getUsuario().getNombre();
+            obj[4] = lista.get(i).getFecha();
+            obj[5] = lista.get(i).getCliente().getNombre();
+            obj[6] = lista.get(i).getTotal();
             modelo.addRow(obj);
         }
         tabla.setModel(modelo); //modeloVentas
@@ -64,5 +66,5 @@ public class ReportesOp {
         int numeroRegistros = tabla.getRowCount();
         label.setText("Registros encontrados :" + numeroRegistros);
     }
-
+    
 }

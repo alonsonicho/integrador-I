@@ -68,4 +68,39 @@ public class VentasOp {
         textField.setText(nombreVendedor);
     }
 
+    public void calcularTotalPagoFactura(JTable table, JTextField txtSubtotal, JTextField txtIGV, JTextField txtTotalPagar) {
+        double subtotalFactura = 0;
+        double igvFactura = 0;
+        double totalPagoFactura = 0;
+        int numeroFilas = table.getRowCount();
+        for (int i = 0; i < numeroFilas; i++) {
+            double totalPorProducto = (double) table.getModel().getValueAt(i, 4);
+            subtotalFactura += totalPorProducto;
+        }
+
+        igvFactura = subtotalFactura * 0.18;
+        totalPagoFactura = subtotalFactura + igvFactura;
+
+        txtSubtotal.setText(String.format("%.2f", subtotalFactura));
+        txtIGV.setText(String.format("%.2f", igvFactura));
+        txtTotalPagar.setText(String.format("%.2f", totalPagoFactura));
+    }
+
+    public void calcularCambio(JTextField txtTotalPagar, JTextField txtImporte, JTextField txtCambio) {
+        double totalPagoFactura = Double.parseDouble(txtTotalPagar.getText().replace(",", "."));
+        double importe = Double.parseDouble(txtImporte.getText());
+        double cambio = importe - totalPagoFactura;
+
+        txtCambio.setText(String.valueOf(cambio));
+    }
+
+    public boolean esDouble(String valor){
+        try {
+            Double.parseDouble(valor);
+            return true;
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "El valor ingresado  '" + valor + "'  no puede contener letras o caracteres", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+    }
 }

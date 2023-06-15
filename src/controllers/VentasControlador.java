@@ -37,10 +37,6 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
     ReportesOp reportesOp = new ReportesOp(ventasDAO);
     VentasOp ventasOp = new VentasOp(ventasDAO);
 
-    double subtotalFactura;
-    double igvFactura;
-    double totalPagoFactura;
-
     public VentasControlador(PDFFactura pdf, Cliente cliente, ClientesDAO clientesDAO, Producto producto, ProductosDAO productosDAO, Factura factura, VentasDAO ventasDAO, frmVentas vistaVentas) {
         this.pdf = pdf;
         this.cliente = cliente;
@@ -79,6 +75,8 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
         Utilidades.bloquearEdicionTabla(vistaVentas.TableListadoVentas);
         Utilidades.bloquearEdicionTabla(vistaVentas.TableDetalleVenta);
         this.vistaVentas.txtTipoDocumentoCliente.setText("DNI");
+        this.vistaVentas.cbReporteTipoPago.addActionListener(this);
+        this.vistaVentas.cbReporteTipoDocumentoVenta.addActionListener(this);
     }
 
     @Override
@@ -163,7 +161,11 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
                     // Actualizar datos de la tabla
                     modelo.setValueAt(nuevaCantidad, i, 2);
                     modelo.setValueAt(nuevoTotal, i, 4);
-                    calcularTotalPagoFactura();
+                    ventasOp.calcularTotalPagoFactura(
+                            vistaVentas.TableNuevaVenta,
+                            vistaVentas.txtSubtotal,
+                            vistaVentas.txtIGV,
+                            vistaVentas.txtTotalPagar);
                     limpiarDatosProducto();
                     return;
                 }
@@ -172,7 +174,11 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
             // Añadir productos a la tabla
             Object[] fila = {codigoProducto, nombreProducto, cantidadComprar, precioProducto, totalFormateado};
             modelo.addRow(fila);
-            calcularTotalPagoFactura();
+            ventasOp.calcularTotalPagoFactura(
+                    vistaVentas.TableNuevaVenta,
+                    vistaVentas.txtSubtotal,
+                    vistaVentas.txtIGV,
+                    vistaVentas.txtTotalPagar);
             limpiarDatosProducto();
         }
 
@@ -186,7 +192,11 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
             } else {
                 modelo = (DefaultTableModel) vistaVentas.TableNuevaVenta.getModel();
                 modelo.removeRow(filaSeleccionada);
-                calcularTotalPagoFactura();
+                ventasOp.calcularTotalPagoFactura(
+                        vistaVentas.TableNuevaVenta,
+                        vistaVentas.txtSubtotal,
+                        vistaVentas.txtIGV,
+                        vistaVentas.txtTotalPagar);
             }
         }
 
@@ -252,7 +262,7 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
             factura.setUsuario(vendedor);
             java.sql.Date fecha = java.sql.Date.valueOf(LocalDate.now());
             factura.setFecha(fecha);
-            factura.setTotal(totalPagoFactura);
+            factura.setTotal(Double.parseDouble(vistaVentas.txtTotalPagar.getText().replace(",", ".")));
             // Registrar factura //
             ventasDAO.registrarVenta(factura);
 
@@ -319,7 +329,7 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
                 return;
             }
 
-            if (!esDouble(importe)) {
+            if (!ventasOp.esDouble(importe)) {
                 return;
             }
 
@@ -333,7 +343,10 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
                 return;
             }
 
-            calcularCambio();
+            ventasOp.calcularCambio(
+                    vistaVentas.txtTotalPagar,
+                    vistaVentas.txtImporte,
+                    vistaVentas.txtCambio);
         }
 
         //------------------------------------------------------------------------------------------------------------------------------------------
@@ -392,6 +405,14 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
         if (e.getSource() == vistaVentas.btnBuscarCliente) {
             modalAgregarCliente vistaModal = new modalAgregarCliente(this.vistaVentas, true, vistaVentas);
             vistaModal.setVisible(true);
+        }
+
+        if (e.getSource() == vistaVentas.cbReporteTipoPago) {
+            filtrarVentas();
+        }
+
+        if (e.getSource() == vistaVentas.cbReporteTipoDocumentoVenta) {
+            filtrarVentas();
         }
     }
 
@@ -490,13 +511,19 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
     @Override
     public void propertyChange(PropertyChangeEvent e) {
         if ("date".equals(e.getPropertyName())) {
-            // Obtener la fecha de inicio y fecha fin seleccionadas del JDateChooser
-            Date fechaInicio = vistaVentas.fechaDesde.getDate();
-            Date fechaFin = vistaVentas.fechaHasta.getDate();
-
-            //Llamado a la funcion para filtrar por fechas
-            reportesOp.filtrarVentasPorFecha(fechaInicio, fechaFin, modeloVentas, vistaVentas.TableListadoVentas, vistaVentas.labelNumeroRegistros);
+            filtrarVentas();
         }
+    }
+
+    //------------------------------------------------------------------------------------------------------------------------------------------
+    public void filtrarVentas() {
+        // Obtener la fecha de inicio y fecha fin seleccionadas del JDateChooser
+        Date fechaInicio = vistaVentas.fechaDesde.getDate();
+        Date fechaFin = vistaVentas.fechaHasta.getDate();
+        String tipoPago = vistaVentas.cbReporteTipoPago.getSelectedItem().toString();
+        String tipoDocumentoVenta = vistaVentas.cbReporteTipoDocumentoVenta.getSelectedItem().toString();
+        //Llamado a la funcion para filtrar
+        reportesOp.filtrarVentasPorFecha(tipoPago, tipoDocumentoVenta, fechaInicio, fechaFin, modeloVentas, vistaVentas.TableListadoVentas, vistaVentas.labelNumeroRegistros);
     }
 
     //------------------------------------------------------------------------------------------------------------------------------------------
@@ -506,43 +533,6 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
         vistaVentas.txtCantidad.setText(null);
         vistaVentas.txtPrecio.setText(null);
         vistaVentas.txtStockDisponible.setText(null);
-    }
-
-    //------------------------------------------------------------------------------------------------------------------------------------------
-    public void calcularCambio() {
-        double importe = Double.parseDouble(vistaVentas.txtImporte.getText());
-        double cambio = importe - totalPagoFactura;
-
-        vistaVentas.txtCambio.setText(String.valueOf(cambio));
-    }
-
-    //------------------------------------------------------------------------------------------------------------------------------------------
-    public boolean esDouble(String valor) {
-        try {
-            Double.parseDouble(valor);
-            return true;
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "El valor ingresado  '" + valor + "'  no puede contener letras o caracteres", "Advertencia", JOptionPane.WARNING_MESSAGE);
-            return false;
-        }
-    }
-
-    //------------------------------------------------------------------------------------------------------------------------------------------
-    public void calcularTotalPagoFactura() {
-        subtotalFactura = 0;
-        igvFactura = 0;
-        totalPagoFactura = 0;
-        int numeroFilas = vistaVentas.TableNuevaVenta.getRowCount();
-        for (int i = 0; i < numeroFilas; i++) {
-            double totalPorProducto = (double) vistaVentas.TableNuevaVenta.getModel().getValueAt(i, 4);
-            subtotalFactura += totalPorProducto;
-        }
-        igvFactura = subtotalFactura * 0.18;
-        totalPagoFactura = subtotalFactura + igvFactura;
-
-        vistaVentas.txtSubtotal.setText(String.format("%.2f", subtotalFactura));
-        vistaVentas.txtIGV.setText(String.format("%.2f", igvFactura));
-        vistaVentas.txtTotalPagar.setText(String.format("%.2f", totalPagoFactura));
     }
 
 }
