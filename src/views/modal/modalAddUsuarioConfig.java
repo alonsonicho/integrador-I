@@ -86,6 +86,11 @@ public class modalAddUsuarioConfig extends javax.swing.JDialog {
         btnModalUpdateSalir.setText("Cancelar");
         btnModalUpdateSalir.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnModalUpdateSalir.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnModalUpdateSalir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnModalUpdateSalirActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -147,6 +152,12 @@ public class modalAddUsuarioConfig extends javax.swing.JDialog {
     private void txtUpdateBuscarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUpdateBuscarUsuarioActionPerformed
    
     }//GEN-LAST:event_txtUpdateBuscarUsuarioActionPerformed
+
+    private void btnModalUpdateSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModalUpdateSalirActionPerformed
+        
+        this.setVisible(false);
+        
+    }//GEN-LAST:event_btnModalUpdateSalirActionPerformed
 
     private void txtUpdateBuscarUsuarioDocumentChanged(javax.swing.event.DocumentEvent evt){
         // Obtener el texto actual del campo de texto

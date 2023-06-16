@@ -67,4 +67,48 @@ public class ReportesOp {
         label.setText("Registros encontrados :" + numeroRegistros);
     }
     
+    public void mostrarDetalleRegistrosActuales(JLabel labelTotalIngresado, JLabel numeroTotalVentas){
+        ArrayList<Factura> listadoFacturas = ventasDAO.listarFacturas();
+        
+        double totalVentas = 0;
+        int numeroVentas = listadoFacturas.size();
+        
+        for(Factura factura: listadoFacturas){
+            totalVentas += factura.getTotal();
+        }
+        
+        labelTotalIngresado.setText(String.format("%.2f", totalVentas));
+        numeroTotalVentas.setText(String.valueOf(numeroVentas));
+    }
+    
+    public void mostrarDetallePorFiltros(
+            DefaultTableModel modelo, 
+            JTable tabla,
+            JLabel labelSumaTotalFiltrado, 
+            JLabel labelTotalSumaEfectivo,
+            JLabel labelTotalSumaTarjeta){
+        modelo = (DefaultTableModel) tabla.getModel();
+        int rowCount = modelo.getRowCount();
+
+        double sumaTotalFiltrado = 0.0;
+        double totalSumaEfectivo = 0.0;
+        double totalSumaTarjeta = 0.0;
+        
+        for(int i=0; i<rowCount; i++){
+            String tipoPago = (String) modelo.getValueAt(i, 2);
+            double totalVenta = (double) modelo.getValueAt(i, 6);
+            
+            sumaTotalFiltrado += totalVenta;
+            if(tipoPago.equalsIgnoreCase("EFECTIVO")){
+                totalSumaEfectivo += totalVenta;
+            }else if(tipoPago.equalsIgnoreCase("TARJETA")){
+                totalSumaTarjeta += totalVenta;
+            }
+        }
+        
+        labelSumaTotalFiltrado.setText(String.valueOf(sumaTotalFiltrado));
+        labelTotalSumaEfectivo.setText(String.valueOf(totalSumaEfectivo));
+        labelTotalSumaTarjeta.setText(String.valueOf(totalSumaTarjeta));
+        
+    }
 }

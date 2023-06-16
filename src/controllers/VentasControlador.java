@@ -1,27 +1,18 @@
 package controllers;
 
 import DAO.*;
-import java.awt.Desktop;
 import java.awt.event.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import models.*;
-import operaciones.ReportesOp;
-import operaciones.VentasOp;
+import operaciones.*;
 import pdf.PDFFactura;
 import util.Utilidades;
 import views.*;
-import views.modal.modalAgregarCliente;
-import views.modal.modalAgregarProducto;
+import views.modal.*;
 
-public class VentasControlador implements ActionListener, MouseListener, ItemListener, PropertyChangeListener {
+public class VentasControlador implements ActionListener, MouseListener, ItemListener {
 
     PDFFactura pdf;
     Cliente cliente = new Cliente();
@@ -33,7 +24,7 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
     frmVentas vistaVentas;
     DefaultTableModel modelo = new DefaultTableModel();
     DefaultTableModel modeloVentas = new DefaultTableModel();
-    DefaultTableModel modeloDetalleVenta = new DefaultTableModel();
+    //DefaultTableModel modeloDetalleVenta = new DefaultTableModel();
     ReportesOp reportesOp = new ReportesOp(ventasDAO);
     VentasOp ventasOp = new VentasOp(ventasDAO);
 
@@ -56,16 +47,11 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
         this.vistaVentas.btnNuevaFactura.addActionListener(this);
         this.vistaVentas.btnEliminar.addActionListener(this);
         this.vistaVentas.btnBuscarCliente.addActionListener(this);
-        this.vistaVentas.btnFacturaPDF.addActionListener(this);
         this.vistaVentas.btnEliminarDatosCliente.addActionListener(this);
-        this.vistaVentas.btnAnularFactura.addActionListener(this);
         this.vistaVentas.TableNuevaVenta.addMouseListener(this);
-        this.vistaVentas.TableListadoVentas.addMouseListener(this);
         this.vistaVentas.btnModalAgregarProducto.addActionListener(this);
         this.vistaVentas.cbTipoPago.addItemListener(this);
         this.vistaVentas.cbTipoDocumentoVenta.addItemListener(this);
-        this.vistaVentas.fechaDesde.getDateEditor().addPropertyChangeListener(this);
-        this.vistaVentas.fechaHasta.getDateEditor().addPropertyChangeListener(this);
         ventasOp.cargarDatosVendedor(vistaVentas.txtNombreVendedor);
         reportesOp.cargarListaFactura(modeloVentas, vistaVentas.TableListadoVentas, vistaVentas.labelNumeroRegistros);
         Utilidades.centrarDatosTabla(vistaVentas.TableNuevaVenta);
@@ -75,8 +61,6 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
         Utilidades.bloquearEdicionTabla(vistaVentas.TableListadoVentas);
         Utilidades.bloquearEdicionTabla(vistaVentas.TableDetalleVenta);
         this.vistaVentas.txtTipoDocumentoCliente.setText("DNI");
-        this.vistaVentas.cbReporteTipoPago.addActionListener(this);
-        this.vistaVentas.cbReporteTipoDocumentoVenta.addActionListener(this);
     }
 
     @Override
@@ -204,14 +188,27 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
         //Registrar Factura
         if (e.getSource() == vistaVentas.btnGenerarVenta) {
             String numeroDocumentoCliente = vistaVentas.txtNumeroDocumentoCliente.getText();
+            double totalPagoFactura = Double.parseDouble(vistaVentas.txtTotalPagar.getText().replace(",", "."));
 
+            // Validar los campos obligatorios
             if (!Utilidades.validarCamposVacios(numeroDocumentoCliente)) {
                 return;
             }
 
+            // Verificar que el doc cliente solo se ingresen numeros
             boolean camposSonNumeros = Utilidades.validarCamposNumericos(numeroDocumentoCliente);
             if (!camposSonNumeros) {
                 return;
+            }
+
+            //  Verificar que importe no sea menor a el pago total factura cuando se selecciona efectivo
+            String metodoPago = vistaVentas.cbTipoPago.getSelectedItem().toString();
+            if (metodoPago.equals("EFECTIVO")) {
+                double importe = Double.parseDouble(vistaVentas.txtImporte.getText().replace(",", "."));
+                if (importe < totalPagoFactura) {
+                    JOptionPane.showMessageDialog(null, "El importe ingresado no puede ser menor a el pago total");
+                    return;
+                }
             }
 
             //Validar el tipo de documento del cliente, debe coincider con el tipo de venta @boleta @factura
@@ -262,7 +259,7 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
             factura.setUsuario(vendedor);
             java.sql.Date fecha = java.sql.Date.valueOf(LocalDate.now());
             factura.setFecha(fecha);
-            factura.setTotal(Double.parseDouble(vistaVentas.txtTotalPagar.getText().replace(",", ".")));
+            factura.setTotal(totalPagoFactura);
             // Registrar factura //
             ventasDAO.registrarVenta(factura);
 
@@ -298,25 +295,8 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
             ventasOp.imprimirPDF(vistaVentas, tipoVenta);
 
             JOptionPane.showMessageDialog(null, "Venta Realizada", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-        }
-
-        //------------------------------------------------------------------------------------------------------------------------------------------
-        // Abrir detalle factura PDFFactura
-        if (e.getSource() == vistaVentas.btnFacturaPDF) {
-            String idFactura = vistaVentas.txtIdFacturaPDF.getText();
-
-            //Verificar que el campo no este vacio
-            if (idFactura.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Selecciona una factura", "Advertencia", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            try {
-                File file = new File("src/pdf/" + idFactura + ".pdf");
-                Desktop.getDesktop().open(file);
-            } catch (IOException ex) {
-                System.out.println(ex);
-            }
+            limpiarDatosFactura();
+            limpiarDatosProducto();
         }
 
         //------------------------------------------------------------------------------------------------------------------------------------------
@@ -350,40 +330,10 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
         }
 
         //------------------------------------------------------------------------------------------------------------------------------------------
-        //Anular Factura
-        if (e.getSource() == vistaVentas.btnAnularFactura) {
-            String idFactura = vistaVentas.txtIdFacturaPDF.getText();
-
-            //Verificar que el campo no este vacio
-            if (idFactura.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Selecciona una factura", "Advertencia", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            int respuesta = JOptionPane.showConfirmDialog(null, "¿Estás seguro de que deseas anular la factura", "Confirmación", JOptionPane.YES_NO_OPTION);
-            if (respuesta == JOptionPane.YES_OPTION) {
-                if (ventasDAO.anularFactura(idFactura)) {
-                    vistaVentas.txtIdFacturaPDF.setText(null);
-                    reportesOp.cargarListaFactura(modeloVentas, vistaVentas.TableListadoVentas, vistaVentas.labelNumeroRegistros);
-                    JOptionPane.showMessageDialog(null, "Factura anulada", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                } else {
-                    JOptionPane.showMessageDialog(null, "Error al eliminar el cliente");
-                }
-            }
-        }
-
-        //------------------------------------------------------------------------------------------------------------------------------------------
         //Nueva Factura
         if (e.getSource() == vistaVentas.btnNuevaFactura) {
             limpiarDatosProducto();
-            Utilidades.limpiarTable(modelo);
-            vistaVentas.txtNumeroDocumentoCliente.setText(null);
-            vistaVentas.txtNombreCliente.setText(null);
-            vistaVentas.txtImporte.setText(null);
-            vistaVentas.txtCambio.setText(null);
-            vistaVentas.txtSubtotal.setText(null);
-            vistaVentas.txtIGV.setText(null);
-            vistaVentas.txtTotalPagar.setText(null);
+            limpiarDatosFactura();
         }
 
         //------------------------------------------------------------------------------------------------------------------------------------------
@@ -407,13 +357,6 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
             vistaModal.setVisible(true);
         }
 
-        if (e.getSource() == vistaVentas.cbReporteTipoPago) {
-            filtrarVentas();
-        }
-
-        if (e.getSource() == vistaVentas.cbReporteTipoDocumentoVenta) {
-            filtrarVentas();
-        }
     }
 
     //------------------------------------------------------------------------------------------------------------------------------------------
@@ -432,33 +375,6 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
             new frmMenuPrincipal().setVisible(true);
             vistaVentas.dispose();
         }
-
-        if (e.getSource() == vistaVentas.TableListadoVentas) {
-            int fila = vistaVentas.TableListadoVentas.rowAtPoint(e.getPoint());
-            vistaVentas.txtIdFacturaPDF.setText(vistaVentas.TableListadoVentas.getValueAt(fila, 0).toString());
-
-            String codigoFactura = vistaVentas.TableListadoVentas.getValueAt(fila, 0).toString();
-            // Obtener el detalle de la factura según la venta seleccionada
-            ArrayList<DetalleFactura> detalleFactura = ventasDAO.obtenerDetalleFacturaVenta(codigoFactura);
-
-            modeloDetalleVenta = (DefaultTableModel) vistaVentas.TableDetalleVenta.getModel();
-            modeloDetalleVenta.setRowCount(0); // Limpiar la tabla antes de agregar los nuevos datos
-
-            for (DetalleFactura detalle : detalleFactura) {
-                Object[] rowData = {
-                    detalle.getProducto().getIdProducto(),
-                    detalle.getProducto().getNombreProducto(),
-                    detalle.getProducto().getDescripcion(),
-                    detalle.getProducto().getPrecio(),
-                    detalle.getCantidad(),
-                    detalle.getTotal()
-                };
-                modeloDetalleVenta.addRow(rowData);
-            }
-            // Actualizar la tabla visualmente
-            vistaVentas.TableDetalleVenta.setModel(modeloDetalleVenta);
-        }
-
     }
 
     @Override
@@ -508,31 +424,23 @@ public class VentasControlador implements ActionListener, MouseListener, ItemLis
     }
 
     //------------------------------------------------------------------------------------------------------------------------------------------
-    @Override
-    public void propertyChange(PropertyChangeEvent e) {
-        if ("date".equals(e.getPropertyName())) {
-            filtrarVentas();
-        }
-    }
-
-    //------------------------------------------------------------------------------------------------------------------------------------------
-    public void filtrarVentas() {
-        // Obtener la fecha de inicio y fecha fin seleccionadas del JDateChooser
-        Date fechaInicio = vistaVentas.fechaDesde.getDate();
-        Date fechaFin = vistaVentas.fechaHasta.getDate();
-        String tipoPago = vistaVentas.cbReporteTipoPago.getSelectedItem().toString();
-        String tipoDocumentoVenta = vistaVentas.cbReporteTipoDocumentoVenta.getSelectedItem().toString();
-        //Llamado a la funcion para filtrar
-        reportesOp.filtrarVentasPorFecha(tipoPago, tipoDocumentoVenta, fechaInicio, fechaFin, modeloVentas, vistaVentas.TableListadoVentas, vistaVentas.labelNumeroRegistros);
-    }
-
-    //------------------------------------------------------------------------------------------------------------------------------------------
     public void limpiarDatosProducto() {
         vistaVentas.txtBuscarProducto.setText(null);
         vistaVentas.txtNombreProducto.setText(null);
         vistaVentas.txtCantidad.setText(null);
         vistaVentas.txtPrecio.setText(null);
         vistaVentas.txtStockDisponible.setText(null);
+    }
+
+    public void limpiarDatosFactura() {
+        Utilidades.limpiarTable(modelo);
+        vistaVentas.txtNumeroDocumentoCliente.setText(null);
+        vistaVentas.txtNombreCliente.setText(null);
+        vistaVentas.txtImporte.setText(null);
+        vistaVentas.txtCambio.setText(null);
+        vistaVentas.txtSubtotal.setText(null);
+        vistaVentas.txtIGV.setText(null);
+        vistaVentas.txtTotalPagar.setText(null);
     }
 
 }

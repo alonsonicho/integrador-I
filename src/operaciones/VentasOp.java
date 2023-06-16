@@ -91,7 +91,8 @@ public class VentasOp {
         double importe = Double.parseDouble(txtImporte.getText());
         double cambio = importe - totalPagoFactura;
 
-        txtCambio.setText(String.valueOf(cambio));
+        //txtCambio.setText(String.valueOf(cambio));
+        txtCambio.setText(String.format("%.2f", cambio));
     }
 
     public boolean esDouble(String valor){
