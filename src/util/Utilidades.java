@@ -2,7 +2,6 @@ package util;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -53,6 +52,11 @@ public class Utilidades {
             }
         }
         return true;
+    }
+    
+    // Alerta de mensajes
+    public static void mostrarAdvertencia(String mensaje) {
+        JOptionPane.showMessageDialog(null, mensaje, "Advertencia", JOptionPane.WARNING_MESSAGE);
     }
 
 }
