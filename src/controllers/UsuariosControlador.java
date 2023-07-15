@@ -71,6 +71,9 @@ public class UsuariosControlador implements ActionListener, MouseListener, KeyLi
             if (!camposSonEnteros) {
                 return;
             }
+            
+            //Verificar el tipo de documento ingresado sea DNI
+           
 
             //Hashear password antes de enviarla a la BD
             String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
