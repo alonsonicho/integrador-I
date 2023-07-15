@@ -166,7 +166,7 @@ public class VentasDAO extends Conexion {
     }
 
     //Reportes
-    public ArrayList<Factura> obtenerVentasPorFecha(String tipoPago, String tipoDocumentoVenta, String fechaInicio, String fechaFin) {
+    /*public ArrayList<Factura> obtenerVentasPorFecha(String tipoPago, String tipoDocumentoVenta, String fechaInicio, String fechaFin) {
         String sql = "SELECT f.idFactura, f.tipoPago, f.tipoDocumentoVenta, f.idCliente, f.idVendedor, f.fecha, f.total, f.estado, u.nombre AS nombreVendedor, c.nombre AS nombreCliente "
                 + "FROM factura f "
                 + "JOIN usuario u ON f.idVendedor = u.idUsuario "
@@ -176,19 +176,10 @@ public class VentasDAO extends Conexion {
         ArrayList<String> conditions = new ArrayList<>();
         ArrayList<Object> parameters = new ArrayList<>();
 
-        if (fechaInicio != null && fechaFin != null) {
-            conditions.add("f.fecha BETWEEN ? AND ?");
-            parameters.add(fechaInicio);
-            parameters.add(fechaFin);
-        }
-
         if (tipoDocumentoVenta.equals("TODOS") && tipoPago.equals("TODOS")) {
-            //conditions.add("f.tipoDocumentoVenta IN ('BOLETA', 'FACTURA')");
-            //conditions.add("f.tipoPago IN ('EFECTIVO', 'TARJETA')");
             listarFacturas();
         } else {
             if (tipoDocumentoVenta.equals("TODOS")) {
-                //conditions.add("(f.tipoDocumentoVenta = 'BOLETA' OR f.tipoDocumentoVenta = 'FACTURA')");
                 conditions.add("f.tipoDocumentoVenta IN ('BOLETA', 'FACTURA')");
             } else {
                 conditions.add("f.tipoDocumentoVenta = ?");
@@ -196,17 +187,20 @@ public class VentasDAO extends Conexion {
             }
 
             if (tipoPago.equals("TODOS")) {
-                //conditions.add("(f.tipoPago = 'EFECTIVO' OR f.tipoPago = 'TARJETA')");
                 conditions.add("f.tipoPago IN ('EFECTIVO', 'TARJETA')");
             } else {
                 conditions.add("f.tipoPago = ?");
                 parameters.add(tipoPago);
             }
         }
+        
+        if (fechaInicio != null && fechaFin != null) {
+            conditions.add("f.fecha BETWEEN ? AND ?");
+            parameters.add(fechaInicio);
+            parameters.add(fechaFin);
+        }
 
         if (!conditions.isEmpty()) {
-            //sql += " AND " + String.join(" AND ", conditions);
-            //sql += " AND (" + String.join(" AND ", conditions) + ")";
             String conditionsClause = String.join(" AND ", conditions);
             sql += " AND " + conditionsClause;
         }
@@ -246,7 +240,7 @@ public class VentasDAO extends Conexion {
             System.out.println(e);
         }
         return listaVentas;
-    }
+    }*/
 
     public ArrayList<Factura> obtenerVentasPorFiltros(String tipoPago, String tipoDocumentoVenta, String fechaInicio, String fechaFin) {
         String sql = "SELECT f.idFactura, f.tipoPago, f.tipoDocumentoVenta, f.idCliente, f.idVendedor, f.fecha, f.total, f.estado, u.nombre AS nombreVendedor, c.nombre AS nombreCliente "
@@ -262,37 +256,31 @@ public class VentasDAO extends Conexion {
             conditions.add("f.tipoPago = ?");
             parameters.add(tipoPago);
         } 
-        /*else {
-            conditions.add("f.tipoPago IN ('EFECTIVO', 'TARJETA')");
-        }*/
 
         if (!tipoDocumentoVenta.equals("TODOS")) {
             conditions.add("f.tipoDocumentoVenta = ?");
             parameters.add(tipoDocumentoVenta);
-        } 
-        /*else {
-            conditions.add("f.tipoDocumentoVenta IN ('BOLETA', 'FACTURA')");
-        }*/
+        }   
 
-        if (fechaInicio != null && fechaFin != null) {
+        if ((fechaInicio != null && fechaFin != null) || conditions.isEmpty()) {
             conditions.add("f.fecha BETWEEN ? AND ?");
             parameters.add(fechaInicio);
             parameters.add(fechaFin);
         }
-
-        if (!conditions.isEmpty()) {
+                                                                        
+        //if (!conditions.isEmpty()) {
             String conditionsClause = String.join(" AND ", conditions);
             sql += " AND " + conditionsClause;
-        }
+        //}
 
         ArrayList<Factura> listaVentas = new ArrayList<>();
         try (Connection con = getConnection();
-                PreparedStatement ps = con.prepareStatement(sql)) {
+             PreparedStatement ps = con.prepareStatement(sql)) {
 
             for (int i = 0; i < parameters.size(); i++) {
                 ps.setObject(i + 1, parameters.get(i));
             }
-
+                            
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Factura factura = new Factura();
