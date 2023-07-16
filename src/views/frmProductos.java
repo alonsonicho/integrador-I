@@ -1,25 +1,14 @@
 package views;
 
-import DAO.CategoriasDAO;
-import DAO.ProductosDAO;
-import controllers.CategoriasControlador;
-import controllers.ProductosControlador;
-import models.*;
+import controllers.*;
+
 
 public class frmProductos extends javax.swing.JFrame {
-
-    Categoria cat = new Categoria();
-    CategoriasDAO categoriaDAO = new CategoriasDAO();
-    Producto prod = new Producto();
-    ProductosDAO prodDao = new ProductosDAO();
-    frmVentas vistaVentas = new frmVentas();
-
+    
     public frmProductos() {
         initComponents();
-        //MenuProductosControlador vista = new MenuProductosControlador(this);
-
-        CategoriasControlador categoria = new CategoriasControlador(cat, categoriaDAO, this);
-        ProductosControlador producto = new ProductosControlador(prod, prodDao, this, vistaVentas, categoriaDAO);
+        CategoriaControlador categoria = new CategoriaControlador(this);
+        ProductoControlador producto = new ProductoControlador(this);
     }
 
     /**
@@ -136,21 +125,21 @@ public class frmProductos extends javax.swing.JFrame {
         btnNuevoPro.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnNuevoPro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/nuevo.png"))); // NOI18N
         btnNuevoPro.setText("Nuevo");
-        btnNuevoPro.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnNuevoPro.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnNuevoPro.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnNuevoPro.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
 
         btnRegistrarPro.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnRegistrarPro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/registrar_1.png"))); // NOI18N
         btnRegistrarPro.setText("Registrar");
-        btnRegistrarPro.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnRegistrarPro.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnRegistrarPro.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnRegistrarPro.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
 
         btnModificarPro.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnModificarPro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/edit.png"))); // NOI18N
         btnModificarPro.setText("Modificar");
-        btnModificarPro.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnModificarPro.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnModificarPro.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnModificarPro.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
 
@@ -168,7 +157,7 @@ public class frmProductos extends javax.swing.JFrame {
         btnBuscarProducto.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnBuscarProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/lupa.png"))); // NOI18N
         btnBuscarProducto.setText("Buscar");
-        btnBuscarProducto.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnBuscarProducto.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         javax.swing.GroupLayout jPanel15Layout = new javax.swing.GroupLayout(jPanel15);
         jPanel15.setLayout(jPanel15Layout);
@@ -247,17 +236,11 @@ public class frmProductos extends javax.swing.JFrame {
                 .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(cbxCatPro, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel15Layout.createSequentialGroup()
-                        .addGap(18, 27, Short.MAX_VALUE)
-                        .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnRegistrarPro, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel15Layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(btnNuevoPro, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel15Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnModificarPro, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(btnRegistrarPro, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnNuevoPro, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnModificarPro, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(txtidprod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(29, 29, 29))
@@ -338,7 +321,7 @@ public class frmProductos extends javax.swing.JFrame {
                 .addGroup(jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel20Layout.createSequentialGroup()
                         .addComponent(btnRegitrarCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnModificarCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(txtNombreCategoria))
                 .addContainerGap())
@@ -413,7 +396,7 @@ public class frmProductos extends javax.swing.JFrame {
         JLabelProductos.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         JLabelProductos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/producto.png"))); // NOI18N
         JLabelProductos.setText("Productos");
-        JLabelProductos.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        JLabelProductos.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         javax.swing.GroupLayout JPanelProductosLayout = new javax.swing.GroupLayout(JPanelProductos);
         JPanelProductos.setLayout(JPanelProductosLayout);
@@ -436,7 +419,7 @@ public class frmProductos extends javax.swing.JFrame {
         JLabelCategoria.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         JLabelCategoria.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/box.png"))); // NOI18N
         JLabelCategoria.setText("Categorias");
-        JLabelCategoria.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        JLabelCategoria.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         javax.swing.GroupLayout JPanelCategoriaLayout = new javax.swing.GroupLayout(JPanelCategoria);
         JPanelCategoria.setLayout(JPanelCategoriaLayout);
@@ -459,7 +442,7 @@ public class frmProductos extends javax.swing.JFrame {
         JLabelSalirProd.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         JLabelSalirProd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/salir.png"))); // NOI18N
         JLabelSalirProd.setText("Salir");
-        JLabelSalirProd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        JLabelSalirProd.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         javax.swing.GroupLayout JPanelSalirProdLayout = new javax.swing.GroupLayout(JPanelSalirProd);
         JPanelSalirProd.setLayout(JPanelSalirProdLayout);
@@ -482,7 +465,7 @@ public class frmProductos extends javax.swing.JFrame {
         JLabelMedida.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         JLabelMedida.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/detallista.png"))); // NOI18N
         JLabelMedida.setText("Medidas");
-        JLabelMedida.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        JLabelMedida.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         javax.swing.GroupLayout JPanelMedidaLayout = new javax.swing.GroupLayout(JPanelMedida);
         JPanelMedida.setLayout(JPanelMedidaLayout);
