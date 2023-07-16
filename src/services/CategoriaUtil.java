@@ -2,6 +2,7 @@ package services;
 
 import DAO.CategoriasDAO;
 import java.util.ArrayList;
+import java.util.stream.Stream;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import models.Categoria;
@@ -23,13 +24,11 @@ public class CategoriaUtil {
 
     public void registrarCategoria() {
         String nombreCategoria = vistaCategorias.txtNombreCategoria.getText();
-        //Verificar si el campo no se encuentra vacio
-        if (!Utilidades.validarCamposVacios(nombreCategoria)) {
-            return;
-        }
+        // Validar campos vacios
+        if (!Utilidades.validarCamposVacios(nombreCategoria)) return;
 
         categoria.setNombreCategoria(nombreCategoria);
-        //Llamado al metodo para el registro de la categoria
+        // Metodo para registro de Categoria
         if (categoriasDAO.registrarCategoria(categoria)) {
             limpiar();
             listarCategorias();
@@ -41,14 +40,12 @@ public class CategoriaUtil {
     public void actualizarCategoria() {
         String idCat = vistaCategorias.txtIdCategoria.getText();
         String nombreCat = vistaCategorias.txtNombreCategoria.getText();
-        //Verificar que los campos se encuentren completos
-        if (!Utilidades.validarCamposVacios(idCat, nombreCat)) {
-            return;
-        }
+        // Validar campos vacios
+        if (!Utilidades.validarCamposVacios(idCat, nombreCat)) return;
 
         categoria.setNombreCategoria(nombreCat);
         categoria.setIdCategoria(idCat);
-        //Llamado al metodo para actualizar
+        // Metodo para actualizar categoria
         if (categoriasDAO.actualizarCategoria(categoria)) {
             limpiar();
             listarCategorias();
@@ -82,26 +79,26 @@ public class CategoriaUtil {
         ArrayList<Categoria> lista = this.categoriasDAO.listarCategorias();
         modeloCategoria = (DefaultTableModel) vistaCategorias.TableCategorias.getModel();
         modeloCategoria.setRowCount(0); // Limpiar el modelo de la tabla
-        Object[] obj = new Object[2];
-        for (int i = 0; i < lista.size(); i++) {
-            obj[0] = lista.get(i).getIdCategoria();
-            obj[1] = lista.get(i).getNombreCategoria();
+        lista.forEach(categoria -> {
+            Object[] obj = {
+                categoria.getIdCategoria(),
+                categoria.getNombreCategoria()
+            };
             modeloCategoria.addRow(obj);
-        }
+        });
         vistaCategorias.TableCategorias.setModel(modeloCategoria);
     }
 
     public void listarCategoriasComboBox() {
         vistaCategorias.cbxCatPro.removeAllItems();
         ArrayList<Categoria> lista = this.categoriasDAO.listarCategorias();
-        for (Categoria cat : lista) {
-            vistaCategorias.cbxCatPro.addItem(cat.getNombreCategoria());
-        }
+        lista.forEach(cat -> vistaCategorias.cbxCatPro.addItem(cat.getNombreCategoria()));
     }
 
     private void limpiar() {
-        vistaCategorias.txtIdCategoria.setText(null);
-        vistaCategorias.txtNombreCategoria.setText(null);
+        Stream.of(
+                vistaCategorias.txtIdCategoria,
+                vistaCategorias.txtNombreCategoria
+        ).forEach(textField -> textField.setText(null));
     }
-
 }
