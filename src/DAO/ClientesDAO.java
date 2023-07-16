@@ -21,7 +21,7 @@ public class ClientesDAO extends Conexion {
             Connection con = getConnection();
             ps = con.prepareStatement(sql);
             ps.setString(1, cliente.getTipoDocumento());
-            ps.setInt(2, cliente.getDni());
+            ps.setString(2, cliente.getNumeroDocumento());
             ps.setString(3, cliente.getNombre());
             ps.setInt(4, cliente.getTelefono());
             ps.setString(5, cliente.getDireccion());
@@ -30,7 +30,7 @@ public class ClientesDAO extends Conexion {
             return true;
         } catch (SQLIntegrityConstraintViolationException e) {
             System.out.println(e.getMessage());
-            JOptionPane.showMessageDialog(null, "El N° de documento '" + cliente.getDni() + "' ya esta siendo utilizado.");
+            JOptionPane.showMessageDialog(null, "El N° de documento '" + cliente.getNumeroDocumento() + "' ya esta siendo utilizado.");
             return false;
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -45,7 +45,7 @@ public class ClientesDAO extends Conexion {
             Connection con = getConnection();
             ps = con.prepareStatement(sql);
             ps.setString(1, cli.getTipoDocumento());
-            ps.setInt(2, cli.getDni());
+            ps.setString(2, cli.getNumeroDocumento());
             ps.setString(3, cli.getNombre());
             ps.setInt(4, cli.getTelefono());
             ps.setString(5, cli.getDireccion());
@@ -56,7 +56,7 @@ public class ClientesDAO extends Conexion {
             String errorMessage = e.getMessage();
             System.out.println(errorMessage);
             if (errorMessage.contains("dni")) {
-                JOptionPane.showMessageDialog(null, "El N° de documento '" + cli.getDni() + "' ya esta registrado para otro cliente");
+                JOptionPane.showMessageDialog(null, "El N° de documento '" + cli.getNumeroDocumento() + "' ya esta registrado para otro cliente");
             }
             return false;
         } catch (SQLException e) {
@@ -77,7 +77,7 @@ public class ClientesDAO extends Conexion {
                 Cliente cli = new Cliente();
                 cli.setTipoDocumento(rs.getString("tipoDocumento"));
                 cli.setIdCliente(rs.getInt("idCliente"));
-                cli.setDni(rs.getInt("dni"));
+                cli.setNumeroDocumento(rs.getString("dni"));
                 cli.setNombre(rs.getString("nombre"));
                 cli.setTelefono(rs.getInt("telefono"));
                 cli.setDireccion(rs.getString("direccion"));
@@ -103,7 +103,7 @@ public class ClientesDAO extends Conexion {
             while (rs.next()) {
                 Cliente cliente = new Cliente();
                 cliente.setTipoDocumento(rs.getString("tipoDocumento"));
-                cliente.setDni(rs.getInt("dni"));
+                cliente.setNumeroDocumento(rs.getString("dni"));
                 cliente.setNombre(rs.getString("nombre"));
                 listaClientes.add(cliente);
             }
@@ -125,7 +125,7 @@ public class ClientesDAO extends Conexion {
                 Cliente cli = new Cliente();
                 cli.setTipoDocumento(rs.getString("tipoDocumento"));
                 cli.setIdCliente(rs.getInt("idCliente"));
-                cli.setDni(rs.getInt("dni"));
+                cli.setNumeroDocumento(rs.getString("dni"));
                 cli.setNombre(rs.getString("nombre"));
                 cli.setTelefono(rs.getInt("telefono"));
                 cli.setDireccion(rs.getString("direccion"));
@@ -138,13 +138,13 @@ public class ClientesDAO extends Conexion {
         return listaCliente;
     }
 
-    public Cliente buscarCliente(int dni) throws Exception {
+    public Cliente buscarCliente(String dni) throws Exception {
         Cliente cli = new Cliente();
         try {
             Connection con = getConnection();
             String sql = "SELECT * FROM cliente where dni=?";
             ps = con.prepareStatement(sql);
-            ps.setInt(1, dni);
+            ps.setString(1, dni);
             rs = ps.executeQuery();
             if (rs.next()) {
                 String estado = rs.getString("estado");
@@ -154,7 +154,7 @@ public class ClientesDAO extends Conexion {
 
                 cli.setTipoDocumento(rs.getString("tipoDocumento"));
                 cli.setIdCliente(rs.getInt("idCliente"));
-                cli.setDni(rs.getInt("dni"));
+                cli.setNumeroDocumento(rs.getString("dni"));
                 cli.setNombre(rs.getString("nombre"));
                 cli.setTelefono(rs.getInt("telefono"));
                 cli.setDireccion(rs.getString("direccion"));

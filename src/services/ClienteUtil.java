@@ -2,6 +2,7 @@ package services;
 
 import DAO.ClientesDAO;
 import java.util.List;
+import java.util.stream.Stream;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import models.Cliente;
@@ -34,7 +35,7 @@ public class ClienteUtil {
         }
 
         //Validar campos con numeros, se ejecuta si devuelve false
-        boolean camposSonEnteros = Utilidades.validarCamposNumericos(numeroDocumentoCliente, telefonoCliente);
+        boolean camposSonEnteros = Utilidades.validarCamposEntero(numeroDocumentoCliente, telefonoCliente);
         if (!camposSonEnteros) {
             return;
         }
@@ -46,17 +47,17 @@ public class ClienteUtil {
                 return;
             }
         } else if (tipoDocumento.equals("RUC")) {
-            if (!(numeroDocumentoCliente.startsWith("10") || numeroDocumentoCliente.startsWith("20")) || numeroDocumentoCliente.length() != 10) {
-                JOptionPane.showMessageDialog(null, "El RUC debe comenzar con '10' o '20' y tener 10 dígitos", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
+            if (!(numeroDocumentoCliente.startsWith("10") || numeroDocumentoCliente.startsWith("20")) || numeroDocumentoCliente.length() != 11) {
+                JOptionPane.showMessageDialog(null, "El RUC debe comenzar con '10' o '20' y tener 11 dígitos", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
                 return;
             }
         }
 
-        int dni = Integer.parseInt(numeroDocumentoCliente);
+        //int dni = Integer.parseInt(numeroDocumentoCliente);
         int telefono = Integer.parseInt(telefonoCliente);
 
         cl.setTipoDocumento(tipoDocumento);
-        cl.setDni(dni);
+        cl.setNumeroDocumento(numeroDocumentoCliente);
         cl.setNombre(nombreCliente);
         cl.setTelefono(telefono);
         cl.setDireccion(direccionCliente);
@@ -89,10 +90,8 @@ public class ClienteUtil {
         }
 
         //Validar si se ingresan valores String o caracteres en campos numericos
-        boolean camposSonEnteros = Utilidades.validarCamposNumericos(dniCliente, telefonoCliente);
-        if (!camposSonEnteros) {
-            return;
-        }
+        boolean camposSonEnteros = Utilidades.validarCamposEntero(dniCliente, telefonoCliente);
+        if (!camposSonEnteros) return;
 
         //Validacion para asignar el tipo de documento
         if (tipoDocumento.equals("DNI")) {
@@ -101,14 +100,13 @@ public class ClienteUtil {
                 return;
             }
         } else if (tipoDocumento.equals("RUC")) {
-            if (!(dniCliente.startsWith("10") || dniCliente.startsWith("20")) || dniCliente.length() != 10) {
-                JOptionPane.showMessageDialog(null, "El RUC debe comenzar con '10' o '20' y tener 10 dígitos", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
+            if (!(dniCliente.startsWith("10") || dniCliente.startsWith("20")) || dniCliente.length() != 11) {
+                JOptionPane.showMessageDialog(null, "El RUC debe comenzar con '10' o '20' y tener 11 dígitos", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
                 return;
             }
         }
 
         int idCli = Integer.parseInt(idCliente);
-        int dni = Integer.parseInt(dniCliente);
         int telefono;
         if (telefonoCliente.isEmpty()) {
             telefono = 0; // Asignar un valor predeterminado de 0 cuando la cadena está vacía
@@ -116,9 +114,8 @@ public class ClienteUtil {
             telefono = Integer.parseInt(telefonoCliente); // Convertir la cadena a entero
         }
 
-        //int telefono = Integer.parseInt(telefonoCliente);
         cl.setTipoDocumento(tipoDocumento);
-        cl.setDni(dni);
+        cl.setNumeroDocumento(dniCliente);
         cl.setNombre(nombreCliente);
         cl.setTelefono(telefono);
         cl.setDireccion(direccionCliente);
@@ -141,25 +138,23 @@ public class ClienteUtil {
         }
 
         //Validar los campos numericos, se ejecuta si devuelve false
-        boolean camposSonEnteros = Utilidades.validarCamposNumericos(dniClienteString);
-        if (!camposSonEnteros) {
-            return;
-        }
+        boolean camposSonEnteros = Utilidades.validarCamposEntero(dniClienteString);
+        if (!camposSonEnteros) return;
 
-        int dniCliente = Integer.parseInt(dniClienteString);
+        //int dniCliente = Integer.parseInt(dniClienteString);
 
         try {
-            cl = clienteDAO.buscarCliente(dniCliente);
-            if (cl.getDni() != 0) {
+            cl = clienteDAO.buscarCliente(dniClienteString);
+            if (cl.getNumeroDocumento() != null) {
                 vistaClientes.txtnombrecli.setText(cl.getNombre());
                 vistaClientes.cbTipoDocumento.setSelectedItem(cl.getTipoDocumento());
-                vistaClientes.txtdni.setText(String.valueOf(cl.getDni()));
+                vistaClientes.txtdni.setText(cl.getNumeroDocumento());
                 vistaClientes.txttelefonocli.setText(String.valueOf(cl.getTelefono()));
                 vistaClientes.txadireccioncli.setText(cl.getDireccion());
                 vistaClientes.txtidcli.setText(String.valueOf(cl.getIdCliente()));
                 vistaClientes.btnregistrarcli.setEnabled(false);
             } else {
-                JOptionPane.showMessageDialog(null, "No existe el DNI ingresado", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(null, "No existe el N° documento ingresado", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage());
@@ -219,16 +214,17 @@ public class ClienteUtil {
         List<Cliente> lista = clienteDAO.listarClientes();
         modeloClienteActivo = (DefaultTableModel) vistaClientes.TableMostrarClientes.getModel();
         modeloClienteActivo.setRowCount(0); // Limpiar el modelo de la tabla
-        Object[] obj = new Object[6];
-        for (int i = 0; i < lista.size(); i++) {
-            obj[0] = lista.get(i).getIdCliente();
-            obj[1] = lista.get(i).getTipoDocumento();
-            obj[2] = lista.get(i).getDni();
-            obj[3] = lista.get(i).getNombre() != null ? lista.get(i).getNombre() : "";
-            obj[4] = lista.get(i).getTelefono() != 0 ? lista.get(i).getTelefono() : "";
-            obj[5] = lista.get(i).getDireccion() != null ? lista.get(i).getDireccion() : "";
+        lista.forEach(cli -> {
+            Object[] obj = {
+                cli.getIdCliente(),
+                cli.getTipoDocumento(),
+                cli.getNumeroDocumento(),
+                cli.getNombre() != null ? cli.getNombre() : "",
+                cli.getTelefono() != 0 ? cli.getTelefono() : "",
+                cli.getDireccion() != null ? cli.getDireccion() : ""
+            };
             modeloClienteActivo.addRow(obj);
-        }
+        }); 
         vistaClientes.TableMostrarClientes.setModel(modeloClienteActivo);
     }
 
@@ -236,35 +232,40 @@ public class ClienteUtil {
         List<Cliente> lista = this.clienteDAO.listarClientesInactivo();
         modeloClienteInactivo = (DefaultTableModel) vistaClientes.TableInactiveClientes.getModel();
         modeloClienteInactivo.setRowCount(0); // Limpiar el modelo de la tabla
-        Object[] obj = new Object[6];
-        for (int i = 0; i < lista.size(); i++) {
-            obj[0] = lista.get(i).getIdCliente();
-            obj[1] = lista.get(i).getTipoDocumento();
-            obj[2] = lista.get(i).getDni();
-            obj[3] = lista.get(i).getNombre() != null ? lista.get(i).getNombre() : "";
-            obj[4] = lista.get(i).getTelefono() != 0 ? lista.get(i).getTelefono() : "";
-            obj[5] = lista.get(i).getDireccion() != null ? lista.get(i).getDireccion() : "";
+        lista.forEach(cli -> {
+            Object[] obj = {
+                cli.getIdCliente(),
+                cli.getTipoDocumento(),
+                cli.getNumeroDocumento(),
+                cli.getNombre() != null ? cli.getNombre() : "",
+                cli.getTelefono() != 0 ? cli.getTelefono() : "",
+                cli.getDireccion() != null ? cli.getDireccion() : ""
+            };
             modeloClienteInactivo.addRow(obj);
-        }
+        });
         vistaClientes.TableInactiveClientes.setModel(modeloClienteInactivo);
     }
 
     public void limpiar() {
-        vistaClientes.txtidcli.setText(null);
-        vistaClientes.txtdni.setText(null);
-        vistaClientes.txtnombrecli.setText(null);
-        vistaClientes.txttelefonocli.setText(null);
-        vistaClientes.txadireccioncli.setText(null);
-        vistaClientes.txtbuscarcli.setText(null);
+        Stream.of(
+                vistaClientes.txtidcli,
+                vistaClientes.txtdni,
+                vistaClientes.txtnombrecli,
+                vistaClientes.txttelefonocli,
+                vistaClientes.txadireccioncli,
+                vistaClientes.txtbuscarcli
+        ).forEach(textField -> textField.setText(null));
     }
 
     public void limpiarClienteInactivo() {
-        vistaClientes.txtActivarClienteId.setText(null);
-        vistaClientes.txtActiveNombreCliente.setText(null);
-        vistaClientes.txtActiveNumeroDocumentoCliente.setText(null);
-        vistaClientes.txtActiveTipoDocumento.setText(null);
-        vistaClientes.txtActiveTelefonoCliente.setText(null);
-        vistaClientes.txtActiveDireccion.setText(null);
+        Stream.of(
+                vistaClientes.txtActivarClienteId,
+                vistaClientes.txtActiveNombreCliente,
+                vistaClientes.txtActiveNumeroDocumentoCliente,
+                vistaClientes.txtActiveTipoDocumento,
+                vistaClientes.txtActiveTelefonoCliente,
+                vistaClientes.txtActiveDireccion
+        ).forEach(textField -> textField.setText(null));
     }
 
 }

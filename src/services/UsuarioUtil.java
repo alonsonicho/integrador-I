@@ -2,6 +2,7 @@ package services;
 
 import DAO.UsuariosDAO;
 import java.util.ArrayList;
+import java.util.stream.Stream;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import models.Session;
@@ -35,10 +36,8 @@ public class UsuarioUtil {
         }
 
         //Validar campos con numeros, se ejecuta si devuelve false
-        boolean camposSonEnteros = Utilidades.validarCamposNumericos(dni);
-        if (!camposSonEnteros) {
-            return;
-        }
+        boolean camposSonEnteros = Utilidades.validarCamposEntero(dni);
+        if (!camposSonEnteros) return;
 
         //Verificar el tipo de documento ingresado sea DNI
         //Hashear password antes de enviarla a la BD
@@ -64,15 +63,11 @@ public class UsuarioUtil {
         String rol = vista.cbroluser.getSelectedItem().toString();
         String idUsuario = vista.txtidusuario.getText();
 
-        if (!Utilidades.validarCamposVacios(dni, nombre, user)) {
-            return;
-        }
+        if (!Utilidades.validarCamposVacios(dni, nombre, user)) return;
 
         //Validar campos con numeros, se ejecuta si devuelve false
-        boolean camposSonEnteros = Utilidades.validarCamposNumericos(dni);
-        if (!camposSonEnteros) {
-            return;
-        }
+        boolean camposSonEnteros = Utilidades.validarCamposEntero(dni);
+        if (!camposSonEnteros) return;
 
         usuario.setDniUsuario(Integer.parseInt(dni));
         usuario.setNombre(nombre);
@@ -90,15 +85,11 @@ public class UsuarioUtil {
     public void buscarUsuario() {
         String dniUsuarioStr = vista.txtbuscarUser.getText();
 
-        if (!Utilidades.validarCamposVacios(dniUsuarioStr)) {
-            return;
-        }
+        if (!Utilidades.validarCamposVacios(dniUsuarioStr)) return;
 
         //Validar campos con numeros
-        boolean camposSonEnteros = Utilidades.validarCamposNumericos(dniUsuarioStr);
-        if (!camposSonEnteros) {
-            return;
-        }
+        boolean camposSonEnteros = Utilidades.validarCamposEntero(dniUsuarioStr);
+        if (!camposSonEnteros) return;
 
         int dniUsuario = Integer.parseInt(dniUsuarioStr);
 
@@ -204,15 +195,16 @@ public class UsuarioUtil {
         ArrayList<Usuario> lista = usuariosDAO.listarUsuarios();
         modeloUsuarioActivo = (DefaultTableModel) vista.TableMostrarUsuarios.getModel();
         modeloUsuarioActivo.setRowCount(0); // Limpiar el modelo de la tabla
-        Object[] obj = new Object[6];
-        for (int i = 0; i < lista.size(); i++) {
-            obj[0] = lista.get(i).getIdUsuario();
-            obj[1] = lista.get(i).getDniUsuario();
-            obj[2] = lista.get(i).getNombre();
-            obj[3] = lista.get(i).getUsuario();
-            obj[4] = lista.get(i).getRol();
+        lista.forEach(user -> {
+            Object[] obj = {
+                user.getIdUsuario(),
+                user.getDniUsuario(),
+                user.getNombre(),
+                user.getUsuario(),
+                user.getRol()
+            };
             modeloUsuarioActivo.addRow(obj);
-        }
+        });
         vista.TableMostrarUsuarios.setModel(modeloUsuarioActivo);
     }
 
@@ -220,39 +212,47 @@ public class UsuarioUtil {
         ArrayList<Usuario> lista = usuariosDAO.listarUsuariosInactivo();
         modeloUsuarioInactivo = (DefaultTableModel) vista.TableInactiveUsuarios.getModel();
         modeloUsuarioInactivo.setRowCount(0); // Limpiar el modelo de la tabla
-        Object[] obj = new Object[6];
-        for (int i = 0; i < lista.size(); i++) {
-            obj[0] = lista.get(i).getIdUsuario();
-            obj[1] = lista.get(i).getDniUsuario();
-            obj[2] = lista.get(i).getNombre();
-            obj[3] = lista.get(i).getUsuario();
-            obj[4] = lista.get(i).getRol();
+        lista.forEach(user -> {
+            Object[] obj = {
+                user.getIdUsuario(),
+                user.getDniUsuario(),
+                user.getNombre(),
+                user.getUsuario(),
+                user.getRol()
+            };
             modeloUsuarioInactivo.addRow(obj);
-        }
+        }); 
         vista.TableInactiveUsuarios.setModel(modeloUsuarioInactivo);
     }
 
     public void limpiar() {
-        vista.txtDniUser.setText(null);
-        vista.txtnombreUser.setText(null);
-        vista.txtuser.setText(null);
-        vista.txtcontrasenaUser.setText(null);
-        vista.txtbuscarUser.setText(null);
+        Stream.of(
+                vista.txtDniUser,
+                vista.txtnombreUser,
+                vista.txtuser,        
+                vista.txtcontrasenaUser,
+                vista.txtbuscarUser
+        ).forEach(textField -> textField.setText(null));
     }
 
     public void limpiarUsuarioInactivo() {
-        vista.txtActivarUsuarioId.setText(null);
-        vista.txtActiveDniUser.setText(null);
-        vista.txtActiveNombreUser.setText(null);
-        vista.txtActiveRolUser.setText(null);
-        vista.txtActiveUsuarioUser.setText(null);
+        Stream.of(
+                vista.txtActivarUsuarioId,
+                vista.txtActiveDniUser,
+                vista.txtActiveNombreUser,
+                vista.txtActiveRolUser,
+                vista.txtActiveUsuarioUser
+        ).forEach(textField -> textField.setText(null));
+
     }
 
     public void limpiarDatosActualizarPassword() {
-        vista.txtUsuarioCambioPass.setText(null);
-        vista.txtNombreCambioPass.setText(null);
-        vista.txtNuevoPassword.setText(null);
-        vista.txtRepetirPassword.setText(null);
+        Stream.of(
+                vista.txtUsuarioCambioPass,
+                vista.txtNombreCambioPass,
+                vista.txtNuevoPassword,
+                vista.txtRepetirPassword
+        ).forEach(textField -> textField.setText(null));
     }
 
 }

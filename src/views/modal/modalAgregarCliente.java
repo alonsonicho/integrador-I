@@ -32,7 +32,7 @@ public class modalAgregarCliente extends javax.swing.JDialog {
         Object[] obj = new Object[4];
         for(int i=0; i < lista.size(); i++){
             obj[0] = lista.get(i).getTipoDocumento();
-            obj[1] = lista.get(i).getDni();
+            obj[1] = lista.get(i).getNumeroDocumento();
             obj[2] = lista.get(i).getNombre() != null ? lista.get(i).getNombre() : "";
             modeloClientes.addRow(obj);
         }
@@ -169,7 +169,7 @@ public class modalAgregarCliente extends javax.swing.JDialog {
         Object[] obj = new Object[4];
         for (Cliente cliente : clientesFiltrados) {
             obj[0] = cliente.getTipoDocumento();
-            obj[1] = cliente.getDni();
+            obj[1] = cliente.getNumeroDocumento();
             obj[2] = cliente.getNombre();
             modeloClientes.addRow(obj);
         }

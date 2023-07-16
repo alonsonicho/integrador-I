@@ -4,7 +4,7 @@ public class Cliente {
 
     private int idCliente;
     private String tipoDocumento;
-    private int dni;
+    private String numeroDocumento;
     private String nombre;
     private int telefono;
     private String direccion;
@@ -13,10 +13,10 @@ public class Cliente {
     public Cliente() {
     }
 
-    public Cliente(int idCliente, String tipoDocumento, int dni, String nombre, int telefono, String direccion, String estado) {
+    public Cliente(int idCliente, String tipoDocumento, String numeroDocumento, String nombre, int telefono, String direccion, String estado) {
         this.idCliente = idCliente;
         this.tipoDocumento = tipoDocumento;
-        this.dni = dni;
+        this.numeroDocumento = numeroDocumento;
         this.nombre = nombre;
         this.telefono = telefono;
         this.direccion = direccion;
@@ -41,12 +41,12 @@ public class Cliente {
         this.idCliente = idCliente;
     }
 
-    public int getDni() {
-        return dni;
+    public String getNumeroDocumento() {
+        return numeroDocumento;
     }
 
-    public void setDni(int dni) {
-        this.dni = dni;
+    public void setNumeroDocumento(String numeroDocumento) {
+        this.numeroDocumento = numeroDocumento;
     }
 
     public String getNombre() {

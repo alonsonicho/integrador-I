@@ -8,10 +8,12 @@ import javax.swing.table.DefaultTableModel;
 
 public class Utilidades {
 
+    
     public static void limpiarTable(DefaultTableModel modelo) {
         modelo.setRowCount(0);
     }
 
+    
     public static void centrarDatosTabla(JTable table) {
         // Centrar el contenido de las celdas
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -23,26 +25,12 @@ public class Utilidades {
         headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
         table.getTableHeader().setDefaultRenderer(headerRenderer);
     }
+    
 
     public static void bloquearEdicionTabla(JTable table) {
         table.setDefaultEditor(Object.class, null);
     }
-
-    public static boolean validarCamposNumericos(String... valores) {
-        for (String valor : valores) {
-            if (valor.isEmpty()) {
-                continue; // Saltar a la siguiente iteración si el valor está vacío
-            }
-
-            try {
-                Long.parseLong(valor.trim());
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(null, "El valor ingresado '" + valor + "' no puede contener letras o caracteres", "Advertencia", JOptionPane.WARNING_MESSAGE);
-                return false;
-            }
-        }
-        return true;
-    }
+    
 
     public static boolean validarCamposVacios(String... campos) {
         for (String campo : campos) {
@@ -54,12 +42,12 @@ public class Utilidades {
         return true;
     }
 
-    // Alerta de mensajes
+
     public static void mostrarAdvertencia(String mensaje) {
         JOptionPane.showMessageDialog(null, mensaje, "Advertencia", JOptionPane.WARNING_MESSAGE);
     }
     
-    // Validar numeros enteros
+
     public static boolean validarCamposEntero(String... valores) {
         for (String valor : valores) {
             if (valor.isEmpty()) {
@@ -76,7 +64,7 @@ public class Utilidades {
         return true;
     }
 
-    // Validar numeros decimales
+
     public static boolean validarCamposDouble(String... valores) {
         for (String valor : valores) {
             if (valor.isEmpty()) {

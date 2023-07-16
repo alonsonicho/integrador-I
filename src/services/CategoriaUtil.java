@@ -79,10 +79,10 @@ public class CategoriaUtil {
         ArrayList<Categoria> lista = this.categoriasDAO.listarCategorias();
         modeloCategoria = (DefaultTableModel) vistaCategorias.TableCategorias.getModel();
         modeloCategoria.setRowCount(0); // Limpiar el modelo de la tabla
-        lista.forEach(categoria -> {
+        lista.forEach(cat -> {
             Object[] obj = {
-                categoria.getIdCategoria(),
-                categoria.getNombreCategoria()
+                cat.getIdCategoria(),
+                cat.getNombreCategoria()
             };
             modeloCategoria.addRow(obj);
         });

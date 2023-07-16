@@ -63,7 +63,7 @@ public class VentaUtil {
             return;
         }
 
-        boolean camposSonNumeros = Utilidades.validarCamposNumericos(cantidadTexto);
+        boolean camposSonNumeros = Utilidades.validarCamposEntero(cantidadTexto);
         if (!camposSonNumeros) {
             return;
         }
@@ -138,7 +138,7 @@ public class VentaUtil {
         }
 
         // Verificar que el doc cliente solo se ingresen numeros
-        boolean camposSonNumeros = Utilidades.validarCamposNumericos(numeroDocumentoCliente);
+        boolean camposSonNumeros = Utilidades.validarCamposEntero(numeroDocumentoCliente);
         if (!camposSonNumeros) {
             return;
         }
@@ -164,10 +164,9 @@ public class VentaUtil {
         }
 
         int idCliente = 0;
-        int numeroCliente = Integer.parseInt(numeroDocumentoCliente);
 
         try {
-            cliente = clientesDAO.buscarCliente(numeroCliente);
+            cliente = clientesDAO.buscarCliente(numeroDocumentoCliente);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage());
             return;
@@ -178,7 +177,7 @@ public class VentaUtil {
             // El cliente no está registrado, se procede a registrar
             Cliente nuevoCliente = new Cliente();
             nuevoCliente.setTipoDocumento(tipoDocCliente);
-            nuevoCliente.setDni(numeroCliente);
+            nuevoCliente.setNumeroDocumento(numeroDocumentoCliente);
             clientesDAO.registrarCliente(nuevoCliente);
             idCliente = clientesDAO.obtenerUltimoIdCliente();
         } else {
