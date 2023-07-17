@@ -1,22 +1,16 @@
 package views;
 
-import DAO.*;
 import controllers.*;
-import models.*;
 
 public class frmClientes extends javax.swing.JFrame {
 
-    Usuario usuario = new Usuario();
-    UsuariosDAO usuarioDAO = new UsuariosDAO();
-    Cliente cliente = new Cliente();
-    ClientesDAO clienteDAO = new ClientesDAO();
     private static frmClientes instancia;
 
     public frmClientes() {
         instancia = this;
         initComponents();
-        ClientesControlador cli = new ClientesControlador(cliente, clienteDAO, this);
-        UsuariosControlador users = new UsuariosControlador(usuario, usuarioDAO, this);
+        ClienteControlador cliente = new ClienteControlador(this);
+        UsuarioControlador usuario = new UsuarioControlador(this);
     }
     
     public static frmClientes getInstancia() {

@@ -1,31 +1,17 @@
 package views;
 
-import DAO.ClientesDAO;
-import DAO.ProductosDAO;
-import DAO.VentasDAO;
 import controllers.*;
-import models.Cliente;
-import models.Factura;
-import models.Producto;
-import pdf.PDFFactura;
+
 
 public class frmVentas extends javax.swing.JFrame {
 
-    PDFFactura pdf;
-
-    Cliente cliente = new Cliente();
-    ClientesDAO clientesDAO = new ClientesDAO();
-    Producto producto = new Producto();
-    ProductosDAO productosDAO = new ProductosDAO();
-    Factura factura = new Factura();
-    VentasDAO ventasDAO = new VentasDAO();
     private static frmVentas instancia;
 
     public frmVentas() {
         instancia = this;
         initComponents();
-        VentasControlador ventas = new VentasControlador(pdf, cliente, clientesDAO, producto, productosDAO, factura, ventasDAO, this);
-        ReportesControlador reportes = new ReportesControlador(pdf, this);
+        VentaControlador venta = new VentaControlador(this);
+        ReporteControlador reporte = new ReporteControlador(this);
     }
     
     public static frmVentas getInstancia() {
