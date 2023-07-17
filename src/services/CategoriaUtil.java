@@ -95,7 +95,7 @@ public class CategoriaUtil {
         lista.forEach(cat -> vistaCategorias.cbxCatPro.addItem(cat.getNombreCategoria()));
     }
 
-    private void limpiar() {
+    public void limpiar() {
         Stream.of(
                 vistaCategorias.txtIdCategoria,
                 vistaCategorias.txtNombreCategoria

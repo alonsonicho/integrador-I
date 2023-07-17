@@ -23,7 +23,7 @@ public class VentaUtil {
 
     public VentaUtil(frmVentas vistaVentas) {
         this.vistaVentas = vistaVentas;
-        //reporteUtil = new ReporteUtil(vistaVentas);
+        reporteUtil = new ReporteUtil(vistaVentas);
         cargarDatosVendedor();
     }
 
@@ -230,11 +230,11 @@ public class VentaUtil {
             }
         }
 
-        reporteUtil.cargarListaFactura();
-        reporteUtil.mostrarDetalleRegistrosActuales();
-
         // Imprimir el PDF segun el Tipo de venta
         imprimirPDF();
+        
+        reporteUtil.cargarListaFactura();
+        reporteUtil.mostrarDetalleRegistrosActuales();
 
         JOptionPane.showMessageDialog(null, "Venta Realizada", "Éxito", JOptionPane.INFORMATION_MESSAGE);
         limpiarDatosFactura();

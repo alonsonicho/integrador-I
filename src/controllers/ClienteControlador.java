@@ -124,7 +124,7 @@ public class ClienteControlador implements ActionListener, MouseListener{
                 vistaClientes.jTabbedPane1.setSelectedIndex(1);
             }
         }
-
+        
         //------------------------------------------------------------------------------------------------------------------------------------------
         if (e.getSource() == vistaClientes.JLabelSalirReg) {
             new frmMenuPrincipal().setVisible(true);

@@ -43,7 +43,7 @@ public class CategoriaControlador implements ActionListener, MouseListener {
        }
        
        if (e.getSource() == vistaCategorias.btnNuevaCategoria) {
-            limpiar();
+            catUtil.limpiar();
             vistaCategorias.btnRegitrarCategoria.setEnabled(true);
         }
     }
@@ -88,8 +88,4 @@ public class CategoriaControlador implements ActionListener, MouseListener {
        
     }
     
-    public void limpiar() {
-        vistaCategorias.txtIdCategoria.setText(null);
-        vistaCategorias.txtNombreCategoria.setText(null);
-    }
 }
