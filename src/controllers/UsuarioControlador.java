@@ -32,6 +32,8 @@ public class UsuarioControlador implements ActionListener, MouseListener {
         this.vista.btnBuscarUsuarioUpdatePassword.addActionListener(this);
         this.vista.btnActualizarPassword.addActionListener(this);
         permisosUsuario();
+        this.vista.radioButtonTrueUser.addActionListener(this);
+        this.vista.radioButtonFalseUser.addActionListener(this);
         this.vista.radioButtonFalseUser.setSelected(true);
         this.vista.radioButtonTrueUser.setSelected(false);
         Utilidades.centrarDatosTabla(vista.TableMostrarUsuarios);

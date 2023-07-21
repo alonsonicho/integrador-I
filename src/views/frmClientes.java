@@ -179,9 +179,9 @@ public class frmClientes extends javax.swing.JFrame {
         jLabel2.setText("CLIENTES - USUARIOS");
         jPanel3.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 40, -1, -1));
 
-        getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 0, 940, 120));
+        getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 0, 1060, 120));
 
-        jTabbedPane1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jTabbedPane1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         jPanel4.setBackground(new java.awt.Color(204, 204, 204));
         jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -211,7 +211,7 @@ public class frmClientes extends javax.swing.JFrame {
         btnnuevocli.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/nuevo.png"))); // NOI18N
         btnnuevocli.setText("Nuevo");
         btnnuevocli.setBorderPainted(false);
-        btnnuevocli.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnnuevocli.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnnuevocli.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnnuevocli.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
 
@@ -219,7 +219,7 @@ public class frmClientes extends javax.swing.JFrame {
         btnregistrarcli.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/registrar_1.png"))); // NOI18N
         btnregistrarcli.setText("Registrar");
         btnregistrarcli.setBorderPainted(false);
-        btnregistrarcli.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnregistrarcli.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnregistrarcli.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnregistrarcli.setPreferredSize(new java.awt.Dimension(80, 53));
         btnregistrarcli.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -228,7 +228,7 @@ public class frmClientes extends javax.swing.JFrame {
         btnmodificarcli.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/edit.png"))); // NOI18N
         btnmodificarcli.setText("Modificar");
         btnmodificarcli.setBorderPainted(false);
-        btnmodificarcli.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnmodificarcli.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnmodificarcli.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnmodificarcli.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
 
@@ -240,7 +240,7 @@ public class frmClientes extends javax.swing.JFrame {
         btnBuscarCliente.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnBuscarCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/lupa.png"))); // NOI18N
         btnBuscarCliente.setText("Buscar");
-        btnBuscarCliente.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnBuscarCliente.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         cbTipoDocumento.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         cbTipoDocumento.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "DNI", "RUC" }));
@@ -292,9 +292,8 @@ public class frmClientes extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(txtidcli, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(70, 70, 70)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(DNI)
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -353,20 +352,20 @@ public class frmClientes extends javax.swing.JFrame {
         TableMostrarClientes.setComponentPopupMenu(JPopupClientes);
         jScrollPane2.setViewportView(TableMostrarClientes);
 
-        jPanel4.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 10, 480, 380));
+        jPanel4.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 10, 600, 380));
 
         javax.swing.GroupLayout PaginadoUsuarioLayout = new javax.swing.GroupLayout(PaginadoUsuario);
         PaginadoUsuario.setLayout(PaginadoUsuarioLayout);
         PaginadoUsuarioLayout.setHorizontalGroup(
             PaginadoUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 480, Short.MAX_VALUE)
+            .addGap(0, 600, Short.MAX_VALUE)
         );
         PaginadoUsuarioLayout.setVerticalGroup(
             PaginadoUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 60, Short.MAX_VALUE)
         );
 
-        jPanel4.add(PaginadoUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 400, 480, 60));
+        jPanel4.add(PaginadoUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 400, 600, 60));
 
         jTabbedPane1.addTab("Clientes", jPanel4);
 
@@ -475,7 +474,7 @@ public class frmClientes extends javax.swing.JFrame {
                                     .addComponent(jLabel13)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                     .addComponent(txtcontrasenaUser))))))
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addContainerGap(29, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel17Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(txtidusuario, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -712,7 +711,7 @@ public class frmClientes extends javax.swing.JFrame {
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(28, 28, 28)
                 .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 460, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(37, Short.MAX_VALUE))
+                .addContainerGap(145, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -721,7 +720,7 @@ public class frmClientes extends javax.swing.JFrame {
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 407, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jTabbedPane2.addTab("Clientes", jPanel6);
@@ -864,7 +863,7 @@ public class frmClientes extends javax.swing.JFrame {
                 .addGap(24, 24, 24)
                 .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 505, Short.MAX_VALUE)
+                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 615, Short.MAX_VALUE)
                 .addGap(44, 44, 44))
         );
         jPanel8Layout.setVerticalGroup(
@@ -979,7 +978,7 @@ public class frmClientes extends javax.swing.JFrame {
             .addGroup(jPanel12Layout.createSequentialGroup()
                 .addGap(245, 245, 245)
                 .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(278, Short.MAX_VALUE))
+                .addContainerGap(382, Short.MAX_VALUE))
         );
         jPanel12Layout.setVerticalGroup(
             jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -994,7 +993,7 @@ public class frmClientes extends javax.swing.JFrame {
         jTabbedPane1.addTab("Mantenimiento", jTabbedPane2);
         jTabbedPane2.getAccessibleContext().setAccessibleName("");
 
-        getContentPane().add(jTabbedPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 120, 940, 510));
+        getContentPane().add(jTabbedPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 120, 1050, 510));
 
         jPanel1.setBackground(new java.awt.Color(51, 51, 51));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -1007,7 +1006,7 @@ public class frmClientes extends javax.swing.JFrame {
         JLabelCrearReg.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         JLabelCrearReg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/registrar_1.png"))); // NOI18N
         JLabelCrearReg.setText("Clientes");
-        JLabelCrearReg.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        JLabelCrearReg.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         javax.swing.GroupLayout JPanelCrearRegLayout = new javax.swing.GroupLayout(JPanelCrearReg);
         JPanelCrearReg.setLayout(JPanelCrearRegLayout);
@@ -1030,7 +1029,7 @@ public class frmClientes extends javax.swing.JFrame {
         JLabelUsuariosReg.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         JLabelUsuariosReg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/users.png"))); // NOI18N
         JLabelUsuariosReg.setText("Usuarios");
-        JLabelUsuariosReg.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        JLabelUsuariosReg.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         javax.swing.GroupLayout JPanelUsuariosRegLayout = new javax.swing.GroupLayout(JPanelUsuariosReg);
         JPanelUsuariosReg.setLayout(JPanelUsuariosRegLayout);
@@ -1053,7 +1052,7 @@ public class frmClientes extends javax.swing.JFrame {
         JLabelSalirReg.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         JLabelSalirReg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/salir.png"))); // NOI18N
         JLabelSalirReg.setText("Salir");
-        JLabelSalirReg.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        JLabelSalirReg.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         javax.swing.GroupLayout JPanelSalirRegLayout = new javax.swing.GroupLayout(JPanelSalirReg);
         JPanelSalirReg.setLayout(JPanelSalirRegLayout);

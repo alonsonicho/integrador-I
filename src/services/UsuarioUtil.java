@@ -62,7 +62,7 @@ public class UsuarioUtil {
         String user = vista.txtuser.getText();
         String rol = vista.cbroluser.getSelectedItem().toString();
         String idUsuario = vista.txtidusuario.getText();
-
+        
         if (!Utilidades.validarCamposVacios(dni, nombre, user)) return;
 
         //Validar campos con numeros, se ejecuta si devuelve false

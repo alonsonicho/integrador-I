@@ -68,9 +68,8 @@ public class frmProductos extends javax.swing.JFrame {
         JPanelCategoria = new javax.swing.JPanel();
         JLabelCategoria = new javax.swing.JLabel();
         JPanelSalirProd = new javax.swing.JPanel();
-        JLabelSalirProd = new javax.swing.JLabel();
         JPanelMedida = new javax.swing.JPanel();
-        JLabelMedida = new javax.swing.JLabel();
+        JLabelSalirProd = new javax.swing.JLabel();
 
         JMenuEliminarCat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/eliminar.png"))); // NOI18N
         JMenuEliminarCat.setText("Eliminar");
@@ -436,6 +435,21 @@ public class frmProductos extends javax.swing.JFrame {
 
         JPanelSalirProd.setBackground(new java.awt.Color(51, 51, 51));
 
+        javax.swing.GroupLayout JPanelSalirProdLayout = new javax.swing.GroupLayout(JPanelSalirProd);
+        JPanelSalirProd.setLayout(JPanelSalirProdLayout);
+        JPanelSalirProdLayout.setHorizontalGroup(
+            JPanelSalirProdLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 180, Short.MAX_VALUE)
+        );
+        JPanelSalirProdLayout.setVerticalGroup(
+            JPanelSalirProdLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 50, Short.MAX_VALUE)
+        );
+
+        jPanel1.add(JPanelSalirProd, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 210, 180, 50));
+
+        JPanelMedida.setBackground(new java.awt.Color(51, 51, 51));
+
         JLabelSalirProd.setBackground(new java.awt.Color(0, 0, 0));
         JLabelSalirProd.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         JLabelSalirProd.setForeground(new java.awt.Color(255, 255, 255));
@@ -444,38 +458,15 @@ public class frmProductos extends javax.swing.JFrame {
         JLabelSalirProd.setText("Salir");
         JLabelSalirProd.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
-        javax.swing.GroupLayout JPanelSalirProdLayout = new javax.swing.GroupLayout(JPanelSalirProd);
-        JPanelSalirProd.setLayout(JPanelSalirProdLayout);
-        JPanelSalirProdLayout.setHorizontalGroup(
-            JPanelSalirProdLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(JLabelSalirProd, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
-        );
-        JPanelSalirProdLayout.setVerticalGroup(
-            JPanelSalirProdLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(JLabelSalirProd, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
-        );
-
-        jPanel1.add(JPanelSalirProd, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 210, 180, 50));
-
-        JPanelMedida.setBackground(new java.awt.Color(51, 51, 51));
-
-        JLabelMedida.setBackground(new java.awt.Color(0, 0, 0));
-        JLabelMedida.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        JLabelMedida.setForeground(new java.awt.Color(255, 255, 255));
-        JLabelMedida.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        JLabelMedida.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/detallista.png"))); // NOI18N
-        JLabelMedida.setText("Medidas");
-        JLabelMedida.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-
         javax.swing.GroupLayout JPanelMedidaLayout = new javax.swing.GroupLayout(JPanelMedida);
         JPanelMedida.setLayout(JPanelMedidaLayout);
         JPanelMedidaLayout.setHorizontalGroup(
             JPanelMedidaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(JLabelMedida, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+            .addComponent(JLabelSalirProd, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
         );
         JPanelMedidaLayout.setVerticalGroup(
             JPanelMedidaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(JLabelMedida, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
+            .addComponent(JLabelSalirProd, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
         );
 
         jPanel1.add(JPanelMedida, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 140, 180, 50));
@@ -524,7 +515,6 @@ public class frmProductos extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JLabel JLabelCategoria;
-    public javax.swing.JLabel JLabelMedida;
     public javax.swing.JLabel JLabelProductos;
     public javax.swing.JLabel JLabelSalirProd;
     public javax.swing.JMenuItem JMenuEliminarCat;
