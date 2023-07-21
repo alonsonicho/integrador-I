@@ -130,8 +130,14 @@ public class VentaUtil {
 
     public void registrarFactura() {
         String numeroDocumentoCliente = vistaVentas.txtNumeroDocumentoCliente.getText();
-        double totalPagoFactura = Double.parseDouble(vistaVentas.txtTotalPagar.getText().replace(",", "."));
+        String textoPagoFactura =vistaVentas.txtTotalPagar.getText();
 
+        if(textoPagoFactura.isEmpty()){
+            JOptionPane.showMessageDialog(null, "No se puede realizar la venta sin ingresar productos a la lista");
+             return;
+        };
+        double totalPagoFactura = Double.parseDouble(textoPagoFactura);
+        
         // Validar los campos obligatorios
         if (!Utilidades.validarCamposVacios(numeroDocumentoCliente)) {
             return;
